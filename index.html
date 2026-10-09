@@ -120,8 +120,17 @@ img,svg{max-width:100%}
 .panel-close{flex:none;width:36px;height:36px;border-radius:50%;border:1px solid rgba(22,52,103,.14);background:#fff;color:#7b8ca8;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.1rem;transition:all .25s;padding:0}
 .panel-close:hover{background:var(--dark-blue);color:#fff;border-color:var(--dark-blue)}
 .panel-body{padding:24px 30px 30px}
-.vidframe{position:relative;aspect-ratio:16/9;border-radius:1rem;overflow:hidden;background:var(--dark-blue)}
+.vidframe{position:relative;aspect-ratio:16/9;border-radius:1rem;overflow:hidden;background:var(--dark-blue);box-shadow:0 12px 36px rgba(22,52,103,.18)}
 .vidframe video{width:100%;height:100%;display:block;object-fit:contain;background:#0d1f3e}
+.vid-overlay{position:absolute;inset:0;z-index:5;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .3s ease,visibility .3s;user-select:none}
+.vid-overlay.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.vid-poster-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.vid-play-btn{position:relative;z-index:2;width:86px;height:86px;border-radius:50%;background:#fff;color:var(--dark-blue);display:flex;align-items:center;justify-content:center;box-shadow:0 14px 40px rgba(0,0,0,.35),0 0 0 10px rgba(255,255,255,.2);transition:transform .3s cubic-bezier(.34,1.4,.64,1),background .3s,color .3s,box-shadow .3s}
+.vid-play-btn svg{width:36px;height:36px;margin-left:5px}
+.vid-overlay:hover .vid-play-btn,.vid-overlay:focus-visible .vid-play-btn{transform:scale(1.1);background:var(--blue);color:#fff;box-shadow:0 18px 46px rgba(19,180,226,.5),0 0 0 14px rgba(19,180,226,.25)}
+.vid-overlay:focus-visible{outline:3px solid var(--blue);outline-offset:-3px}
+.vid-play-tip{position:relative;z-index:2;margin-top:16px;font-size:.82rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#fff;background:rgba(22,52,103,.85);padding:7px 16px;border-radius:50px;backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.25);transition:background .25s,transform .25s}
+.vid-overlay:hover .vid-play-tip{background:var(--blue);transform:translateY(-2px)}
 .vidmeta{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.8rem;margin-top:14px}
 .vidmeta-t{font-size:.98rem;font-weight:700}
 .vidmeta-s{font-size:.8rem;color:#8192ad;font-weight:600}
@@ -292,7 +301,7 @@ img,svg{max-width:100%}
   <div class="wrap contact-grid">
     <div class="contact-left">
       <h2>Une <em>question&nbsp;?</em><br>Un <em>projet&nbsp;?</em></h2>
-      <p>Nous serons ravis de pouvoir y répondre et d'échanger avec vous dans les plus brefs délais. Contactez-nous en remplissant le formulaire ou en envoyant un email à <a href="/cdn-cgi/l/email-protection#86efe8e0e9c6e0eaf3feffeba8e5e9eb"><span class="__cf_email__" data-cfemail="2e474048416e48425b565743004d4143">[email&#160;protected]</span></a>.</p>
+      <p>Nous serons ravis de pouvoir y répondre et d'échanger avec vous dans les plus brefs délais. Contactez-nous en remplissant le formulaire ou en envoyant un email à <a href="/cdn-cgi/l/email-protection#563f38303916303a232e2f3b7835393b"><span class="__cf_email__" data-cfemail="1f767179705f79736a676672317c7072">[email&#160;protected]</span></a>.</p>
       <p>Vous souhaitez une démonstration personnalisée d'un module Esker sur vos propres processus&nbsp;? Précisez-le dans votre demande, un expert Fluxym vous recontacte.</p>
       <div class="offices">
         <div class="office"><b>Paris</b><span>+33 1 56 90 55 80</span><span>15 rue de la Faisanderie, 75116</span></div>
@@ -308,7 +317,7 @@ img,svg{max-width:100%}
         <div class="hs-form-frame" id="hsFormTarget"></div>
         <div class="formfallback" id="formFallback">
           Le formulaire ne s'est pas chargé (bloqueur de publicité ou connexion restreinte).
-          Écrivez-nous directement à <a href="/cdn-cgi/l/email-protection#adc4c3cbc2edcbc1d8d5d4c083cec2c0" style="color:var(--blue);font-weight:600"><span class="__cf_email__" data-cfemail="d5bcbbb3ba95b3b9a0adacb8fbb6bab8">[email&#160;protected]</span></a>
+          Écrivez-nous directement à <a href="/cdn-cgi/l/email-protection#ff96919990bf99938a878692d19c9092" style="color:var(--blue);font-weight:600"><span class="__cf_email__" data-cfemail="2d44434b426d4b4158555440034e4240">[email&#160;protected]</span></a>
           ou via <a href="https://www.fluxym.com/nous-contacter/" target="_blank" rel="noopener" style="color:var(--blue);font-weight:600">la page contact de fluxym.com</a>.
         </div>
       </div>
@@ -353,7 +362,7 @@ img,svg{max-width:100%}
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 /* =========================================================================
-   DONNÉES — modules Esker & vidéos de présentation
+   DONNÉES - modules Esker & vidéos de présentation
    ========================================================================= */
 const CDN  = "https://26096000.fs1.hubspotusercontent-eu1.net/hubfs/26096000/";
 const F_O2C = CDN + "Vid%C3%A9o%20d%C3%A9mo%20Esker%20O2C/";
@@ -363,27 +372,27 @@ const M = [
 /* ---------------- SOURCE-TO-PAY ---------------- */
 {id:"so", suite:"S2P", label:"Sourcing", icon:"🔎", c:"#8CC63F",
  desc:"Digitalisez vos appels d'offres et enchères inversées avec Market Dojo. Centralisez les consultations, comparez les réponses fournisseurs et sécurisez vos décisions d'attribution.",
- videos:[{t:"Présentation globale du module Sourcing Esker (Market Dojo)", sz:"422 Mo", u:F_S2P+"Pr%C3%A9sentation%20globale%20du%20module%20Sourcing%20Esker%20(Market%20Dojo).mp4"}]},
+ videos:[{t:"Présentation globale du module Sourcing Esker (Market Dojo)", sz:"34 Mo", u:F_S2P+"Pr%C3%A9sentation%20globale%20du%20module%20Sourcing%20Esker%20(Market%20Dojo)%20(C).mp4"}]},
 
 {id:"sm", suite:"S2P", label:"Supplier Management", icon:"🤝", c:"#00A7E1",
  desc:"Référencez, qualifiez et suivez vos fournisseurs dans un référentiel unique. Onboarding en self-service via le portail, contrôle des données et pilotage du risque fournisseur.",
- videos:[{t:"Présentation globale du module Gestion des Fournisseurs", sz:"531 Mo", u:F_S2P+"Pr%C3%A9sentation%20globale%20du%20module%20Gestion%20des%20Fournisseurs.mp4"}]},
+ videos:[{t:"Présentation globale du module Gestion des Fournisseurs", sz:"29 Mo", u:F_S2P+"Pr%C3%A9sentation%20globale%20du%20module%20Gestion%20des%20Fournisseurs%20(C).mp4"}]},
 
 {id:"ctm", suite:"S2P", label:"Contract Management", icon:"📄", c:"#5B6B7A",
  desc:"Centralisez le cycle de vie contractuel : rédaction assistée, circuits de validation, signature électronique, alertes d'échéance et suivi des engagements.",
- videos:[{t:"Présentation globale du module Contrats Esker", sz:"308 Mo", u:F_S2P+"Pr%C3%A9sentation%20globale%20du%20module%20Contrats%20Esker.mp4"}]},
+ videos:[{t:"Présentation globale du module Contrats Esker", sz:"29 Mo", u:F_S2P+"Pr%C3%A9sentation%20globale%20du%20module%20Contrats%20Esker%20(C).mp4"}]},
 
 {id:"pr", suite:"S2P", label:"Procurement", icon:"🛒", c:"#2E3F4F",
  desc:"Canalisez la dépense vers les contrats négociés : catalogues et punch-out, demandes d'achat guidées, workflows d'approbation, commandes et réceptions.",
- videos:[{t:"Présentation globale du module Achats Esker", sz:"316 Mo", u:F_S2P+"Pr%C3%A9sentation%20globale%20du%20module%20Achats%20Esker.mp4"}]},
+ videos:[{t:"Présentation globale du module Achats Esker", sz:"27 Mo", u:F_S2P+"Pr%C3%A9sentation%20globale%20du%20module%20Achats%20Esker%20(C).mp4"}]},
 
 {id:"ap", suite:"S2P", label:"Accounts Payable & Compliance", icon:"🧾", c:"#F5A623",
  desc:"Automatisez le traitement des factures fournisseurs : capture IA, rapprochement commande/réception, workflows d'approbation, conformité et facturation électronique.",
- videos:[{t:"Présentation globale du module Factures Fournisseurs Esker", sz:"264 Mo", u:F_S2P+"Pr%C3%A9sentation%20globale%20du%20module%20Factures%20Fournisseurs%20Esker.mp4"}]},
+ videos:[{t:"Présentation globale du module Factures Fournisseurs Esker", sz:"30 Mo", u:F_S2P+"Pr%C3%A9sentation%20globale%20du%20module%20Factures%20Fournisseurs%20Esker%20(C).mp4"}]},
 
 {id:"em", suite:"S2P", label:"Expense Management", icon:"✈️", c:"#E8465A",
  desc:"Simplifiez les notes de frais : saisie mobile avec reconnaissance du justificatif, contrôle automatique de la politique de dépense et remboursement accéléré.",
- videos:[{t:"Présentation globale du module Notes de Frais Esker", sz:"275 Mo", u:F_S2P+"Pr%C3%A9sentation%20globale%20du%20module%20Notes%20de%20Frais%20Esker.mp4"}]},
+ videos:[{t:"Présentation globale du module Notes de Frais Esker", sz:"30 Mo", u:F_S2P+"Pr%C3%A9sentation%20globale%20du%20module%20Notes%20de%20Frais%20Esker%20(C).mp4"}]},
 
 /* ---------------- ORDER-TO-CASH ---------------- */
 {id:"crm", suite:"O2C", label:"Credit Management", icon:"📊", c:"#7D8B99",
@@ -400,13 +409,13 @@ const M = [
 
 {id:"id", suite:"O2C", label:"Invoice Delivery & Compliance", icon:"📤", c:"#E8465A",
  desc:"Émettez et distribuez vos factures clients sur tous les canaux, en conformité avec les obligations de facturation électronique en France et à l'international.",
- videos:[{t:"Présentation globale du module Factures Clients Esker", sz:"458 Mo", u:F_O2C+"Pr%C3%A9sentation%20globale%20du%20module%20Factures%20Clients%20Esker.mp4"}]},
+ videos:[{t:"Présentation globale du module Factures Clients Esker", sz:"27 Mo", u:F_O2C+"Pr%C3%A9sentation%20globale%20du%20module%20Factures%20Clients%20(C).mp4"}]},
 
 {id:"ca", suite:"O2C", label:"Cash Application", icon:"💰", c:"#8CC63F",
  desc:"Lettrez automatiquement les encaissements : rapprochement IA des règlements et des avis de paiement, traitement des écarts et imputation comptable immédiate.",
  videos:[
-  {t:"Présentation globale du module Encaissements Clients", sz:"570 Mo", u:F_O2C+"Pr%C3%A9sentation%20globale%20du%20module%20Encaissements%20Clients.mp4"},
-  {t:"Présentation détaillée — version longue", sz:"742 Mo", u:F_O2C+"Pr%C3%A9sentation%20globale%20du%20module%20Encaissements%20Clients%20%20(%20V%20longue).mp4"}
+  {t:"Présentation globale du module Encaissements Clients", sz:"40 Mo", u:F_O2C+"Pr%C3%A9sentation%20globale%20du%20module%20Encaissements%20Clients%20(C).mp4"},
+  {t:"Présentation détaillée (version longue)", sz:"50 Mo", u:F_O2C+"Pr%C3%A9sentation%20globale%20du%20module%20Encaissements%20Clients%20%20(%20V%20longue)%20(C).mp4"}
  ]},
 
 {id:"cd", suite:"O2C", label:"Claims & Deductions", icon:"⚖️", c:"#4FC3D9",
@@ -415,7 +424,7 @@ const M = [
 
 {id:"com", suite:"O2C", label:"Collections Management", icon:"📞", c:"#00A7E1",
  desc:"Pilotez le recouvrement avec des stratégies de relance personnalisées, une priorisation intelligente des dossiers et une vision temps réel du DSO.",
- videos:[{t:"Présentation globale du module Collection Management", sz:"543 Mo", u:F_O2C+"Pr%C3%A9sentation%20globale%20du%20module%20Collection%20Management.mp4"}]}
+ videos:[{t:"Présentation globale du module Collection Management", sz:"37 Mo", u:F_O2C+"Pr%C3%A9sentation%20globale%20du%20module%20Collection%20Management%20(C).mp4"}]}
 ];
 
 const ORDER_S2P = ["so","sm","ctm","pr","ap","em"];
@@ -472,7 +481,7 @@ function segment(cx,cy,r1,r2,a1,a2,id,fs,maxc){
   lines.forEach((L,i)=>{t+=`<tspan x="${lx.toFixed(1)}" dy="${i===0?off.toFixed(1):lh.toFixed(1)}">${esc(L)}</tspan>`});
   t+=`<tspan class="scnt" x="${lx.toFixed(1)}" dy="${(lh+3).toFixed(1)}" font-size="${(fs-2.5).toFixed(1)}" font-weight="700" fill="${soon?'#9aa7bb':c}" font-family="Barlow, sans-serif">${note}</tspan></text>`;
   return`<g class="seg${soon?' soon':''}" id="seg-${id}" role="button" tabindex="0" style="--c:${c};--tx:${tx.toFixed(2)}px;--ty:${ty.toFixed(2)}px" data-id="${id}">
-  <title>${esc(m.label)} — ${soon?'vidéo à venir':note}</title>
+  <title>${esc(m.label)} - ${soon?'vidéo à venir':note}</title>
   <path class="sfill" d="${ring(cx,cy,r1,r2,a1,a2,.55)}" fill="#fff" stroke="${c}" stroke-width="2.2" stroke-linejoin="round" ${soon?'opacity=".82"':''}/>
   <path d="${ring(cx,cy,r1,r1+6,a1,a2,.55)}" fill="${c}" opacity="${soon?'.45':'.92'}" pointer-events="none"/>
   ${t}</g>`;
@@ -581,21 +590,28 @@ function renderPanel(id, vidIdx){
       <div class="vidswitch">${m.videos.map((x,i)=>
         `<button type="button" class="${i===currentVid?'on':''}" data-vid="${i}">${esc(x.t)}</button>`).join("")}</div>` : "";
     media = `
-      <div class="vidframe">
-        <video id="player" controls preload="none" playsinline controlsList="nodownload" poster="${posterFor(m)}">
+      <div class="vidframe" id="vidFrame">
+        <video id="player" controls playsinline controlsList="nodownload" preload="metadata">
           <source src="${v.u}" type="video/mp4">
           Votre navigateur ne prend pas en charge la lecture vidéo.
           <a href="${v.u}">Télécharger la vidéo</a>.
         </video>
+        <div class="vid-overlay" id="vidOverlay" role="button" tabindex="0" aria-label="Lancer la vidéo : ${esc(v.t)}">
+          <img src="${posterFor(m)}" alt="${esc(v.t)}" class="vid-poster-img">
+          <div class="vid-play-btn" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+          <span class="vid-play-tip">Cliquer n'importe où pour lancer la vidéo</span>
+        </div>
       </div>
       <div class="vidmeta">
         <span class="vidmeta-t">${esc(v.t)}</span>
-        <span class="vidmeta-s">MP4 · ${esc(v.sz)} · Français</span>
+        <span class="vidmeta-s">MP4 · ${esc(v.sz)} · Version compressée · Français</span>
       </div>
       ${multi}
       <div class="warn">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8192ad" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-        <span>Vidéo en haute définition : privilégiez une connexion Wi-Fi. La lecture démarre uniquement après un clic sur « Lire ».</span>
+        <span>Vidéo optimisée (≈ 30 Mo) : démarrage instantané en cliquant directement sur l'image ou sur le bouton de lecture.</span>
       </div>`;
   }
 
@@ -618,24 +634,64 @@ function renderPanel(id, vidIdx){
   document.querySelectorAll(".card").forEach(c => c.style.boxShadow = c.dataset.id === id ? "0 18px 40px rgba(22,52,103,.17)" : "");
 
   document.getElementById("pClose").addEventListener("click", closePanel);
+
+  /* Lancement au clic n'importe où sur l'image / overlay */
+  const overlay = document.getElementById("vidOverlay");
+  const player = document.getElementById("player");
+  const playVideo = () => {
+    if(!player) return;
+    if(overlay) overlay.classList.add("hidden");
+    const p = player.play();
+    if(p && typeof p.catch === "function") p.catch(() => {});
+  };
+  if(overlay){
+    overlay.addEventListener("click", playVideo);
+    overlay.addEventListener("keydown", e => {
+      if(e.key === "Enter" || e.key === " "){ e.preventDefault(); playVideo(); }
+    });
+  }
+  if(player){
+    /* Si l'utilisateur clique sur la barre de contrôle native avant l'overlay */
+    player.addEventListener("play", () => {
+      if(overlay) overlay.classList.add("hidden");
+    });
+  }
+
   host.querySelectorAll("[data-vid]").forEach(b =>
-    b.addEventListener("click", () => { renderPanel(id, +b.dataset.vid); scrollToPanel(false); }));
+    b.addEventListener("click", () => {
+      const targetVid = +b.dataset.vid;
+      renderPanel(id, targetVid);
+      scrollToPanel(false);
+      /* Si on change de version, on lance directement la nouvelle */
+      setTimeout(playVideo, 120);
+    }));
 }
 
 /* poster SVG généré (dégradé + nom du module), aucun asset externe requis */
 function posterFor(m){
   const label = esc(m.label).replace(/&amp;/g,"&amp;amp;");
+  const suite = m.suite === "S2P" ? "SOURCE-TO-PAY" : "ORDER-TO-CASH";
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
-    <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#163467"/><stop offset="0.55" stop-color="#1d4a8f"/><stop offset="1" stop-color="${m.c}"/>
-    </linearGradient>
-    <pattern id="d" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.6" fill="#ffffff" opacity="0.16"/></pattern></defs>
-    <rect width="1280" height="720" fill="url(#g)"/><rect width="1280" height="720" fill="url(#d)"/>
-    <circle cx="640" cy="330" r="74" fill="#ffffff" opacity="0.14"/>
-    <circle cx="640" cy="330" r="60" fill="#ffffff" opacity="0.95"/>
-    <path d="M625 303 L672 330 L625 357 Z" fill="#163467"/>
-    <text x="640" y="470" text-anchor="middle" font-family="Miriam Libre, Arial, sans-serif" font-size="46" font-weight="700" fill="#ffffff">${label}</text>
-    <text x="640" y="516" text-anchor="middle" font-family="Barlow, Arial, sans-serif" font-size="22" font-weight="600" fill="#ffffff" opacity="0.72" letter-spacing="3">PRÉSENTATION DU MODULE · FLUXYM × ESKER</text>
+    <defs>
+      <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#163467"/>
+        <stop offset="0.6" stop-color="#1a417c"/>
+        <stop offset="1" stop-color="${m.c}"/>
+      </linearGradient>
+      <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse">
+        <circle cx="3" cy="3" r="1.5" fill="#ffffff" opacity="0.14"/>
+      </pattern>
+    </defs>
+    <rect width="1280" height="720" fill="url(#bg)"/>
+    <rect width="1280" height="720" fill="url(#dots)"/>
+    <!-- Grand motif discret en arrière-plan -->
+    <circle cx="640" cy="360" r="240" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-dasharray="6 12" opacity="0.18"/>
+    <circle cx="640" cy="360" r="170" fill="none" stroke="#ffffff" stroke-width="1" opacity="0.12"/>
+    <circle cx="640" cy="360" r="100" fill="${m.c}" opacity="0.22"/>
+    <!-- Textes -->
+    <text x="640" y="240" text-anchor="middle" font-family="Barlow, Arial, sans-serif" font-size="20" font-weight="700" fill="#13b4e2" letter-spacing="5">${suite}</text>
+    <text x="640" y="470" text-anchor="middle" font-family="Miriam Libre, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">${label}</text>
+    <text x="640" y="520" text-anchor="middle" font-family="Barlow, Arial, sans-serif" font-size="20" font-weight="600" fill="#ffffff" opacity="0.75" letter-spacing="2">DÉMONSTRATION EN VIDÉO (FLUXYM × ESKER)</text>
   </svg>`;
   return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
 }
