@@ -76,9 +76,9 @@ img,svg{max-width:100%}
 .stage-bg .b2{bottom:-12%;left:-12%;width:48vmax;height:48vmax;background:radial-gradient(circle,rgba(107,81,237,.11),transparent 62%);animation:drift 26s ease-in-out infinite alternate-reverse}
 @keyframes drift{0%{transform:translate(0,0) scale(1)}100%{transform:translate(3%,4%) scale(1.09)}}
 
-.stage-top{position:relative;z-index:3;flex:none;text-align:center;padding:9px 1.5rem 3px}
-.stage-top h1{font-size:clamp(1.15rem,2.6vw,2rem);line-height:1.14;letter-spacing:-.022em;font-weight:700;text-wrap:balance;animation:fadeDown .7s both}
-.stage-top h1 em{font-style:normal;color:var(--blue)}
+.stage-bot>*{pointer-events:auto;background:rgba(255,255,255,.72);backdrop-filter:blur(10px);border:1px solid rgba(22,52,103,.09);border-radius:50px;padding:8px 17px;box-shadow:0 4px 18px rgba(22,52,103,.06)}
+.stage-bot h1{font-size:clamp(.82rem,1.15vw,1.02rem);line-height:1.2;letter-spacing:-.01em;font-weight:700;color:var(--dark-blue);margin:0;max-width:40vw}
+.stage-bot h1 em{font-style:normal;color:var(--blue)}
 .kicker{display:inline-flex;align-items:center;gap:.55rem;font-size:.68rem;font-weight:700;letter-spacing:.17em;text-transform:uppercase;color:var(--blue);background:rgba(19,180,226,.09);border:1px solid rgba(19,180,226,.25);padding:6px 15px;border-radius:50px}
 .kicker i{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(126,239,160,.7);animation:ping 2.4s infinite}
 @keyframes ping{0%{box-shadow:0 0 0 0 rgba(126,239,160,.65)}70%{box-shadow:0 0 0 9px rgba(126,239,160,0)}100%{box-shadow:0 0 0 0 rgba(126,239,160,0)}}
@@ -86,15 +86,15 @@ img,svg{max-width:100%}
 
 /* LA CELLULE DE LA ROUE. flex:1 0 auto : elle occupe tout l'espace restant,
    et ne rétrécit jamais en dessous de la taille du dessin. */
-.wheel-cell{position:relative;z-index:2;flex:1 0 auto;display:flex;align-items:center;justify-content:center;padding:6px 0}
+.wheel-cell{position:relative;z-index:2;flex:1 0 auto;display:flex;align-items:center;justify-content:center;padding:8px 0}
 /* .wheel-box fait EXACTEMENT la taille du dessin visible, anneaux en orbite compris.
    Le SVG est plus grand et déborde symétriquement : cette marge interne est vide,
    elle n'occupe donc aucune place dans la mise en page et ne pousse rien. */
 .wheel-box{position:relative;flex:none;aspect-ratio:1;transition:width .3s cubic-bezier(.23,1,.32,1),height .3s cubic-bezier(.23,1,.32,1)}
 .wheel-svg{width:100%;height:100%;display:block;overflow:visible}
-.wheel-box .wheel-svg{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:116.8%;height:116.8%}
 
-.stage-bot{position:relative;z-index:3;flex:none;display:flex;align-items:center;justify-content:center;gap:.7rem 1.3rem;flex-wrap:wrap;padding:6px 1.5rem 13px}
+.stage-bot{position:absolute;left:0;right:0;bottom:11px;z-index:3;display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;padding:0 clamp(16px,2.2vw,34px);pointer-events:none;animation:fadeUp .8s .2s both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{transform:none}}
 .hint{display:inline-flex;align-items:center;gap:.5rem;font-size:.85rem;color:#64779a;font-weight:500}
 .hint b{color:var(--blue);font-weight:700}
 .hint svg{animation:nudge 1.9s ease-in-out infinite}
@@ -353,8 +353,70 @@ img,svg{max-width:100%}
 @keyframes hubRise{from{opacity:0;transform:scale(.72)}to{opacity:1;transform:scale(1)}}
 .mini-hub-default{transform-origin:410px 410px}
 
+/* ============ L'EFFONDREMENT : ASPIRATION DANS LE TROU NOIR ============ */
+/* La fermeture n'est plus une transition inverse. Un horizon des événements
+   s'ouvre au centre, le disque d'accrétion s'emballe, la galaxie est étirée
+   puis avalée en spirale, et un dernier éclat de lumière reforme la bulle. */
+.hole{opacity:0;transform-origin:410px 410px}
+.hole .accretion{transform-origin:410px 410px}
+.hole .photon,.hole .photon2{transform-origin:410px 410px}
+
+.dock.closing .dock-wheel{visibility:visible;transition:none;animation:galaxyCollapse .66s cubic-bezier(.5,.02,.78,.24) forwards}
+@keyframes galaxyCollapse{
+  0%{opacity:1;transform:rotate(0deg) scale(1);filter:drop-shadow(0 22px 50px rgba(22,52,103,.22))}
+  22%{transform:rotate(26deg) scale(1.055);filter:drop-shadow(0 0 30px rgba(29,192,213,.55)) brightness(1.12)}
+  100%{opacity:0;transform:rotate(-318deg) scale(.02);filter:drop-shadow(0 0 60px rgba(107,81,237,.9)) brightness(2.6) blur(2.5px)}}
+
+.dock.closing .hole{animation:holeOpen .66s cubic-bezier(.42,0,.8,.3) forwards}
+@keyframes holeOpen{
+  0%{opacity:0;transform:scale(1.3)}
+  26%{opacity:.6}
+  70%{opacity:1;transform:scale(.52)}
+  100%{opacity:1;transform:scale(.05)}}
+.dock.closing .hole .accretion{animation:spin .5s linear infinite}
+.dock.closing .hole .photon{animation:photonRing .66s cubic-bezier(.4,0,.8,.3) forwards}
+.dock.closing .hole .photon2{animation:photonRing .66s cubic-bezier(.4,0,.8,.3) .06s forwards}
+@keyframes photonRing{0%{transform:scale(2.2) rotate(0);opacity:0}30%{opacity:1}100%{transform:scale(.3) rotate(240deg);opacity:0}}
+
+/* les modules sont étirés puis happés, les plus éloignés en premier */
+.dock.closing .mini-seg{animation:galaxyOut .5s cubic-bezier(.55,0,.82,.22) forwards;animation-delay:var(--sdo)}
+@keyframes galaxyOut{
+  0%{opacity:1;transform:translate(0,0)}
+  18%{transform:translate(calc(var(--tx) * 2.6),calc(var(--ty) * 2.6))}
+  100%{opacity:0;transform:translate(calc(var(--tx) * -15),calc(var(--ty) * -15))}}
+.dock.closing .bandg,.dock.closing .aihub{animation:suckFade .34s ease-in forwards}
+@keyframes suckFade{to{opacity:0;transform:scale(.4)}}
+.dock.closing .aihub{transform-origin:410px 664px}
+.dock.closing .bandg{transform-origin:410px 410px}
+.dock.closing .galaxy{animation:suckSpin .6s cubic-bezier(.5,0,.8,.3) forwards;transform-origin:410px 410px}
+@keyframes suckSpin{0%{opacity:1;transform:scale(1) rotate(0)}100%{opacity:0;transform:scale(.18) rotate(190deg)}}
+
+/* le vortex se rétracte vers la singularité */
+.dock.closing .dock-vortex{animation:vortexIn .62s cubic-bezier(.42,0,.78,.28) forwards}
+@keyframes vortexIn{
+  0%{opacity:0;transform:translate(-50%,50%) scale(58) rotate(0deg)}
+  22%{opacity:.85}
+  100%{opacity:0;transform:translate(-50%,50%) scale(1.5) rotate(-330deg)}}
+
+/* l'éclat final : la matière recomprimée rallume la bulle */
+.dock-flash{position:absolute;left:37px;bottom:37px;width:18px;height:18px;border-radius:50%;pointer-events:none;z-index:4;opacity:0;
+  transform:translate(-50%,50%) scale(.2);
+  background:radial-gradient(circle,#fff 0%,#c9f6ff 24%,rgba(29,192,213,.75) 46%,rgba(107,81,237,.3) 64%,transparent 78%)}
+.dock.closing .dock-flash{animation:dockFlash .5s .3s cubic-bezier(.16,.92,.3,1) forwards}
+@keyframes dockFlash{
+  0%{opacity:0;transform:translate(-50%,50%) scale(.2)}
+  26%{opacity:1;transform:translate(-50%,50%) scale(4.4)}
+  60%{opacity:.75;transform:translate(-50%,50%) scale(1.5)}
+  100%{opacity:0;transform:translate(-50%,50%) scale(.9)}}
+
+/* le halo se reforme en se rétractant, la bulle rebondit à l'arrivée */
+.dock.closing .dock-halo{animation:haloReform .5s .26s cubic-bezier(.2,1.3,.35,1) backwards}
+@keyframes haloReform{0%{opacity:0;transform:translate(-50%,50%) scale(3.4) rotate(150deg)}100%{opacity:1;transform:translate(-50%,50%) scale(1) rotate(0deg)}}
+.dock.closing .dock-btn{animation:btnReform .46s .3s cubic-bezier(.24,1.5,.4,1) backwards}
+@keyframes btnReform{0%{opacity:0;transform:scale(.18) rotate(100deg)}60%{opacity:1}100%{opacity:1;transform:scale(1) rotate(0deg)}}
+
 @media(prefers-reduced-motion:reduce){
-  .dock-vortex,.dock.open .dock-halo{animation:none!important}
+  .dock-vortex,.dock-flash,.dock.open .dock-halo,.dock.closing *{animation:none!important}
   .dock-wheel,.dock.open .dock-wheel{transition:opacity .25s ease,visibility .25s;transform:none!important}
   .dock.open .mini-seg,.dock.open .shock>g,.dock.open .bandg,.dock.open .aihub,.dock.open .mini-hub-default,.dock.open .galaxy{animation:none!important}
   .galaxy .arm,.galaxy .neb{animation:none!important}
@@ -517,23 +579,18 @@ img,svg{max-width:100%}
 <section class="stage" id="roue">
   <div class="stage-bg" aria-hidden="true"><i class="b1"></i><i class="b2"></i></div>
 
-  <div class="stage-top" id="stageTop">
-    <h1>L'AI Automation Suite pour l'<em>Office of the CFO</em></h1>
-  </div>
-
   <div class="wheel-cell">
     <div class="wheel-box" id="wheelBox"></div>
   </div>
 
+  <!-- barre d'état posée EN SURIMPRESSION dans les deux coins bas, zones que
+       l'arc du cercle ne peut jamais atteindre, quel que soit le zoom.
+       Elle ne consomme donc aucune hauteur : la roue a toute la fenêtre. -->
   <div class="stage-bot" id="stageBot">
-    <div class="stage-stats">
-      <span class="sstat"><b id="stMod">13</b> modules</span>
-      <span class="sstat"><b id="stVid">10</b> vidéos</span>
-      <span class="sstat"><b>2</b> suites</span>
-    </div>
+    <h1>L'AI Automation Suite pour l'<em>Office of the CFO</em></h1>
     <span class="hint">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
-      Survolez pour explorer, cliquez un module : la vidéo s'ouvre <b>juste en dessous</b>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+      Cliquez un module, la vidéo s'ouvre <b>juste en dessous</b>
     </span>
   </div>
 </section>
@@ -560,7 +617,7 @@ img,svg{max-width:100%}
   <div class="wrap contact-grid">
     <div class="contact-left">
       <h2>Une <em>question&nbsp;?</em><br>Un <em>projet&nbsp;?</em></h2>
-      <p>Nous serons ravis de pouvoir y répondre et d'échanger avec vous dans les plus brefs délais. Contactez-nous en remplissant le formulaire ou en envoyant un email à <a href="/cdn-cgi/l/email-protection#a6cfc8c0c9e6c0cad3dedfcb88c5c9cb"><span class="__cf_email__" data-cfemail="71181f171e31171d0409081c5f121e1c">[email&#160;protected]</span></a>.</p>
+      <p>Nous serons ravis de pouvoir y répondre et d'échanger avec vous dans les plus brefs délais. Contactez-nous en remplissant le formulaire ou en envoyant un email à <a href="/cdn-cgi/l/email-protection#6900070f06290f051c111004470a0604"><span class="__cf_email__" data-cfemail="056c6b636a456369707d7c682b666a68">[email&#160;protected]</span></a>.</p>
       <p>Vous souhaitez une démonstration personnalisée d'un module Esker sur vos propres processus&nbsp;? Précisez-le dans votre demande, un expert Fluxym vous recontacte.</p>
       <div class="offices">
         <div class="office"><b>Paris</b><span>+33 1 56 90 55 80</span><span>15 rue de la Faisanderie, 75116</span></div>
@@ -576,7 +633,7 @@ img,svg{max-width:100%}
         <div class="hs-form-frame" id="hsFormTarget"></div>
         <div class="formfallback" id="formFallback">
           Le formulaire ne s'est pas chargé (bloqueur de publicité ou connexion restreinte).
-          Écrivez-nous directement à <a href="/cdn-cgi/l/email-protection#563f38303916303a232e2f3b7835393b" style="color:var(--blue);font-weight:600"><span class="__cf_email__" data-cfemail="9df4f3fbf2ddfbf1e8e5e4f0b3fef2f0">[email&#160;protected]</span></a>
+          Écrivez-nous directement à <a href="/cdn-cgi/l/email-protection#6c05020a032c0a0019141501420f0301" style="color:var(--blue);font-weight:600"><span class="__cf_email__" data-cfemail="1871767e77587e746d606175367b7775">[email&#160;protected]</span></a>
           ou via <a href="https://www.fluxym.com/nous-contacter/" target="_blank" rel="noopener" style="color:var(--blue);font-weight:600">la page contact de fluxym.com</a>.
         </div>
       </div>
@@ -623,6 +680,7 @@ img,svg{max-width:100%}
 <!-- Pas de fenêtre : la bulle Esker se transforme en roue au survol. -->
 <div class="dock" id="dock">
   <div class="dock-vortex" aria-hidden="true"></div>
+  <div class="dock-flash" aria-hidden="true"></div>
   <div class="dock-wheel" id="dockWheel" role="group" aria-label="Roue Esker, sélecteur rapide de module"></div>
   <svg class="dock-halo" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
     <circle class="hring-a" cx="50" cy="50" r="45" fill="none" stroke="#1dc0d5" stroke-width="2" stroke-dasharray="30 170" stroke-linecap="round" opacity=".9"/>
@@ -801,18 +859,18 @@ function suiteArc(a1,a2,suite,label){
 
 function decor(){
   let d=`<g class="rot-slow" style="transform-origin:${C}px ${C}px">
-    <circle cx="${C}" cy="${C}" r="${R2+26}" fill="none" stroke="#13b4e2" stroke-width="1.2" stroke-dasharray="2 13" opacity=".45"/></g>
+    <circle cx="${C}" cy="${C}" r="${R2+10}" fill="none" stroke="#13b4e2" stroke-width="1.2" stroke-dasharray="2 13" opacity=".45"/></g>
   <g class="rot-rev" style="transform-origin:${C}px ${C}px">
-    <circle cx="${C}" cy="${C}" r="${R2+44}" fill="none" stroke="#6b51ed" stroke-width="1" stroke-dasharray="26 20" opacity=".2"/></g>
+    <circle cx="${C}" cy="${C}" r="${R2+22}" fill="none" stroke="#6b51ed" stroke-width="1" stroke-dasharray="26 20" opacity=".2"/></g>
   <g class="rot-med" style="transform-origin:${C}px ${C}px">
-    <circle cx="${C}" cy="${C}" r="${R2+62}" fill="none" stroke="#13b4e2" stroke-width="1" stroke-dasharray="1 18" opacity=".3"/></g>
+    <circle cx="${C}" cy="${C}" r="${R2+34}" fill="none" stroke="#13b4e2" stroke-width="1" stroke-dasharray="1 18" opacity=".3"/></g>
   <g class="rot-fast" style="transform-origin:${C}px ${C}px">`;
-  for(let i=0;i<3;i++){const[x,y]=pol(C,C,R2+26,i*120);
+  for(let i=0;i<3;i++){const[x,y]=pol(C,C,R2+10,i*120);
     d+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4.5" fill="#13b4e2" opacity=".85"/><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="10" fill="#13b4e2" opacity=".16"/>`}
   d+=`</g><g class="rot-rev" style="transform-origin:${C}px ${C}px">`;
-  for(let i=0;i<2;i++){const[x,y]=pol(C,C,R2+44,40+i*180);d+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.2" fill="#6b51ed" opacity=".6"/>`}
+  for(let i=0;i<2;i++){const[x,y]=pol(C,C,R2+22,40+i*180);d+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.2" fill="#6b51ed" opacity=".6"/>`}
   d+=`</g><g class="rot-med" style="transform-origin:${C}px ${C}px">`;
-  for(let i=0;i<5;i++){const[x,y]=pol(C,C,R2+62,22+i*72);d+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.2" fill="#13b4e2" opacity=".5"/>`}
+  for(let i=0;i<5;i++){const[x,y]=pol(C,C,R2+34,22+i*72);d+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.2" fill="#13b4e2" opacity=".5"/>`}
   return d+`</g>`;
 }
 function icoAI(x,y,sc,c){
@@ -824,7 +882,7 @@ function icoAI(x,y,sc,c){
 }
 
 function buildWheel(){
-  let g=`<svg class="wheel-svg" id="bigWheel" viewBox="-124 -124 1068 1068" role="img" aria-label="Roue interactive des modules Esker pour l'Office of the CFO">
+  let g=`<svg class="wheel-svg" id="bigWheel" viewBox="-22 -22 864 864" role="img" aria-label="Roue interactive des modules Esker pour l'Office of the CFO">
   <defs>
     <linearGradient id="gBand" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFCF63"/><stop offset="1" stop-color="#F5A623"/></linearGradient>
     <linearGradient id="gComet" x1="0" y1="0" x2="1" y2="0">
@@ -921,7 +979,7 @@ function miniSegment(a1,a2,id,idx){
   const[ex,ey]=pol(C,C,347,am);           /* emoji */
   const[lx,ly]=pol(C,C,296,am);           /* code court */
   return`<g class="mini-seg${soon?' soon':''}" data-id="${id}" role="button" tabindex="0"
-    style="--c:${m.c};--tx:${tx.toFixed(2)}px;--ty:${ty.toFixed(2)}px;--sd:${(0.17+(idx||0)*0.028).toFixed(3)}s" data-suite="${m.suite}">
+    style="--c:${m.c};--tx:${tx.toFixed(2)}px;--ty:${ty.toFixed(2)}px;--sd:${(0.17+(idx||0)*0.028).toFixed(3)}s;--sdo:${(0.014*(6-(idx||0))).toFixed(3)}s" data-suite="${m.suite}">
     <title>${esc(m.label)}${soon?' (vidéo à venir)':''}</title>
     <path class="msf" d="${ring(C,C,R1,R2,a1,a2,.8)}" fill="#fff" stroke="${m.c}" stroke-width="2.6" stroke-linejoin="round"${soon?' opacity=".86"':''}/>
     <path class="mrim" d="${ring(C,C,R1,R1+8,a1,a2,.8)}" fill="${m.c}" opacity="${soon?'.45':'.92'}" pointer-events="none"/>
@@ -982,6 +1040,19 @@ function galaxyLayer(){
     o += `</g>`;
   });
   o += `</g>`;
+  /* le trou noir : invisible au repos, il avale la galaxie à la fermeture.
+     Horizon sombre, disque d'accrétion incliné, anneau de photons. */
+  o += `<g class="hole" pointer-events="none">
+    <circle cx="${C}" cy="${C}" r="430" fill="url(#gHole)"/>
+    <g class="accretion">
+      <ellipse cx="${C}" cy="${C}" rx="400" ry="108" fill="none" stroke="url(#gAcc)" stroke-width="15" opacity=".85" transform="rotate(-17 ${C} ${C})"/>
+      <ellipse cx="${C}" cy="${C}" rx="330" ry="76" fill="none" stroke="url(#gAcc)" stroke-width="8" opacity=".9" transform="rotate(-17 ${C} ${C})"/>
+      <ellipse cx="${C}" cy="${C}" rx="252" ry="44" fill="none" stroke="#fff" stroke-width="3.4" opacity=".75" transform="rotate(-17 ${C} ${C})"/>
+    </g>
+    <circle class="photon" cx="${C}" cy="${C}" r="196" fill="none" stroke="#9ef0ff" stroke-width="2.6" opacity=".9"/>
+    <circle class="photon2" cx="${C}" cy="${C}" r="214" fill="none" stroke="#fff" stroke-width="1.2" stroke-dasharray="5 11" opacity=".7"/>
+  </g>`;
+
   /* onde de choc : trois cercles qui se propagent une fois à l'ouverture */
   o += `<g class="shock" pointer-events="none">`;
   [[0,"#13b4e2",2.6],[.13,"#6b51ed",1.8],[.26,"#F5A623",1.3]].forEach(([d,c,w]) => {
@@ -1003,6 +1074,20 @@ function buildMiniWheel(){
       <stop offset=".74" stop-color="#6b51ed" stop-opacity=".13"/>
       <stop offset=".9" stop-color="#13b4e2" stop-opacity=".09"/>
       <stop offset="1" stop-color="#13b4e2" stop-opacity="0"/></radialGradient>
+    <radialGradient id="gHole">
+      <stop offset="0" stop-color="#04060e"/>
+      <stop offset=".40" stop-color="#070b1c"/>
+      <stop offset=".50" stop-color="#2b1d6b" stop-opacity=".92"/>
+      <stop offset=".57" stop-color="#6b51ed"/>
+      <stop offset=".63" stop-color="#1dc0d5"/>
+      <stop offset=".68" stop-color="#ffffff" stop-opacity=".97"/>
+      <stop offset=".76" stop-color="#13b4e2" stop-opacity=".32"/>
+      <stop offset="1" stop-color="#13b4e2" stop-opacity="0"/></radialGradient>
+    <linearGradient id="gAcc" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#13b4e2" stop-opacity="0"/>
+      <stop offset=".3" stop-color="#ffffff"/>
+      <stop offset=".55" stop-color="#6b51ed"/>
+      <stop offset="1" stop-color="#13b4e2" stop-opacity="0"/></linearGradient>
     <linearGradient id="gArm" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#13b4e2" stop-opacity="0"/>
       <stop offset=".45" stop-color="#6b51ed" stop-opacity=".42"/>
@@ -1282,37 +1367,37 @@ let zoom = 1;
 /* 100 % = la roue remplit la hauteur disponible sous le menu, du haut au bas
    de la fenêtre. En dessous elle respire, au-dessus elle pousse le titre et le
    bandeau sans jamais les recouvrir. */
-const ZMIN = 0.5, ZMAX = 2, ZSTEP = 0.05;
-/* part du dessin visible dans la boîte SVG : le reste de la viewBox est une
-   marge vide. Mesuré sur la géométrie réelle : rayon dessiné 457,2 sur 534. */
-const DRAWN = 0.8562;
-const wheelBox = document.getElementById("wheelBox");
-const stageEl  = document.getElementById("roue");
-const hdrEl    = document.getElementById("hdr");
-const topEl    = document.getElementById("stageTop");
-const botEl    = document.getElementById("stageBot");
+const ZMIN = 0.5, ZMAX = 3, ZSTEP = 0.05;
+const wheelBox  = document.getElementById("wheelBox");
+const wheelCell = document.querySelector(".wheel-cell");
+const stageEl   = document.getElementById("roue");
 
-/* La taille est calculée à partir de la FENÊTRE et des deux blocs de texte,
-   jamais à partir de la cellule de la roue. Ces trois mesures sont totalement
-   indépendantes de la roue : aucune boucle de rétroaction n'est possible, et
-   l'échelle reste parfaitement linéaire d'un bout à l'autre. */
+/* MESURE DIRECTE, sans arithmétique à trous.
+   On relève la position absolue du haut de la cellule de la roue : elle intègre
+   déjà le menu fixe, les marges et tout ce qui se trouve au-dessus, et elle ne
+   dépend jamais de la roue elle-même. Aucune boucle de rétroaction possible.
+   La barre d'état du bas étant en surimpression dans les coins, elle ne retire
+   aucune hauteur : la roue dispose de toute la fenêtre sous le menu. */
 function fitBase(){
-  const vh   = Math.max(380, document.documentElement.clientHeight || window.innerHeight);
-  const hdrH = hdrEl ? hdrEl.offsetHeight : 76;
-  const topH = topEl ? topEl.offsetHeight : 0;
-  const botH = botEl ? botEl.offsetHeight : 0;
-  const h = vh - hdrH - topH - botH - 22;          /* hauteur libre réelle */
-  const w = Math.min((stageEl ? stageEl.clientWidth : vh) - 26, 1320);
+  const vh = Math.max(380, document.documentElement.clientHeight || window.innerHeight);
+  let top = 76;
+  if(wheelCell){
+    const r = wheelCell.getBoundingClientRect();
+    top = r.top + (window.pageYOffset || document.documentElement.scrollTop || 0);
+  }
+  const h = vh - top - 18;
+  const w = Math.min((stageEl ? stageEl.clientWidth : vh) - 20, 1500);
   return Math.max(230, Math.min(h, w));
 }
-/* size = diamètre du DESSIN. La boîte de mise en page fait exactement cette
-   taille, le SVG déborde de sa marge vide sans occuper de place. */
+/* size = côté de la boîte SVG, qui correspond maintenant exactement au dessin :
+   la viewBox a été resserrée sur son contenu réel. */
 function fitWheel(){
   if(!wheelBox) return;
   const size = Math.round(fitBase() * zoom);
   wheelBox.style.width  = size + "px";
   wheelBox.style.height = size + "px";
 }
+
 
 function setZoom(v, save){
   zoom = Math.min(ZMAX, Math.max(ZMIN, Math.round(v * 100) / 100));   /* au pour cent près */
@@ -1406,13 +1491,21 @@ const dock = document.getElementById("dock");
 let dockHoverTimer = null;
 const isTouch = window.matchMedia("(hover: none)").matches;
 
+let closeTmr = null;
 function dockOpen(){
+  clearTimeout(closeTmr);
+  dock.classList.remove("closing");
   dock.classList.add("open");
   document.getElementById("dockBtn").setAttribute("aria-expanded","true");
 }
 function dockClose(){
   if(!dock.classList.contains("open")) return;
   dock.classList.remove("open");
+  /* l'état "closing" maintient la galaxie en place le temps de l'effondrement :
+     une simple transition inverse ne permettrait aucune mise en scène */
+  dock.classList.add("closing");
+  clearTimeout(closeTmr);
+  closeTmr = setTimeout(() => dock.classList.remove("closing"), 820);
   document.getElementById("dockBtn").setAttribute("aria-expanded","false");
   miniReset();
 }
@@ -1508,8 +1601,9 @@ function dockToggle(){ dock.classList.contains("open") ? dockClose() : dockOpen(
   });
 
   /* --- compteurs --- */
-  document.getElementById("stMod").textContent = M.length;
-  document.getElementById("stVid").textContent = TOTV;
+  const sm = document.getElementById("stMod"), sv = document.getElementById("stVid");
+  if(sm) sm.textContent = M.length;
+  if(sv) sv.textContent = TOTV;
   document.getElementById("dockBadge").textContent = TOTV;
   document.getElementById("yr").textContent = new Date().getFullYear();
 
@@ -1527,11 +1621,12 @@ function dockToggle(){ dock.classList.contains("open") ? dockClose() : dockOpen(
   /* on n'observe QUE les deux blocs de texte : leur hauteur peut changer (retour
      à la ligne, chargement des polices) mais ne dépend jamais de la roue.
      Observer la scène elle-même rouvrirait une boucle de rétroaction. */
+  /* on n'observe que le menu : sa hauteur peut changer (compactage au défilement)
+     et c'est la seule chose au-dessus de la roue. */
   if(window.ResizeObserver){
     const ro = new ResizeObserver(() => fitWheel());
-    if(topEl) ro.observe(topEl);
-    if(botEl) ro.observe(botEl);
-    if(hdrEl) ro.observe(hdrEl);
+    const h = document.getElementById("hdr");
+    if(h) ro.observe(h);
   }
   fitWheel(); setTimeout(fitWheel, 120); setTimeout(fitWheel, 600);
   if(document.fonts && document.fonts.ready) document.fonts.ready.then(fitWheel);
