@@ -63,36 +63,43 @@ img,svg{max-width:100%}
 .header .btn{padding:11px 20px 9px;font-size:.92rem}
 
 /* ============ SCENE ROUE (plein écran) ============ */
-.stage{position:relative;min-height:100vh;min-height:100svh;padding-top:var(--hdr-h);display:flex;flex-direction:column;overflow:hidden;background:
+/* Trois cellules strictement indépendantes : le titre, LA ROUE SEULE, le bandeau.
+   Quand on agrandit la roue, c'est sa cellule qui grandit : elle pousse le titre
+   vers le haut et le bandeau vers le bas. Le dessin ne vient jamais manger le texte. */
+.stage{position:relative;min-height:100vh;min-height:100svh;padding-top:var(--hdr-h);display:flex;flex-direction:column;overflow-x:clip;background:
    radial-gradient(1100px 620px at 50% 42%,#ffffff 0%,#f7fbfd 45%,var(--light-blue) 100%)}
-.stage::before{content:'';position:absolute;top:-16%;right:-12%;width:52vmax;height:52vmax;border-radius:50%;background:radial-gradient(circle,rgba(19,180,226,.13),transparent 62%);pointer-events:none;animation:drift 22s ease-in-out infinite alternate}
-.stage::after{content:'';position:absolute;bottom:-20%;left:-14%;width:48vmax;height:48vmax;border-radius:50%;background:radial-gradient(circle,rgba(107,81,237,.11),transparent 62%);pointer-events:none;animation:drift 26s ease-in-out infinite alternate-reverse}
+/* les halos de fond sont enfermés dans leur propre calque : la scène peut donc
+   déborder verticalement sans qu'ils bavent sur les sections voisines */
+.stage-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.stage-bg i{position:absolute;display:block;border-radius:50%}
+.stage-bg .b1{top:-10%;right:-10%;width:52vmax;height:52vmax;background:radial-gradient(circle,rgba(19,180,226,.13),transparent 62%);animation:drift 22s ease-in-out infinite alternate}
+.stage-bg .b2{bottom:-12%;left:-12%;width:48vmax;height:48vmax;background:radial-gradient(circle,rgba(107,81,237,.11),transparent 62%);animation:drift 26s ease-in-out infinite alternate-reverse}
 @keyframes drift{0%{transform:translate(0,0) scale(1)}100%{transform:translate(3%,4%) scale(1.09)}}
 
-.stage-top{position:relative;z-index:3;flex:none;text-align:center;padding:14px 1.5rem 12px}
-.kicker{display:inline-flex;align-items:center;gap:.55rem;font-size:.68rem;font-weight:700;letter-spacing:.17em;text-transform:uppercase;color:var(--blue);background:rgba(19,180,226,.09);border:1px solid rgba(19,180,226,.25);padding:6px 15px;border-radius:50px;animation:fadeDown .7s both}
+.stage-top{position:relative;z-index:3;flex:none;text-align:center;padding:9px 1.5rem 3px}
+.stage-top h1{font-size:clamp(1.15rem,2.6vw,2rem);line-height:1.14;letter-spacing:-.022em;font-weight:700;text-wrap:balance;animation:fadeDown .7s both}
+.stage-top h1 em{font-style:normal;color:var(--blue)}
+.kicker{display:inline-flex;align-items:center;gap:.55rem;font-size:.68rem;font-weight:700;letter-spacing:.17em;text-transform:uppercase;color:var(--blue);background:rgba(19,180,226,.09);border:1px solid rgba(19,180,226,.25);padding:6px 15px;border-radius:50px}
 .kicker i{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(126,239,160,.7);animation:ping 2.4s infinite}
 @keyframes ping{0%{box-shadow:0 0 0 0 rgba(126,239,160,.65)}70%{box-shadow:0 0 0 9px rgba(126,239,160,0)}100%{box-shadow:0 0 0 0 rgba(126,239,160,0)}}
-.stage-top h1{margin-top:.6rem;font-size:clamp(1.25rem,2.9vw,2.1rem);line-height:1.14;letter-spacing:-.02em;font-weight:700;animation:fadeDown .7s .07s both}
-.stage-top h1 em{font-style:normal;color:var(--blue)}
-.stage-top p{margin:.45rem auto 0;font-size:clamp(.85rem,1.3vw,1rem);color:#55688a;max-width:62ch;animation:fadeDown .7s .14s both}
 @keyframes fadeDown{from{opacity:0;transform:translateY(-14px)}to{transform:none}}
 
-.stage-mid{position:relative;z-index:2;flex:1;min-height:0}
-/* la roue est en position absolue : sa taille n'influence JAMAIS la hauteur du conteneur,
-   ce qui supprime la boucle de rétroaction responsable des sauts de zoom */
-.wheel-box{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);aspect-ratio:1;transition:width .22s cubic-bezier(.23,1,.32,1),height .22s cubic-bezier(.23,1,.32,1)}
+/* LA CELLULE DE LA ROUE. flex:1 0 auto : elle occupe tout l'espace restant,
+   et ne rétrécit jamais en dessous de la taille du dessin. */
+.wheel-cell{position:relative;z-index:2;flex:1 0 auto;display:flex;align-items:center;justify-content:center;padding:6px 0}
+/* .wheel-box fait EXACTEMENT la taille du dessin visible, anneaux en orbite compris.
+   Le SVG est plus grand et déborde symétriquement : cette marge interne est vide,
+   elle n'occupe donc aucune place dans la mise en page et ne pousse rien. */
+.wheel-box{position:relative;flex:none;aspect-ratio:1;transition:width .3s cubic-bezier(.23,1,.32,1),height .3s cubic-bezier(.23,1,.32,1)}
 .wheel-svg{width:100%;height:100%;display:block;overflow:visible}
+.wheel-box .wheel-svg{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:116.8%;height:116.8%}
 
-.stage-bot{position:relative;z-index:3;flex:none;display:flex;align-items:center;justify-content:center;gap:1rem;flex-wrap:wrap;padding:14px 1.5rem 20px}
+.stage-bot{position:relative;z-index:3;flex:none;display:flex;align-items:center;justify-content:center;gap:.7rem 1.3rem;flex-wrap:wrap;padding:6px 1.5rem 13px}
 .hint{display:inline-flex;align-items:center;gap:.5rem;font-size:.85rem;color:#64779a;font-weight:500}
 .hint b{color:var(--blue);font-weight:700}
 .hint svg{animation:nudge 1.9s ease-in-out infinite}
 @keyframes nudge{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
-/* quand la roue dépasse son cadrage idéal, l'habillage s'efface pour lui laisser la scène */
-.stage-top p,.stage-bot{transition:opacity .45s ease}
-.stage.xl .stage-top p,.stage.xl .stage-bot{opacity:.18}
-.stage.xl .stage-top p:hover,.stage.xl .stage-bot:hover{opacity:1}
+
 .stage-stats{display:flex;align-items:center;gap:0;background:rgba(255,255,255,.75);backdrop-filter:blur(10px);border:1px solid rgba(22,52,103,.1);border-radius:50px;overflow:hidden}
 .sstat{padding:7px 16px;text-align:center;position:relative;font-size:.76rem;color:#64779a;font-weight:600;white-space:nowrap}
 .sstat b{color:var(--dark-blue);font-family:'Miriam Libre';font-size:.9rem}
@@ -108,9 +115,11 @@ img,svg{max-width:100%}
 .hubzoom .hz-ico{transition:stroke .25s}
 .hubzoom .hz-btn:focus{outline:none}
 .hubzoom .hz-btn:focus-visible .hz-bg{stroke:#163467;stroke-width:2.4}
-.hubzoom .hz-reset{cursor:pointer}
-.hubzoom .hz-reset:hover #hzVal{fill:#13b4e2}
-.hubzoom .hz-reset:focus{outline:none}
+/* champ de saisie directe du pourcentage, posé dans le noyau via foreignObject */
+.hz-input{width:100%;height:100%;box-sizing:border-box;border:none;outline:none;background:transparent;border-radius:16px;text-align:center;font-family:'Miriam Libre',sans-serif;font-weight:700;font-size:14px;color:#163467;padding:0;cursor:text;transition:background .22s,box-shadow .22s,color .22s}
+.hz-input:hover{background:rgba(19,180,226,.09)}
+.hz-input:focus{background:#fff;box-shadow:0 0 0 2px rgba(19,180,226,.6);color:#13b4e2}
+.hz-cap{pointer-events:none}
 
 /* ---- bouton retour en haut ---- */
 .totop{position:fixed;right:max(16px,1.6vw);bottom:max(16px,1.6vw);z-index:370;width:48px;height:48px;border-radius:50%;background:var(--dark-blue);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transform:translateY(14px) scale(.9);transition:opacity .4s cubic-bezier(.23,1,.32,1),transform .4s cubic-bezier(.23,1,.32,1),background .3s,box-shadow .3s;box-shadow:0 10px 30px rgba(22,52,103,.3)}
@@ -263,25 +272,93 @@ img,svg{max-width:100%}
 .dock.on{opacity:1;visibility:visible;transform:none}
 
 .dock-btn{position:absolute;left:0;bottom:0;width:74px;height:74px;border-radius:50%;border:none;cursor:pointer;background:#fff;box-shadow:0 10px 32px rgba(22,52,103,.22),0 0 0 1px rgba(22,52,103,.07);display:flex;align-items:center;justify-content:center;padding:0;transition:transform .45s cubic-bezier(.34,1.45,.64,1),box-shadow .42s,opacity .3s}
-.dock-btn:hover{transform:scale(1.08);box-shadow:0 16px 42px rgba(29,192,213,.4),0 0 0 1px rgba(29,192,213,.3)}
+.dock:hover .dock-btn{transform:scale(1.08);box-shadow:0 16px 42px rgba(29,192,213,.4),0 0 0 1px rgba(29,192,213,.3)}
 .dock-btn .emark{width:42px;height:42px;margin-bottom:5px}
 .dock-btn .emark .espin{animation:spin 16s linear infinite;transform-origin:center}
-.dock-btn:hover .emark .espin{animation-duration:4s}
+.dock:hover .dock-btn .emark .espin{animation-duration:4s}
 .dock-btn .ewordmark{position:absolute;bottom:11px;left:50%;transform:translateX(-50%);width:32px;height:8px;color:var(--esker-red)}
 /* halo : deux anneaux contrarotatifs, parfaitement centrés sur la bulle.
+   Sorti du bouton pour pouvoir exploser indépendamment de lui à l'ouverture.
    Dimensions explicites : un SVG en position absolue sans width/height reprendrait
    sa taille intrinsèque (300x150) et se retrouverait décentré. */
-.dock-halo{position:absolute;left:50%;top:50%;width:calc(100% + 20px);height:calc(100% + 20px);transform:translate(-50%,-50%);pointer-events:none;overflow:visible}
+.dock-halo{position:absolute;left:37px;bottom:37px;width:94px;height:94px;transform:translate(-50%,50%);pointer-events:none;overflow:visible;z-index:2}
 .dock-halo .hring-a{animation:spin 11s linear infinite;transform-origin:center}
 .dock-halo .hring-b{animation:spinrev 17s linear infinite;transform-origin:center}
-.dock-btn:hover .dock-halo .hring-a{animation-duration:3.4s}
-.dock-btn:hover .dock-halo .hring-b{animation-duration:5.2s}
+.dock:hover .dock-halo .hring-a{animation-duration:3.4s}
+.dock:hover .dock-halo .hring-b{animation-duration:5.2s}
 .dock-badge{position:absolute;top:-2px;right:-2px;min-width:22px;height:22px;border-radius:50px;background:var(--blue);color:#fff;font-size:.68rem;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 6px;border:2px solid #fff;font-family:'Miriam Libre'}
-/* la roue elle-même : pas de panneau, pas de bordure, juste une ombre portée */
-.dock-wheel{--dw:min(78vw,400px);position:absolute;left:0;bottom:0;width:var(--dw);height:var(--dw);transform-origin:37px calc(100% - 37px);transform:scale(.16);opacity:0;visibility:hidden;filter:drop-shadow(0 20px 46px rgba(22,52,103,.2));transition:transform .55s cubic-bezier(.22,1.06,.32,1),opacity .34s ease,visibility .55s}
-.dock.open .dock-wheel{transform:scale(1);opacity:1;visibility:visible}
+
+/* ============ LA METAMORPHOSE GALACTIQUE ============ */
+/* La bulle ne grossit pas : elle s'effondre et libère une galaxie qui se
+   déroule en tournant. Rien n'est un simple zoom. */
+
+/* 1. le vortex : une singularité lumineuse qui s'ouvre et balaie la zone */
+.dock-vortex{position:absolute;left:37px;bottom:37px;width:12px;height:12px;border-radius:50%;pointer-events:none;z-index:1;opacity:0;
+  background:radial-gradient(circle,rgba(255,255,255,.9) 0%,rgba(29,192,213,.55) 22%,rgba(107,81,237,.3) 48%,rgba(19,180,226,0) 72%)}
+.dock.open .dock-vortex{animation:vortex 1s cubic-bezier(.12,.82,.3,1) forwards}
+@keyframes vortex{
+  0%{opacity:0;transform:translate(-50%,50%) scale(1) rotate(0deg)}
+  14%{opacity:.95}
+  55%{opacity:.4}
+  100%{opacity:0;transform:translate(-50%,50%) scale(74) rotate(250deg)}}
+
+/* 2. la bulle s'effondre dans la singularité, le halo part en onde */
+.dock.open .dock-btn{opacity:0;transform:scale(.22) rotate(-140deg);pointer-events:none;transition:opacity .3s ease,transform .52s cubic-bezier(.55,-.3,.85,.4)}
+.dock.open .dock-halo{animation:haloBurst .8s cubic-bezier(.1,.78,.28,1) forwards}
+@keyframes haloBurst{
+  0%{opacity:.95;transform:translate(-50%,50%) scale(1) rotate(0deg)}
+  100%{opacity:0;transform:translate(-50%,50%) scale(5.6) rotate(200deg)}}
+
+/* 3. la galaxie se déroule : elle naît du centre de la bulle, en rotation.
+   Ouverture ample et élastique, fermeture en aspiration rapide. */
+.dock-wheel{--dw:min(80vw,440px);position:absolute;left:0;bottom:0;width:var(--dw);height:var(--dw);z-index:3;
+  transform-origin:37px calc(100% - 37px);
+  transform:rotate(-232deg) scale(.035);opacity:0;visibility:hidden;will-change:transform;
+  filter:drop-shadow(0 22px 50px rgba(22,52,103,.22));
+  transition:transform .52s cubic-bezier(.62,-.04,.9,.36),opacity .3s ease .12s,visibility .52s}
+.dock.open .dock-wheel{transform:rotate(0deg) scale(1);opacity:1;visibility:visible;
+  transition:transform .88s cubic-bezier(.15,1.03,.25,1),opacity .34s ease,visibility .88s}
 .dock-wheel .wheel-svg{width:100%;height:100%;display:block}
-.dock.open .dock-btn{opacity:0;transform:scale(.3);pointer-events:none}
+
+/* 4. chaque module est éjecté du noyau vers son orbite, en cascade */
+.dock.open .mini-seg{animation:galaxyIn .82s cubic-bezier(.17,.96,.27,1) backwards;animation-delay:var(--sd)}
+@keyframes galaxyIn{
+  0%{opacity:0;transform:translate(calc(var(--tx) * -12),calc(var(--ty) * -12))}
+  42%{opacity:1}
+  100%{opacity:1;transform:translate(0,0)}}
+
+/* 5. onde de choc au moment de l'effondrement */
+.mini-wheel-host .shock>g,.dock-wheel .shock>g{transform-origin:410px 410px;opacity:0}
+.dock.open .dock-wheel .shock>g{animation:shockOut 1.15s cubic-bezier(.08,.72,.3,1) backwards;animation-delay:var(--sd)}
+@keyframes shockOut{
+  0%{transform:scale(.04);opacity:.8}
+  62%{opacity:.22}
+  100%{transform:scale(1.12);opacity:0}}
+
+/* 6. le champ gravitationnel : nébuleuse, bras spiraux, ceintures d'astéroïdes */
+.galaxy .neb{animation:nebPulse 9s ease-in-out infinite;transform-origin:410px 410px}
+@keyframes nebPulse{0%,100%{opacity:.85;transform:scale(1)}50%{opacity:1;transform:scale(1.045)}}
+.galaxy .arm{animation:spin 64s linear infinite;transform-origin:410px 410px;transform-box:view-box}
+.dock:hover .galaxy .arm{animation-duration:26s}
+.galaxy .orbit{animation:orbitFade 7s ease-in-out infinite alternate}
+@keyframes orbitFade{from{opacity:.1}to{opacity:.28}}
+.dock.open .galaxy{animation:galaxyFade .9s ease .2s backwards}
+@keyframes galaxyFade{from{opacity:0}to{opacity:1}}
+
+/* 7. le reste du dessin rejoint la danse, juste après les modules */
+.dock.open .bandg{animation:galaxyFade .55s ease .40s backwards}
+.dock.open .aihub{animation:aiPop .7s cubic-bezier(.2,1.5,.4,1) .48s backwards;transform-origin:410px 664px}
+@keyframes aiPop{from{opacity:0;transform:scale(.2) rotate(-90deg)}to{opacity:1;transform:scale(1) rotate(0)}}
+.dock.open .mini-hub-default{animation:hubRise .6s cubic-bezier(.2,1.1,.3,1) .46s backwards}
+@keyframes hubRise{from{opacity:0;transform:scale(.72)}to{opacity:1;transform:scale(1)}}
+.mini-hub-default{transform-origin:410px 410px}
+
+@media(prefers-reduced-motion:reduce){
+  .dock-vortex,.dock.open .dock-halo{animation:none!important}
+  .dock-wheel,.dock.open .dock-wheel{transition:opacity .25s ease,visibility .25s;transform:none!important}
+  .dock.open .mini-seg,.dock.open .shock>g,.dock.open .bandg,.dock.open .aihub,.dock.open .mini-hub-default,.dock.open .galaxy{animation:none!important}
+  .galaxy .arm,.galaxy .neb{animation:none!important}
+}
 
 /* segments de la mini roue : strictement la même mécanique que la grande */
 .mini-seg{cursor:pointer;transition:transform .4s cubic-bezier(.34,1.46,.64,1),opacity .3s,filter .3s}
@@ -307,7 +384,9 @@ img,svg{max-width:100%}
   .dock-btn{width:60px;height:60px}
   .dock-btn .emark{width:34px;height:34px}
   .dock-btn .ewordmark{bottom:9px;width:27px}
-  .dock-wheel{--dw:min(90vw,344px);transform-origin:30px calc(100% - 30px)}
+  .dock-wheel{--dw:min(92vw,372px);transform-origin:30px calc(100% - 30px)}
+  .dock-halo{left:30px;bottom:30px;width:78px;height:78px}
+  .dock-vortex{left:30px;bottom:30px}
 }
 
 /* ============ LISTE DES MODULES ============ */
@@ -436,17 +515,17 @@ img,svg{max-width:100%}
 <main>
 <!-- ====== SCENE PLEIN ECRAN ====== -->
 <section class="stage" id="roue">
-  <div class="stage-top">
-    <span class="kicker"><i></i>Fluxym × Esker</span>
+  <div class="stage-bg" aria-hidden="true"><i class="b1"></i><i class="b2"></i></div>
+
+  <div class="stage-top" id="stageTop">
     <h1>L'AI Automation Suite pour l'<em>Office of the CFO</em></h1>
-    <p>Survolez la roue pour explorer, cliquez sur un module ou sur le bouton central pour lancer sa démonstration vidéo.</p>
   </div>
 
-  <div class="stage-mid">
+  <div class="wheel-cell">
     <div class="wheel-box" id="wheelBox"></div>
   </div>
 
-  <div class="stage-bot">
+  <div class="stage-bot" id="stageBot">
     <div class="stage-stats">
       <span class="sstat"><b id="stMod">13</b> modules</span>
       <span class="sstat"><b id="stVid">10</b> vidéos</span>
@@ -454,7 +533,7 @@ img,svg{max-width:100%}
     </div>
     <span class="hint">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
-      Cliquez un module, la vidéo s'ouvre <b>juste en dessous</b>
+      Survolez pour explorer, cliquez un module : la vidéo s'ouvre <b>juste en dessous</b>
     </span>
   </div>
 </section>
@@ -481,7 +560,7 @@ img,svg{max-width:100%}
   <div class="wrap contact-grid">
     <div class="contact-left">
       <h2>Une <em>question&nbsp;?</em><br>Un <em>projet&nbsp;?</em></h2>
-      <p>Nous serons ravis de pouvoir y répondre et d'échanger avec vous dans les plus brefs délais. Contactez-nous en remplissant le formulaire ou en envoyant un email à <a href="/cdn-cgi/l/email-protection#7811161e17381e140d000115561b1715"><span class="__cf_email__" data-cfemail="355c5b535a755359404d4c581b565a58">[email&#160;protected]</span></a>.</p>
+      <p>Nous serons ravis de pouvoir y répondre et d'échanger avec vous dans les plus brefs délais. Contactez-nous en remplissant le formulaire ou en envoyant un email à <a href="/cdn-cgi/l/email-protection#a6cfc8c0c9e6c0cad3dedfcb88c5c9cb"><span class="__cf_email__" data-cfemail="71181f171e31171d0409081c5f121e1c">[email&#160;protected]</span></a>.</p>
       <p>Vous souhaitez une démonstration personnalisée d'un module Esker sur vos propres processus&nbsp;? Précisez-le dans votre demande, un expert Fluxym vous recontacte.</p>
       <div class="offices">
         <div class="office"><b>Paris</b><span>+33 1 56 90 55 80</span><span>15 rue de la Faisanderie, 75116</span></div>
@@ -497,7 +576,7 @@ img,svg{max-width:100%}
         <div class="hs-form-frame" id="hsFormTarget"></div>
         <div class="formfallback" id="formFallback">
           Le formulaire ne s'est pas chargé (bloqueur de publicité ou connexion restreinte).
-          Écrivez-nous directement à <a href="/cdn-cgi/l/email-protection#87eee9e1e8c7e1ebf2fffeeaa9e4e8ea" style="color:var(--blue);font-weight:600"><span class="__cf_email__" data-cfemail="f990979f96b99f958c818094d79a9694">[email&#160;protected]</span></a>
+          Écrivez-nous directement à <a href="/cdn-cgi/l/email-protection#563f38303916303a232e2f3b7835393b" style="color:var(--blue);font-weight:600"><span class="__cf_email__" data-cfemail="9df4f3fbf2ddfbf1e8e5e4f0b3fef2f0">[email&#160;protected]</span></a>
           ou via <a href="https://www.fluxym.com/nous-contacter/" target="_blank" rel="noopener" style="color:var(--blue);font-weight:600">la page contact de fluxym.com</a>.
         </div>
       </div>
@@ -543,13 +622,14 @@ img,svg{max-width:100%}
 <!-- ====== WIDGET ROUE FLOTTANT ====== -->
 <!-- Pas de fenêtre : la bulle Esker se transforme en roue au survol. -->
 <div class="dock" id="dock">
+  <div class="dock-vortex" aria-hidden="true"></div>
   <div class="dock-wheel" id="dockWheel" role="group" aria-label="Roue Esker, sélecteur rapide de module"></div>
+  <svg class="dock-halo" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <circle class="hring-a" cx="50" cy="50" r="45" fill="none" stroke="#1dc0d5" stroke-width="2" stroke-dasharray="30 170" stroke-linecap="round" opacity=".9"/>
+    <circle class="hring-a" cx="50" cy="50" r="45" fill="none" stroke="#1dc0d5" stroke-width="1.4" stroke-dasharray="2 12" opacity=".4"/>
+    <circle class="hring-b" cx="50" cy="50" r="48.5" fill="none" stroke="#6b51ed" stroke-width="1.6" stroke-dasharray="16 130" stroke-linecap="round" opacity=".55"/>
+  </svg>
   <button class="dock-btn" id="dockBtn" type="button" aria-label="Ouvrir la roue Esker" aria-expanded="false">
-    <svg class="dock-halo" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-      <circle class="hring-a" cx="50" cy="50" r="45" fill="none" stroke="#1dc0d5" stroke-width="2" stroke-dasharray="30 170" stroke-linecap="round" opacity=".9"/>
-      <circle class="hring-a" cx="50" cy="50" r="45" fill="none" stroke="#1dc0d5" stroke-width="1.4" stroke-dasharray="2 12" opacity=".4"/>
-      <circle class="hring-b" cx="50" cy="50" r="48.5" fill="none" stroke="#6b51ed" stroke-width="1.6" stroke-dasharray="16 130" stroke-linecap="round" opacity=".55"/>
-    </svg>
     <svg class="emark" aria-hidden="true"><use href="#eskerwheel"/></svg>
     <svg class="ewordmark" aria-hidden="true"><use href="#eskerword"/></svg>
     <span class="dock-badge" id="dockBadge">10</span>
@@ -805,12 +885,10 @@ function buildWheel(){
       <circle class="hz-bg" cx="-48" cy="0" r="14" fill="#f0f6f8" stroke="#163467" stroke-opacity=".1" stroke-width="1"/>
       <path class="hz-ico" d="M-55 0 H-41" stroke="#163467" stroke-width="2.6" stroke-linecap="round" fill="none"/>
     </g>
-    <g class="hz-reset" id="hzReset" role="button" tabindex="0">
-      <title>Revenir au cadrage idéal</title>
-      <rect x="-30" y="-15" width="60" height="30" rx="15" fill="transparent"/>
-      <text id="hzVal" x="0" y="5" text-anchor="middle" font-size="13.5" font-weight="700" fill="#163467" font-family="Miriam Libre, sans-serif">120%</text>
-    </g>
-    <text x="0" y="-24" text-anchor="middle" font-size="8.5" font-weight="700" letter-spacing="1.6" fill="#a9b6c9" font-family="Barlow, sans-serif">TAILLE</text>
+    <foreignObject x="-33" y="-16" width="66" height="32">
+      <input xmlns="http://www.w3.org/1999/xhtml" class="hz-input" id="hzInput" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="100%" aria-label="Taille de la roue en pourcentage" title="Saisissez une taille, de 50 % à 200 %"/>
+    </foreignObject>
+    <text class="hz-cap" x="0" y="-24" text-anchor="middle" font-size="8.5" font-weight="700" letter-spacing="1.6" fill="#a9b6c9" font-family="Barlow, sans-serif">TAILLE</text>
     <g class="hz-btn" id="hzPlus" role="button" tabindex="0" data-step="1">
       <title>Agrandir la roue</title>
       <circle class="hz-bg" cx="48" cy="0" r="14" fill="#f0f6f8" stroke="#163467" stroke-opacity=".1" stroke-width="1"/>
@@ -835,7 +913,7 @@ function buildWheel(){
 /* =========================================================================
    4. LA MINI ROUE (widget)
    ========================================================================= */
-function miniSegment(a1,a2,id){
+function miniSegment(a1,a2,id,idx){
   const m=byId(id); if(!m) return "";
   const am=(a1+a2)/2, soon=!m.videos.length;
   const[tx,ty]=pol(0,0,11,am);
@@ -843,7 +921,7 @@ function miniSegment(a1,a2,id){
   const[ex,ey]=pol(C,C,347,am);           /* emoji */
   const[lx,ly]=pol(C,C,296,am);           /* code court */
   return`<g class="mini-seg${soon?' soon':''}" data-id="${id}" role="button" tabindex="0"
-    style="--c:${m.c};--tx:${tx.toFixed(2)}px;--ty:${ty.toFixed(2)}px" data-suite="${m.suite}">
+    style="--c:${m.c};--tx:${tx.toFixed(2)}px;--ty:${ty.toFixed(2)}px;--sd:${(0.17+(idx||0)*0.028).toFixed(3)}s" data-suite="${m.suite}">
     <title>${esc(m.label)}${soon?' (vidéo à venir)':''}</title>
     <path class="msf" d="${ring(C,C,R1,R2,a1,a2,.8)}" fill="#fff" stroke="${m.c}" stroke-width="2.6" stroke-linejoin="round"${soon?' opacity=".86"':''}/>
     <path class="mrim" d="${ring(C,C,R1,R1+8,a1,a2,.8)}" fill="${m.c}" opacity="${soon?'.45':'.92'}" pointer-events="none"/>
@@ -864,15 +942,73 @@ function miniSuiteArc(a1,a2,suite,label){
 }
 /* Mini roue : exactement la même géométrie et les mêmes cinématiques que la grande.
    Seuls les libellés sont remplacés par emoji + acronyme. */
+/* ===== outils du champ gravitationnel ===== */
+/* bras spiral logarithmique, dessiné seulement dans la couronne extérieure */
+function spiralArm(r0, r1, turns, phase){
+  const n = 90, pts = [];
+  for(let i = 0; i <= n; i++){
+    const t = i / n;
+    const r = r0 + (r1 - r0) * Math.pow(t, .78);
+    const [x, y] = pol(C, C, r, phase + t * turns * 360);
+    pts.push((i ? "L" : "M") + x.toFixed(1) + " " + y.toFixed(1));
+  }
+  return pts.join(" ");
+}
+/* ellipse complète en deux arcs, pour servir de trajectoire aux astéroïdes */
+function ellipsePath(rx, ry){
+  return `M ${(C-rx).toFixed(1)} ${C} A ${rx} ${ry} 0 1 0 ${(C+rx).toFixed(1)} ${C} A ${rx} ${ry} 0 1 0 ${(C-rx).toFixed(1)} ${C}`;
+}
+/* ceintures d'astéroïdes : trois orbites inclinées, vitesses et phases décalées */
+const BELTS = [
+  {rx:472, ry:296, tilt:-22, dur:19, n:3, c:"#13b4e2", r:4.2},
+  {rx:452, ry:238, tilt: 31, dur:26, n:2, c:"#6b51ed", r:3.6},
+  {rx:478, ry:158, tilt: 76, dur:33, n:2, c:"#F5A623", r:3.2}
+];
+function galaxyLayer(){
+  let o = `<g class="galaxy" pointer-events="none">`;
+  o += `<circle class="neb" cx="${C}" cy="${C}" r="500" fill="url(#gNeb)"/>`;
+  /* bras spiraux : masqués sous les segments, visibles dans la couronne */
+  for(let k = 0; k < 3; k++){
+    o += `<path class="arm" d="${spiralArm(R1 - 10, R2 + 92, .62, k * 120)}" fill="none" stroke="url(#gArm)" stroke-width="2.4" stroke-linecap="round" opacity=".5"/>`;
+  }
+  /* ceintures */
+  BELTS.forEach((b, bi) => {
+    o += `<g transform="rotate(${b.tilt} ${C} ${C})">
+      <path class="orbit" d="${ellipsePath(b.rx, b.ry)}" fill="none" stroke="${b.c}" stroke-width="1.1" stroke-dasharray="2 13" opacity=".2"/>`;
+    for(let k = 0; k < b.n; k++){
+      o += `<g class="aster"><circle r="${b.r}" fill="${b.c}" opacity=".9"/><circle r="${(b.r*2.8).toFixed(1)}" fill="${b.c}" opacity=".13"/>
+        <animateMotion dur="${b.dur}s" repeatCount="indefinite" begin="${(-k * b.dur / b.n).toFixed(2)}s" path="${ellipsePath(b.rx, b.ry)}"/></g>`;
+    }
+    o += `</g>`;
+  });
+  o += `</g>`;
+  /* onde de choc : trois cercles qui se propagent une fois à l'ouverture */
+  o += `<g class="shock" pointer-events="none">`;
+  [[0,"#13b4e2",2.6],[.13,"#6b51ed",1.8],[.26,"#F5A623",1.3]].forEach(([d,c,w]) => {
+    o += `<g style="--sd:${d}s"><circle cx="${C}" cy="${C}" r="452" fill="none" stroke="${c}" stroke-width="${w}"/></g>`;
+  });
+  return o + `</g>`;
+}
+
 function buildMiniWheel(){
-  let g=`<svg class="wheel-svg" id="miniWheel" viewBox="-86 -86 992 992" role="img" aria-label="Roue Esker, sélecteur rapide de module">
+  let g=`<svg class="wheel-svg" id="miniWheel" viewBox="-110 -110 1040 1040" role="img" aria-label="Roue Esker, sélecteur rapide de module">
   <defs>
     <linearGradient id="gBandM" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFCF63"/><stop offset="1" stop-color="#F5A623"/></linearGradient>
     <linearGradient id="gCometM" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0" stop-color="#13b4e2" stop-opacity="0"/><stop offset=".5" stop-color="#6b51ed"/><stop offset="1" stop-color="#13b4e2" stop-opacity="0"/></linearGradient>
     <radialGradient id="gHubM"><stop offset="0" stop-color="#ffffff"/><stop offset=".72" stop-color="#fbfdfe"/><stop offset="1" stop-color="#eaf3f7"/></radialGradient>
     <radialGradient id="gSweepM"><stop offset="0" stop-color="#13b4e2" stop-opacity=".2"/><stop offset="1" stop-color="#13b4e2" stop-opacity="0"/></radialGradient>
+    <radialGradient id="gNeb">
+      <stop offset=".42" stop-color="#13b4e2" stop-opacity="0"/>
+      <stop offset=".74" stop-color="#6b51ed" stop-opacity=".13"/>
+      <stop offset=".9" stop-color="#13b4e2" stop-opacity=".09"/>
+      <stop offset="1" stop-color="#13b4e2" stop-opacity="0"/></radialGradient>
+    <linearGradient id="gArm" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#13b4e2" stop-opacity="0"/>
+      <stop offset=".45" stop-color="#6b51ed" stop-opacity=".42"/>
+      <stop offset="1" stop-color="#13b4e2" stop-opacity="0"/></linearGradient>
   </defs>`;
+  g += galaxyLayer();
   /* décor : anneaux en rotations opposées + particules, comme la grande roue */
   g+=`<g class="rot-slow" style="transform-origin:${C}px ${C}px">
         <circle cx="${C}" cy="${C}" r="${R2+20}" fill="none" stroke="#13b4e2" stroke-width="1.6" stroke-dasharray="2 14" opacity=".5"/></g>
@@ -890,8 +1026,8 @@ function buildMiniWheel(){
   g+=miniSuiteArc(S1,S2,"S2P","SOURCE-TO-PAY");
   g+=miniSuiteArc(O1,O2,"O2C","ORDER-TO-CASH");
   const ws=(S2-S1)/ORDER_S2P.length, wo=(O2-O1)/ORDER_O2C.length;
-  ORDER_S2P.forEach((id,i)=>{g+=miniSegment(S1+i*ws,S1+(i+1)*ws,id)});
-  ORDER_O2C.forEach((id,i)=>{g+=miniSegment(O1+i*wo,O1+(i+1)*wo,id)});
+  ORDER_S2P.forEach((id,i)=>{g+=miniSegment(S1+i*ws,S1+(i+1)*ws,id,ORDER_S2P.length-1-i)});
+  ORDER_O2C.forEach((id,i)=>{g+=miniSegment(O1+i*wo,O1+(i+1)*wo,id,i)});
   /* socle */
   g+=`<g class="bandg"><title>Socle plateforme Esker</title>
       <path d="${ring(C,C,R1,R2,B1,B2,.8)}" fill="url(#gBandM)"/>`;
@@ -1142,46 +1278,59 @@ function loadHubspot(){
 /* =========================================================================
    8. DIMENSIONNEMENT : la roue tient TOUJOURS dans l'écran
    ========================================================================= */
-let zoom = 1.2;
-/* ZFIT : le pourcentage auquel la roue, décor compris, est parfaitement cadrée
-   dans la scène. C'est la valeur par défaut. En dessous elle respire encore plus,
-   au-dessus elle déborde librement, jusqu'à 250 %. */
-const ZMIN = 0.6, ZMAX = 2.5, ZSTEP = 0.05, ZFIT = 1.2;
+let zoom = 1;
+/* 100 % = la roue remplit la hauteur disponible sous le menu, du haut au bas
+   de la fenêtre. En dessous elle respire, au-dessus elle pousse le titre et le
+   bandeau sans jamais les recouvrir. */
+const ZMIN = 0.5, ZMAX = 2, ZSTEP = 0.05;
+/* part du dessin visible dans la boîte SVG : le reste de la viewBox est une
+   marge vide. Mesuré sur la géométrie réelle : rayon dessiné 457,2 sur 534. */
+const DRAWN = 0.8562;
 const wheelBox = document.getElementById("wheelBox");
 const stageEl  = document.getElementById("roue");
+const hdrEl    = document.getElementById("hdr");
+const topEl    = document.getElementById("stageTop");
+const botEl    = document.getElementById("stageBot");
 
-/* La roue est en position absolue : .stage-mid garde une hauteur constante,
-   quelle que soit la taille de la roue. Le calcul est donc parfaitement
-   linéaire et ne déclenche plus de boucle de redimensionnement. */
+/* La taille est calculée à partir de la FENÊTRE et des deux blocs de texte,
+   jamais à partir de la cellule de la roue. Ces trois mesures sont totalement
+   indépendantes de la roue : aucune boucle de rétroaction n'est possible, et
+   l'échelle reste parfaitement linéaire d'un bout à l'autre. */
+function fitBase(){
+  const vh   = Math.max(380, document.documentElement.clientHeight || window.innerHeight);
+  const hdrH = hdrEl ? hdrEl.offsetHeight : 76;
+  const topH = topEl ? topEl.offsetHeight : 0;
+  const botH = botEl ? botEl.offsetHeight : 0;
+  const h = vh - hdrH - topH - botH - 22;          /* hauteur libre réelle */
+  const w = Math.min((stageEl ? stageEl.clientWidth : vh) - 26, 1320);
+  return Math.max(230, Math.min(h, w));
+}
+/* size = diamètre du DESSIN. La boîte de mise en page fait exactement cette
+   taille, le SVG déborde de sa marge vide sans occuper de place. */
 function fitWheel(){
-  const mid = document.querySelector(".stage-mid");
-  if(!mid || !wheelBox) return;
-  const availH = mid.clientHeight - 10;
-  const availW = Math.min(stageEl.clientWidth - 36, 1120);
-  if(availH <= 0 || availW <= 0) return;
-  /* 100 % = la roue, décor compris, tient entièrement dans la scène.
-     Au-delà, on laisse librement déborder : la taille reste strictement
-     proportionnelle au pourcentage affiché, sans aucun plafond. */
-  const base = Math.max(200, Math.min(availH, availW)) / ZFIT;
-  const size = Math.round(base * zoom);
+  if(!wheelBox) return;
+  const size = Math.round(fitBase() * zoom);
   wheelBox.style.width  = size + "px";
   wheelBox.style.height = size + "px";
 }
+
 function setZoom(v, save){
-  /* arrondi au pas de 5 % pour que l'affichage colle toujours à la taille réelle */
-  zoom = Math.min(ZMAX, Math.max(ZMIN, Math.round(v / ZSTEP) * ZSTEP));
-  const lbl = document.getElementById("hzVal");
-  if(lbl) lbl.textContent = Math.round(zoom * 100) + "%";
+  zoom = Math.min(ZMAX, Math.max(ZMIN, Math.round(v * 100) / 100));   /* au pour cent près */
+  const pct = Math.round(zoom * 100);
+  const inp = document.getElementById("hzInput");
+  if(inp && document.activeElement !== inp) inp.value = pct + "%";
   const mi = document.getElementById("hzMinus"), pl = document.getElementById("hzPlus");
   if(mi) mi.classList.toggle("off", zoom <= ZMIN + 0.001);
   if(pl) pl.classList.toggle("off", zoom >= ZMAX - 0.001);
-  /* au-delà de 100 % la roue peut déborder de la scène : c'est volontaire,
-     on ne bride plus l'envie de la voir en grand */
-  /* au-delà du cadrage idéal, la roue déborde : on efface discrètement les
-     éléments d'interface alentour pour ne jamais venir salir le dessin */
-  stageEl.classList.toggle("xl", zoom > ZFIT + 0.001);
   fitWheel();
-  if(save !== false){ try{ localStorage.setItem("fx-wheel-zoom2", String(zoom)); }catch(e){} }
+  if(save !== false){ try{ localStorage.setItem("fx-wheel-zoom3", String(zoom)); }catch(e){} }
+}
+/* les boutons avancent de palier en palier de 5 %, même en partant d'une
+   valeur saisie à la main comme 137 % */
+function stepZoom(dir){
+  const cur = Math.round(zoom * 100);
+  const nxt = dir > 0 ? (Math.floor(cur / 5) + 1) * 5 : (Math.ceil(cur / 5) - 1) * 5;
+  setZoom(nxt / 100);
 }
 
 /* =========================================================================
@@ -1300,16 +1449,31 @@ function dockToggle(){ dock.classList.contains("open") ? dockClose() : dockOpen(
   const hzM = document.getElementById("hzMinus"), hzP = document.getElementById("hzPlus");
   const bindZoom = (el, dir) => {
     if(!el) return;
-    el.addEventListener("click", e => { e.stopPropagation(); setZoom(zoom + dir * ZSTEP); });
+    el.addEventListener("click", e => { e.stopPropagation(); stepZoom(dir); });
     el.addEventListener("keydown", e => {
-      if(e.key === "Enter" || e.key === " "){ e.preventDefault(); setZoom(zoom + dir * ZSTEP); }
+      if(e.key === "Enter" || e.key === " "){ e.preventDefault(); stepZoom(dir); }
     });
   };
   bindZoom(hzM, -1); bindZoom(hzP, 1);
-  const hzR = document.getElementById("hzReset");
-  if(hzR){
-    hzR.addEventListener("click", e => { e.stopPropagation(); setZoom(ZFIT); });
-    hzR.addEventListener("keydown", e => { if(e.key === "Enter" || e.key === " "){ e.preventDefault(); setZoom(ZFIT); } });
+  /* saisie directe du pourcentage */
+  const hzI = document.getElementById("hzInput");
+  if(hzI){
+    const applyInput = () => {
+      const n = parseFloat(String(hzI.value).replace(",", ".").replace(/[^\d.]/g, ""));
+      setZoom(isFinite(n) && n > 0 ? n / 100 : zoom);
+      hzI.value = Math.round(zoom * 100) + "%";
+    };
+    hzI.addEventListener("click", e => e.stopPropagation());
+    hzI.addEventListener("mouseenter", e => e.stopPropagation());
+    hzI.addEventListener("focus", () => { hzI.value = String(Math.round(zoom * 100)); hzI.select(); });
+    hzI.addEventListener("blur", applyInput);
+    hzI.addEventListener("keydown", e => {
+      e.stopPropagation();
+      if(e.key === "Enter"){ e.preventDefault(); applyInput(); hzI.blur(); }
+      else if(e.key === "Escape"){ hzI.value = String(Math.round(zoom * 100)); hzI.blur(); }
+      else if(e.key === "ArrowUp"){ e.preventDefault(); stepZoom(1); hzI.value = String(Math.round(zoom * 100)); }
+      else if(e.key === "ArrowDown"){ e.preventDefault(); stepZoom(-1); hzI.value = String(Math.round(zoom * 100)); }
+    });
   }
   const hz = document.getElementById("hubZoom");
   if(hz) hz.addEventListener("mouseenter", e => e.stopPropagation());
@@ -1350,8 +1514,8 @@ function dockToggle(){ dock.classList.contains("open") ? dockClose() : dockOpen(
   document.getElementById("yr").textContent = new Date().getFullYear();
 
   /* --- zoom --- */
-  let z0 = ZFIT;
-  try{ const st = localStorage.getItem("fx-wheel-zoom2"); if(st) z0 = parseFloat(st) || ZFIT; }catch(e){}
+  let z0 = 1;
+  try{ const st = localStorage.getItem("fx-wheel-zoom3"); if(st) z0 = parseFloat(st) || 1; }catch(e){}
   setZoom(z0, false);
 
 
@@ -1360,7 +1524,15 @@ function dockToggle(){ dock.classList.contains("open") ? dockClose() : dockOpen(
   const onResize = () => { clearTimeout(rt); rt = setTimeout(() => setZoom(zoom, false), 80); };
   window.addEventListener("resize", onResize, {passive:true});
   window.addEventListener("orientationchange", onResize);
-  if(window.ResizeObserver){ new ResizeObserver(() => fitWheel()).observe(stageEl); }
+  /* on n'observe QUE les deux blocs de texte : leur hauteur peut changer (retour
+     à la ligne, chargement des polices) mais ne dépend jamais de la roue.
+     Observer la scène elle-même rouvrirait une boucle de rétroaction. */
+  if(window.ResizeObserver){
+    const ro = new ResizeObserver(() => fitWheel());
+    if(topEl) ro.observe(topEl);
+    if(botEl) ro.observe(botEl);
+    if(hdrEl) ro.observe(hdrEl);
+  }
   fitWheel(); setTimeout(fitWheel, 120); setTimeout(fitWheel, 600);
   if(document.fonts && document.fonts.ready) document.fonts.ready.then(fitWheel);
 
