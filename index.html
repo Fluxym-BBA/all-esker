@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Esker en vidéo | Fluxym</title>
 <meta name="description" content="Découvrez en vidéo chaque module de la suite Esker : Source-to-Pay et Order-to-Cash. Présenté par Fluxym, intégrateur et revendeur Esker.">
 <meta property="og:title" content="Esker en vidéo | Fluxym">
@@ -14,14 +14,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Miriam+Libre:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root{
+  /* Charte Fluxym */
   --dark-blue:#163467; --blue:#13b4e2; --purple-rain:#6b51ed; --light-blue:#f0f6f8;
   --sunlight:#ffcf63; --green:#7eefa0; --red:#ef7e7e; --white:#fff;
-  --gray:#414241; --medium-gray:#aaa; --disabled-blue:#a6b2c5;
-  --h:#163467;
+  /* Charte Esker */
+  --esker-red:#db001b; --esker-cyan:#1dc0d5; --esker-grey:#f1f3f4;
   --radius:.5rem;
+  --hdr-h:76px;
+  --z:1;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
-html{scroll-behavior:smooth;scroll-padding-top:90px}
+html{scroll-behavior:smooth;scroll-padding-top:var(--hdr-h)}
 body{font-family:Barlow,-apple-system,BlinkMacSystemFont,sans-serif;color:var(--dark-blue);background:var(--white);overflow-x:hidden;line-height:1.55}
 h1,h2,h3,h4,.ff-title,button,.btn{font-family:'Miriam Libre',Barlow,sans-serif}
 a{color:inherit;text-decoration:none}
@@ -29,25 +32,28 @@ img,svg{max-width:100%}
 ::selection{background:rgba(19,180,226,.38)}
 .wrap{max-width:1240px;margin:0 auto;padding:0 1.5rem}
 @media(min-width:768px){.wrap{padding:0 3rem}}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
-/* ---------- BOUTONS (style Fluxym) ---------- */
-.btn{display:inline-block;font-size:1rem;font-weight:700;line-height:1;padding:14px 22px 12px;border-radius:var(--radius);border:2px solid transparent;cursor:pointer;transition:box-shadow .45s cubic-bezier(.23,1,.32,1),background-color .3s,color .3s;text-align:center}
+/* ============ BOUTONS ============ */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;font-size:1rem;font-weight:700;line-height:1;padding:14px 22px 12px;border-radius:var(--radius);border:2px solid transparent;cursor:pointer;transition:box-shadow .45s cubic-bezier(.23,1,.32,1),background-color .3s,color .3s,transform .3s;text-align:center}
 .btn-blue{background:var(--blue);color:#fff;border-color:var(--blue)}
-.btn-blue:hover{box-shadow:0 10px 24px rgba(19,180,226,.4)}
+.btn-blue:hover{box-shadow:0 10px 24px rgba(19,180,226,.4);transform:translateY(-1px)}
 .btn-navy{background:var(--dark-blue);color:#fff;border-color:var(--dark-blue)}
-.btn-navy:hover{box-shadow:0 10px 24px rgba(22,52,103,.35)}
-.btn-ghost{background:transparent;color:var(--dark-blue);border-color:var(--dark-blue)}
-.btn-ghost:hover{background:var(--dark-blue);color:#fff}
+.btn-navy:hover{box-shadow:0 10px 24px rgba(22,52,103,.35);transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:var(--dark-blue);border-color:rgba(22,52,103,.25)}
+.btn-ghost:hover{background:var(--dark-blue);color:#fff;border-color:var(--dark-blue)}
+.btn-sm{font-size:.88rem;padding:10px 16px 8px}
 
-/* ---------- HEADER ---------- */
-.header{position:fixed;top:0;left:0;right:0;z-index:300;background:rgba(255,255,255,.94);backdrop-filter:blur(14px);border-bottom:1px solid rgba(22,52,103,.08);transition:box-shadow .3s}
+/* ============ HEADER ============ */
+.header{position:fixed;top:0;left:0;right:0;z-index:400;background:rgba(255,255,255,.93);backdrop-filter:blur(16px);border-bottom:1px solid rgba(22,52,103,.08);transition:box-shadow .3s}
 .header.scrolled{box-shadow:0 6px 28px rgba(22,52,103,.09)}
-.header-in{max-width:1240px;margin:0 auto;padding:0 1.5rem;height:76px;display:flex;align-items:center;justify-content:space-between;gap:1.5rem}
+.header-in{max-width:1240px;margin:0 auto;padding:0 1.5rem;height:var(--hdr-h);display:flex;align-items:center;justify-content:space-between;gap:1.5rem}
 @media(min-width:768px){.header-in{padding:0 3rem}}
 .hlogo{display:flex;align-items:center;gap:.9rem;color:var(--dark-blue);flex:none}
-.hlogo svg{width:118px;height:39px}
-.hlogo-tag{display:none;font-size:.72rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--blue);border-left:1px solid rgba(22,52,103,.15);padding-left:.9rem}
-@media(min-width:1024px){.hlogo-tag{display:block}}
+.hlogo .f-mark{width:112px;height:37px}
+.hlogo-x{display:none;font-size:1rem;color:#c3cdda;font-weight:300}
+.hlogo .e-mark{display:none;width:62px;height:16px;color:var(--esker-red)}
+@media(min-width:560px){.hlogo-x,.hlogo .e-mark{display:block}}
 .hnav{display:none;align-items:center;gap:2rem;margin-left:auto}
 @media(min-width:1024px){.hnav{display:flex}}
 .hnav a{font-size:.95rem;font-weight:600;position:relative;padding:4px 0;transition:color .25s}
@@ -56,70 +62,147 @@ img,svg{max-width:100%}
 .hnav a:hover::after{transform:scaleX(1);transform-origin:left}
 .header .btn{padding:11px 20px 9px;font-size:.92rem}
 
-/* ---------- DECOR POINTS (motif Fluxym) ---------- */
-.dots{position:absolute;pointer-events:none;z-index:0;opacity:.9}
-.dots i{display:block;width:7px;height:7px;border-radius:50%;position:absolute}
+/* ============ SCENE ROUE (plein écran) ============ */
+.stage{position:relative;min-height:100vh;min-height:100svh;padding-top:var(--hdr-h);display:flex;flex-direction:column;overflow:hidden;background:
+   radial-gradient(1100px 620px at 50% 42%,#ffffff 0%,#f7fbfd 45%,var(--light-blue) 100%)}
+.stage::before{content:'';position:absolute;top:-16%;right:-12%;width:52vmax;height:52vmax;border-radius:50%;background:radial-gradient(circle,rgba(19,180,226,.13),transparent 62%);pointer-events:none;animation:drift 22s ease-in-out infinite alternate}
+.stage::after{content:'';position:absolute;bottom:-20%;left:-14%;width:48vmax;height:48vmax;border-radius:50%;background:radial-gradient(circle,rgba(107,81,237,.11),transparent 62%);pointer-events:none;animation:drift 26s ease-in-out infinite alternate-reverse}
+@keyframes drift{0%{transform:translate(0,0) scale(1)}100%{transform:translate(3%,4%) scale(1.09)}}
 
-/* ---------- HERO ---------- */
-.hero{position:relative;padding:150px 0 48px;overflow:hidden}
-.hero::before{content:'';position:absolute;top:-220px;right:-180px;width:620px;height:620px;border-radius:50%;background:radial-gradient(circle,rgba(19,180,226,.11),transparent 62%);pointer-events:none}
-.hero::after{content:'';position:absolute;bottom:-160px;left:-200px;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(107,81,237,.09),transparent 62%);pointer-events:none}
-.hero-in{position:relative;z-index:2;text-align:center;max-width:860px;margin:0 auto}
-.kicker{display:inline-flex;align-items:center;gap:.6rem;font-size:.72rem;font-weight:700;letter-spacing:.17em;text-transform:uppercase;color:var(--blue);background:rgba(19,180,226,.09);border:1px solid rgba(19,180,226,.25);padding:7px 16px;border-radius:50px;margin-bottom:1.5rem}
-.kicker b{color:var(--dark-blue)}
-.hero h1{font-size:clamp(2rem,4.6vw,3.4rem);line-height:1.1;letter-spacing:-.02em;font-weight:700}
-.hero h1 em{font-style:normal;color:var(--blue)}
-.hero p{margin-top:1.3rem;font-size:1.12rem;color:#4a5c7a;max-width:680px;margin-left:auto;margin-right:auto}
-.hero-stats{display:flex;flex-wrap:wrap;justify-content:center;gap:0;margin:2.4rem auto 0;max-width:660px;background:#fff;border:1px solid rgba(22,52,103,.1);border-radius:1rem;box-shadow:0 10px 36px rgba(22,52,103,.07);overflow:hidden}
-.hstat{flex:1 1 150px;padding:18px 12px;text-align:center;position:relative}
-.hstat+.hstat::before{content:'';position:absolute;left:0;top:24%;height:52%;width:1px;background:rgba(22,52,103,.1)}
-.hstat b{display:block;font-family:'Miriam Libre';font-size:1.6rem;font-weight:700;color:var(--dark-blue);line-height:1.1}
-.hstat span{font-size:.68rem;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:#8192ad}
+.stage-top{position:relative;z-index:3;flex:none;text-align:center;padding:14px 1.5rem 12px}
+.kicker{display:inline-flex;align-items:center;gap:.55rem;font-size:.68rem;font-weight:700;letter-spacing:.17em;text-transform:uppercase;color:var(--blue);background:rgba(19,180,226,.09);border:1px solid rgba(19,180,226,.25);padding:6px 15px;border-radius:50px;animation:fadeDown .7s both}
+.kicker i{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(126,239,160,.7);animation:ping 2.4s infinite}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(126,239,160,.65)}70%{box-shadow:0 0 0 9px rgba(126,239,160,0)}100%{box-shadow:0 0 0 0 rgba(126,239,160,0)}}
+.stage-top h1{margin-top:.6rem;font-size:clamp(1.25rem,2.9vw,2.1rem);line-height:1.14;letter-spacing:-.02em;font-weight:700;animation:fadeDown .7s .07s both}
+.stage-top h1 em{font-style:normal;color:var(--blue)}
+.stage-top p{margin:.45rem auto 0;font-size:clamp(.85rem,1.3vw,1rem);color:#55688a;max-width:62ch;animation:fadeDown .7s .14s both}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-14px)}to{transform:none}}
 
-/* ---------- ROUE ---------- */
-.wheelsec{position:relative;background:linear-gradient(180deg,#fff 0%,var(--light-blue) 22%,var(--light-blue) 78%,#fff 100%);padding:10px 0 70px;overflow:hidden}
-.stage{display:flex;justify-content:center}
-.wheel-wrap{width:100%;max-width:800px;position:relative;z-index:2}
-.wheel-svg{width:100%;height:auto;overflow:visible;display:block}
+.stage-mid{position:relative;z-index:2;flex:1;min-height:0}
+/* la roue est en position absolue : sa taille n'influence JAMAIS la hauteur du conteneur,
+   ce qui supprime la boucle de rétroaction responsable des sauts de zoom */
+.wheel-box{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);aspect-ratio:1;transition:width .22s cubic-bezier(.23,1,.32,1),height .22s cubic-bezier(.23,1,.32,1)}
+.wheel-svg{width:100%;height:100%;display:block;overflow:visible}
+
+.stage-bot{position:relative;z-index:3;flex:none;display:flex;align-items:center;justify-content:center;gap:1rem;flex-wrap:wrap;padding:14px 1.5rem 20px}
+.hint{display:inline-flex;align-items:center;gap:.5rem;font-size:.85rem;color:#64779a;font-weight:500}
+.hint b{color:var(--blue);font-weight:700}
+.hint svg{animation:nudge 1.9s ease-in-out infinite}
+@keyframes nudge{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+/* quand la roue dépasse son cadrage idéal, l'habillage s'efface pour lui laisser la scène */
+.stage-top p,.stage-bot{transition:opacity .45s ease}
+.stage.xl .stage-top p,.stage.xl .stage-bot{opacity:.18}
+.stage.xl .stage-top p:hover,.stage.xl .stage-bot:hover{opacity:1}
+.stage-stats{display:flex;align-items:center;gap:0;background:rgba(255,255,255,.75);backdrop-filter:blur(10px);border:1px solid rgba(22,52,103,.1);border-radius:50px;overflow:hidden}
+.sstat{padding:7px 16px;text-align:center;position:relative;font-size:.76rem;color:#64779a;font-weight:600;white-space:nowrap}
+.sstat b{color:var(--dark-blue);font-family:'Miriam Libre';font-size:.9rem}
+.sstat+.sstat::before{content:'';position:absolute;left:0;top:25%;height:50%;width:1px;background:rgba(22,52,103,.12)}
+
+/* ---- zoom intégré au noyau de la roue ---- */
+.hubzoom{cursor:default}
+.hubzoom .hz-btn{cursor:pointer}
+.hubzoom .hz-bg{transition:fill .25s,stroke .25s}
+.hubzoom .hz-btn:hover .hz-bg{fill:#13b4e2;stroke:#13b4e2}
+.hubzoom .hz-btn:hover .hz-ico{stroke:#fff}
+.hubzoom .hz-btn.off{opacity:.3;pointer-events:none}
+.hubzoom .hz-ico{transition:stroke .25s}
+.hubzoom .hz-btn:focus{outline:none}
+.hubzoom .hz-btn:focus-visible .hz-bg{stroke:#163467;stroke-width:2.4}
+.hubzoom .hz-reset{cursor:pointer}
+.hubzoom .hz-reset:hover #hzVal{fill:#13b4e2}
+.hubzoom .hz-reset:focus{outline:none}
+
+/* ---- bouton retour en haut ---- */
+.totop{position:fixed;right:max(16px,1.6vw);bottom:max(16px,1.6vw);z-index:370;width:48px;height:48px;border-radius:50%;background:var(--dark-blue);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transform:translateY(14px) scale(.9);transition:opacity .4s cubic-bezier(.23,1,.32,1),transform .4s cubic-bezier(.23,1,.32,1),background .3s,box-shadow .3s;box-shadow:0 10px 30px rgba(22,52,103,.3)}
+.totop.on{opacity:1;pointer-events:auto;transform:none}
+.totop:hover{background:var(--blue);box-shadow:0 14px 36px rgba(19,180,226,.45);transform:translateY(-3px)}
+.totop svg{transition:transform .3s}
+.totop:hover svg{transform:translateY(-2px)}
+
+/* ============ ANIMATIONS DE LA ROUE ============ */
 @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
 @keyframes spinrev{from{transform:rotate(0)}to{transform:rotate(-360deg)}}
-@keyframes breathe{0%,100%{opacity:.25}50%{opacity:.7}}
-@keyframes scaleIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
-@keyframes fadeInUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+@keyframes breathe{0%,100%{opacity:.22}50%{opacity:.68}}
+@keyframes pulseR{0%{r:var(--r0);opacity:.55}100%{r:var(--r1);opacity:0}}
+@keyframes dashflow{to{stroke-dashoffset:-1000}}
+@keyframes cometS2P{0%{stroke-dashoffset:0}100%{stroke-dashoffset:-620}}
+@keyframes popIn{from{opacity:0;transform:scale(.82)}to{opacity:1;transform:scale(1)}}
+@keyframes segIn{from{opacity:0;transform:translate(var(--ix),var(--iy)) scale(.9)}to{opacity:1;transform:none}}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes shimmer{0%{opacity:.25}50%{opacity:.9}100%{opacity:.25}}
+
 .rot-slow{animation:spin 90s linear infinite}
 .rot-rev{animation:spinrev 140s linear infinite}
 .rot-fast{animation:spin 42s linear infinite}
+.rot-med{animation:spinrev 64s linear infinite}
 .breathe{animation:breathe 5s ease-in-out infinite}
-.wheel-fade{animation:scaleIn .55s cubic-bezier(.34,1.3,.64,1) both}
-.seg{cursor:pointer;transition:transform .4s cubic-bezier(.34,1.5,.64,1),filter .3s}
-.seg .sfill{transition:fill .3s ease,stroke .3s}
+
+/* --- segments --- */
+.seg{cursor:pointer;transition:transform .42s cubic-bezier(.34,1.46,.64,1),filter .32s,opacity .32s;animation:segIn .7s cubic-bezier(.23,1,.32,1) both;animation-delay:var(--d,0s)}
+.seg .sfill{transition:fill .32s ease,stroke .32s,stroke-width .32s}
+.seg .srim{transition:opacity .32s,fill .32s}
 .seg .slab{pointer-events:none;transition:fill .3s ease}
-.seg .scnt{transition:opacity .3s,fill .3s;opacity:.8}
-.seg:hover,.seg.active{transform:translate(var(--tx),var(--ty));filter:drop-shadow(0 12px 26px rgba(22,52,103,.3))}
-.seg:hover .sfill,.seg.active .sfill{fill:var(--c)!important;stroke:#fff}
+.seg .scnt{transition:opacity .3s,fill .3s;opacity:.78}
+.seg .sglow{opacity:0;transition:opacity .35s}
+.seg:hover,.seg.active{transform:translate(var(--tx),var(--ty))}
+.seg:hover .sfill,.seg.active .sfill{fill:var(--c);stroke:#fff;stroke-width:2.6}
 .seg:hover .slab,.seg.active .slab{fill:#fff}
 .seg:hover .scnt,.seg.active .scnt{opacity:1;fill:#fff}
+.seg:hover .srim,.seg.active .srim{opacity:1;fill:#fff}
+.seg:hover .sglow,.seg.active .sglow{opacity:1}
 .seg:focus{outline:none}
 .seg:focus-visible .sfill{stroke:var(--dark-blue);stroke-width:4}
 .seg.soon .sfill{stroke-dasharray:7 5}
-.hubwrap{cursor:pointer}
-.hubwrap .hubring{transition:stroke .35s,opacity .35s}
-.bandg{cursor:default}
-.wheel-help{text-align:center;font-size:.9rem;color:#6d7f9c;margin-top:-10px}
-.wheel-help b{color:var(--blue)}
+.wheel-svg.dimmed .seg:not(:hover):not(.active){opacity:.42;filter:saturate(.45)}
 
-/* ---------- PANNEAU MODULE ---------- */
-.panelsec{padding:0 0 80px;background:#fff}
-.panel{max-width:1000px;margin:0 auto;background:#fff;border:1px solid rgba(22,52,103,.1);border-radius:1.25rem;box-shadow:0 18px 60px rgba(22,52,103,.11);overflow:hidden;animation:fadeInUp .45s cubic-bezier(.23,1,.32,1) both}
-.panel-head{display:flex;align-items:flex-start;gap:1.1rem;padding:26px 30px 20px;border-bottom:1px solid rgba(22,52,103,.08)}
+/* --- arcs de suite dynamiques --- */
+.suitearc-base{transition:stroke-width .4s,opacity .4s}
+.suitearc-flow{stroke-dasharray:14 22;animation:dashflow 9s linear infinite;transition:opacity .4s,stroke-width .4s}
+.suitearc-comet{stroke-dasharray:46 580;animation:cometS2P 5.2s cubic-bezier(.5,0,.5,1) infinite;opacity:.95;transition:animation-duration .4s}
+.suitegrp.lit .suitearc-base{stroke-width:5.2;opacity:1}
+.suitegrp.lit .suitearc-flow{opacity:.95;stroke-width:3.4;animation-duration:3.4s}
+.suitegrp.lit .suitearc-comet{animation-duration:2.1s}
+.suitegrp.dim{opacity:.34}
+.suitegrp{transition:opacity .4s}
+.suitelab{transition:fill .35s,opacity .35s}
+.suitegrp.lit .suitelab{fill:var(--blue)}
+.suite-node{transition:r .4s cubic-bezier(.34,1.5,.64,1),fill .35s}
+.suitegrp.lit .suite-node{r:9.5}
+
+/* --- noyau central --- */
+.hub-default,.hub-hover{transition:opacity .34s ease,transform .34s cubic-bezier(.23,1,.32,1);transform-origin:center}
+.hub-hover{opacity:0;transform:scale(.94)}
+.wheel-svg.hovering .hub-default{opacity:0;transform:scale(1.05)}
+.wheel-svg.hovering .hub-hover{opacity:1;transform:scale(1)}
+.hub-sweep{animation:spin 11s linear infinite;transform-origin:center;opacity:.5}
+.hub-ring-a{animation:spinrev 52s linear infinite;transform-origin:center}
+.hub-ring-b{animation:spin 78s linear infinite;transform-origin:center}
+
+/* --- pastille Synergy AI --- */
+.aihub{cursor:help}
+.aihub .aiorb{animation:floaty 4.5s ease-in-out infinite}
+.aihub .airing{animation:spin 26s linear infinite}
+.aihub:hover .aicore{fill:var(--sunlight)}
+.ainode{animation:shimmer 3s ease-in-out infinite}
+
+/* --- bandeau socle --- */
+.bandg{cursor:default}
+.bandg .bandsheen{opacity:.0;animation:shimmer 6s ease-in-out infinite}
+
+/* ============ PANNEAU VIDEO ============ */
+.panelsec{padding:0 0 60px;background:#fff;scroll-margin-top:calc(var(--hdr-h) + 12px)}
+.panel{max-width:1060px;margin:0 auto;background:#fff;border:1px solid rgba(22,52,103,.1);border-radius:1.25rem;box-shadow:0 20px 64px rgba(22,52,103,.12);overflow:hidden;animation:popIn .5s cubic-bezier(.23,1,.32,1) both}
+.panel-head{display:flex;align-items:flex-start;gap:1.1rem;padding:24px 30px 18px;border-bottom:1px solid rgba(22,52,103,.08)}
 .panel-chip{width:52px;height:52px;flex:none;border-radius:.85rem;display:flex;align-items:center;justify-content:center;font-size:1.5rem;background:color-mix(in srgb,var(--c) 14%,#fff);border:1px solid color-mix(in srgb,var(--c) 32%,#fff)}
 .panel-ttl{flex:1;min-width:0}
-.panel-suite{font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--c);margin-bottom:3px}
-.panel-ttl h2{font-size:1.5rem;line-height:1.2;font-weight:700}
-.panel-ttl p{font-size:.98rem;color:#52637f;margin-top:.55rem;max-width:72ch}
-.panel-close{flex:none;width:36px;height:36px;border-radius:50%;border:1px solid rgba(22,52,103,.14);background:#fff;color:#7b8ca8;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.1rem;transition:all .25s;padding:0}
-.panel-close:hover{background:var(--dark-blue);color:#fff;border-color:var(--dark-blue)}
-.panel-body{padding:24px 30px 30px}
+.panel-suite{font-size:.67rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--c);margin-bottom:3px}
+.panel-ttl h2{font-size:1.45rem;line-height:1.2;font-weight:700}
+.panel-ttl p{font-size:.95rem;color:#52637f;margin-top:.5rem;max-width:74ch}
+.panel-nav{display:flex;gap:.4rem;flex:none;align-items:center}
+.pnav{width:34px;height:34px;border-radius:50%;border:1px solid rgba(22,52,103,.14);background:#fff;color:#64779a;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .25s;padding:0}
+.pnav:hover{background:var(--dark-blue);color:#fff;border-color:var(--dark-blue);transform:translateY(-1px)}
+.panel-body{padding:22px 30px 28px}
+
 .vidframe{position:relative;aspect-ratio:16/9;border-radius:1.15rem;overflow:hidden;background:#0d1f3e;box-shadow:0 18px 50px rgba(22,52,103,.18)}
 .vidframe video{width:100%;height:100%;display:block;object-fit:contain;background:#0d1f3e}
 .vid-cover{position:absolute;inset:0;z-index:5;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between;padding:26px 32px;color:#fff;user-select:none;transition:opacity .35s ease,visibility .35s;overflow:hidden}
@@ -142,12 +225,17 @@ img,svg{max-width:100%}
 .cover-sub{font-size:.88rem;color:rgba(255,255,255,.8);margin-top:6px;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
 .cover-sub-dot{width:4px;height:4px;border-radius:50%;background:var(--blue)}
 .cover-sub-cta{color:var(--blue);font-weight:700;display:inline-flex;align-items:center;gap:4px}
-@media(max-width:600px){
-  .vid-cover{padding:16px 18px}
-  .cover-play{width:68px;height:68px}
-  .cover-play svg{width:30px;height:30px}
-  .cover-sub{font-size:.78rem}
-}
+
+/* écran de fin : suggestions */
+.vid-end{position:absolute;inset:0;z-index:6;background:linear-gradient(145deg,rgba(14,35,71,.97),rgba(22,52,103,.97));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;opacity:0;visibility:hidden;transition:opacity .4s,visibility .4s}
+.vid-end.on{opacity:1;visibility:visible}
+.vid-end h4{color:#fff;font-size:1rem;font-weight:700;letter-spacing:.04em}
+.vid-end-row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:660px}
+.vid-end-card{display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);color:#fff;border-radius:50px;padding:9px 16px;font-size:.84rem;font-weight:600;cursor:pointer;font-family:Barlow;transition:all .28s}
+.vid-end-card:hover{background:var(--blue);border-color:var(--blue);transform:translateY(-2px)}
+.vid-end-replay{background:none;border:1px solid rgba(255,255,255,.3);color:rgba(255,255,255,.85);border-radius:50px;padding:8px 18px;font-size:.8rem;font-weight:600;cursor:pointer;font-family:Barlow;transition:all .25s}
+.vid-end-replay:hover{background:rgba(255,255,255,.14);color:#fff}
+
 .vidmeta{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.8rem;margin-top:14px}
 .vidmeta-t{font-size:.98rem;font-weight:700}
 .vidmeta-s{font-size:.8rem;color:#8192ad;font-weight:600}
@@ -158,30 +246,85 @@ img,svg{max-width:100%}
 .warn{display:flex;gap:.6rem;align-items:flex-start;margin-top:14px;font-size:.82rem;color:#8192ad}
 .warn svg{flex:none;margin-top:2px}
 
-/* panneau "bientôt" */
-.soonbox{position:relative;aspect-ratio:16/9;border-radius:1rem;overflow:hidden;background:linear-gradient(135deg,#163467,#1d4a8f 55%,#13b4e2);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;color:#fff}
-.soonbox .sb-ico{font-size:2.6rem;margin-bottom:.9rem;opacity:.95}
+.soonbox{position:relative;aspect-ratio:16/9;border-radius:1.15rem;overflow:hidden;background:linear-gradient(145deg,#0e2347,#1d4a8f 55%,var(--c));display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;color:#fff}
+.soonbox .sb-ico{font-size:2.6rem;margin-bottom:.9rem;opacity:.95;animation:floaty 4s ease-in-out infinite}
 .soonbox h3{font-size:1.3rem;font-weight:700}
 .soonbox p{font-size:.95rem;opacity:.86;max-width:46ch;margin-top:.6rem}
 .soon-badge{display:inline-flex;align-items:center;gap:.5rem;margin-top:1.2rem;font-size:.74rem;font-weight:700;letter-spacing:.11em;text-transform:uppercase;background:var(--sunlight);color:#5c4100;padding:8px 18px;border-radius:50px}
 .soon-badge i{width:7px;height:7px;border-radius:50%;background:#5c4100;animation:breathe 1.8s ease-in-out infinite;font-style:normal}
-.soonbox .sb-mesh{position:absolute;inset:0;opacity:.17;background-image:radial-gradient(#fff 1.1px,transparent 1.1px);background-size:22px 22px;pointer-events:none}
+.soonbox .sb-mesh{position:absolute;inset:0;opacity:.16;background-image:radial-gradient(#fff 1.1px,transparent 1.1px);background-size:22px 22px;pointer-events:none}
 .soon-cta{margin-top:18px;display:flex;flex-wrap:wrap;gap:.7rem;align-items:center}
 .soon-cta .ph{font-size:.88rem;color:#52637f}
 
-/* ---------- GRILLE DE SECOURS (liste complète) ---------- */
-.listsec{background:var(--light-blue);padding:80px 0}
-.sec-head{text-align:center;max-width:720px;margin:0 auto 2.6rem}
+/* ============ WIDGET ROUE FLOTTANT (dock) ============ */
+/* En bas à gauche. Aucune fenêtre, aucun cadre : la bulle Esker se métamorphose
+   en roue complète, qui naît exactement du centre de la bulle. */
+.dock{position:fixed;z-index:380;left:max(18px,1.6vw);bottom:max(18px,1.6vw);width:74px;height:74px;opacity:0;visibility:hidden;transform:translateY(16px) scale(.9);transition:opacity .45s cubic-bezier(.23,1,.32,1),transform .45s cubic-bezier(.23,1,.32,1),visibility .45s}
+.dock.on{opacity:1;visibility:visible;transform:none}
+
+.dock-btn{position:absolute;left:0;bottom:0;width:74px;height:74px;border-radius:50%;border:none;cursor:pointer;background:#fff;box-shadow:0 10px 32px rgba(22,52,103,.22),0 0 0 1px rgba(22,52,103,.07);display:flex;align-items:center;justify-content:center;padding:0;transition:transform .45s cubic-bezier(.34,1.45,.64,1),box-shadow .42s,opacity .3s}
+.dock-btn:hover{transform:scale(1.08);box-shadow:0 16px 42px rgba(29,192,213,.4),0 0 0 1px rgba(29,192,213,.3)}
+.dock-btn .emark{width:42px;height:42px;margin-bottom:5px}
+.dock-btn .emark .espin{animation:spin 16s linear infinite;transform-origin:center}
+.dock-btn:hover .emark .espin{animation-duration:4s}
+.dock-btn .ewordmark{position:absolute;bottom:11px;left:50%;transform:translateX(-50%);width:32px;height:8px;color:var(--esker-red)}
+/* halo : deux anneaux contrarotatifs, parfaitement centrés sur la bulle.
+   Dimensions explicites : un SVG en position absolue sans width/height reprendrait
+   sa taille intrinsèque (300x150) et se retrouverait décentré. */
+.dock-halo{position:absolute;left:50%;top:50%;width:calc(100% + 20px);height:calc(100% + 20px);transform:translate(-50%,-50%);pointer-events:none;overflow:visible}
+.dock-halo .hring-a{animation:spin 11s linear infinite;transform-origin:center}
+.dock-halo .hring-b{animation:spinrev 17s linear infinite;transform-origin:center}
+.dock-btn:hover .dock-halo .hring-a{animation-duration:3.4s}
+.dock-btn:hover .dock-halo .hring-b{animation-duration:5.2s}
+.dock-badge{position:absolute;top:-2px;right:-2px;min-width:22px;height:22px;border-radius:50px;background:var(--blue);color:#fff;font-size:.68rem;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 6px;border:2px solid #fff;font-family:'Miriam Libre'}
+/* la roue elle-même : pas de panneau, pas de bordure, juste une ombre portée */
+.dock-wheel{--dw:min(78vw,400px);position:absolute;left:0;bottom:0;width:var(--dw);height:var(--dw);transform-origin:37px calc(100% - 37px);transform:scale(.16);opacity:0;visibility:hidden;filter:drop-shadow(0 20px 46px rgba(22,52,103,.2));transition:transform .55s cubic-bezier(.22,1.06,.32,1),opacity .34s ease,visibility .55s}
+.dock.open .dock-wheel{transform:scale(1);opacity:1;visibility:visible}
+.dock-wheel .wheel-svg{width:100%;height:100%;display:block}
+.dock.open .dock-btn{opacity:0;transform:scale(.3);pointer-events:none}
+
+/* segments de la mini roue : strictement la même mécanique que la grande */
+.mini-seg{cursor:pointer;transition:transform .4s cubic-bezier(.34,1.46,.64,1),opacity .3s,filter .3s}
+.mini-seg .msf{transition:fill .3s,stroke .3s,stroke-width .3s}
+.mini-seg .mrim{transition:opacity .3s,fill .3s}
+.mini-seg .mlab,.mini-seg .mico{pointer-events:none;transition:fill .3s}
+.mini-seg:hover,.mini-seg.active{transform:translate(var(--tx),var(--ty))}
+.mini-seg:hover .msf,.mini-seg.active .msf{fill:var(--c);stroke:#fff;stroke-width:3.4}
+.mini-seg:hover .mlab,.mini-seg.active .mlab{fill:#fff}
+.mini-seg:hover .mrim,.mini-seg.active .mrim{opacity:1;fill:#fff}
+.mini-seg.soon .msf{stroke-dasharray:6 5}
+.mini-seg:focus{outline:none}
+.mini-seg:focus-visible .msf{stroke:var(--dark-blue);stroke-width:4}
+#miniWheel.dimmed .mini-seg:not(:hover):not(.active){opacity:.4;filter:saturate(.4)}
+.mini-hub-label{font-family:'Miriam Libre';font-weight:700;fill:var(--dark-blue)}
+.mini-hub-default,.mini-hub-hover{transition:opacity .3s ease}
+.mini-hub-hover{opacity:0}
+#miniWheel.hovering .mini-hub-default{opacity:0}
+#miniWheel.hovering .mini-hub-hover{opacity:1}
+
+@media(max-width:620px){
+  .dock{left:14px;bottom:14px;width:60px;height:60px}
+  .dock-btn{width:60px;height:60px}
+  .dock-btn .emark{width:34px;height:34px}
+  .dock-btn .ewordmark{bottom:9px;width:27px}
+  .dock-wheel{--dw:min(90vw,344px);transform-origin:30px calc(100% - 30px)}
+}
+
+/* ============ LISTE DES MODULES ============ */
+.listsec{background:var(--light-blue);padding:72px 0;scroll-margin-top:var(--hdr-h)}
+.sec-head{text-align:center;max-width:720px;margin:0 auto 2.4rem}
 .sec-head h2{font-size:clamp(1.6rem,3vw,2.3rem);font-weight:700;line-height:1.18}
 .sec-head h2 em{font-style:normal;color:var(--blue)}
 .sec-head p{margin-top:.9rem;color:#52637f;font-size:1.03rem}
-.suite-ttl{display:flex;align-items:center;gap:1rem;font-size:.74rem;font-weight:700;letter-spacing:.17em;text-transform:uppercase;color:#8192ad;margin:2.4rem 0 1.2rem}
+.suite-ttl{display:flex;align-items:center;gap:1rem;font-size:.74rem;font-weight:700;letter-spacing:.17em;text-transform:uppercase;color:#8192ad;margin:2.2rem 0 1.1rem;scroll-margin-top:calc(var(--hdr-h) + 20px)}
 .suite-ttl::after{content:'';flex:1;height:1px;background:rgba(22,52,103,.12)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(258px,1fr));gap:1.1rem}
 .card{position:relative;background:#fff;border:1px solid rgba(22,52,103,.1);border-radius:1rem;padding:20px;cursor:pointer;overflow:hidden;transition:transform .32s cubic-bezier(.34,1.4,.64,1),box-shadow .32s,border-color .32s}
 .card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--c);transform:scaleY(0);transform-origin:bottom;transition:transform .35s}
 .card:hover{transform:translateY(-5px);box-shadow:0 18px 40px rgba(22,52,103,.13);border-color:transparent}
 .card:hover::before{transform:scaleY(1)}
+.card.active{border-color:var(--c);box-shadow:0 18px 40px rgba(22,52,103,.15)}
+.card.active::before{transform:scaleY(1)}
 .card-top{display:flex;align-items:center;gap:.8rem;margin-bottom:.8rem}
 .card-ico{width:40px;height:40px;flex:none;border-radius:.7rem;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:color-mix(in srgb,var(--c) 13%,#fff)}
 .card h3{font-size:1rem;font-weight:700;line-height:1.25}
@@ -191,10 +334,10 @@ img,svg{max-width:100%}
 .tag.ok{background:rgba(19,180,226,.12);color:#0b7fa5}
 .tag.soon{background:rgba(255,207,99,.3);color:#7a5600}
 .card-go{color:var(--c);opacity:0;transform:translateX(-6px);transition:all .3s}
-.card:hover .card-go{opacity:1;transform:translateX(0)}
+.card:hover .card-go,.card.active .card-go{opacity:1;transform:translateX(0)}
 
-/* ---------- CONTACT ---------- */
-.contactsec{position:relative;padding:86px 0;background:#fff;overflow:hidden}
+/* ============ CONTACT ============ */
+.contactsec{position:relative;padding:82px 0;background:#fff;overflow:hidden;scroll-margin-top:var(--hdr-h)}
 .contactsec::before{content:'';position:absolute;top:-140px;left:-170px;width:480px;height:480px;border-radius:50%;background:radial-gradient(circle,rgba(107,81,237,.08),transparent 62%)}
 .contact-grid{position:relative;z-index:2;display:grid;gap:3rem;align-items:start}
 @media(min-width:900px){.contact-grid{grid-template-columns:.85fr 1.15fr;gap:4rem}}
@@ -209,7 +352,6 @@ img,svg{max-width:100%}
 .formcard{background:#fff;border:1px solid rgba(22,52,103,.1);border-radius:1.25rem;padding:30px;box-shadow:0 18px 60px rgba(22,52,103,.1)}
 @media(min-width:768px){.formcard{padding:36px}}
 .formcard h3{font-size:1.15rem;margin-bottom:1.4rem;font-weight:700}
-/* habillage du formulaire HubSpot aux couleurs Fluxym */
 .hs-form-frame .hs-form-field{margin-bottom:1rem}
 .hs-form-frame label{font-family:Barlow;font-size:.85rem;font-weight:600;color:var(--dark-blue);display:block;margin-bottom:.35rem}
 .hs-form-frame input[type=text],.hs-form-frame input[type=email],.hs-form-frame input[type=tel],
@@ -225,8 +367,8 @@ img,svg{max-width:100%}
 .formfallback{display:none;font-size:.9rem;color:#52637f;line-height:1.6}
 .formfallback.on{display:block}
 
-/* ---------- FOOTER ---------- */
-.footer{background:var(--dark-blue);color:#fff;padding:60px 0 28px;position:relative;overflow:hidden}
+/* ============ FOOTER ============ */
+.footer{background:var(--dark-blue);color:#fff;padding:58px 0 26px;position:relative;overflow:hidden}
 .footer::after{content:'';position:absolute;right:-140px;bottom:-180px;width:460px;height:460px;border-radius:50%;background:radial-gradient(circle,rgba(19,180,226,.2),transparent 62%)}
 .foot-grid{position:relative;z-index:2;display:grid;gap:2.4rem}
 @media(min-width:768px){.foot-grid{grid-template-columns:1.3fr 1fr 1fr}}
@@ -236,34 +378,53 @@ img,svg{max-width:100%}
 .foot-col b{display:block;font-family:'Miriam Libre';font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin-bottom:1rem}
 .foot-col a{display:block;font-size:.92rem;color:rgba(255,255,255,.78);padding:5px 0;transition:color .25s}
 .foot-col a:hover{color:var(--blue)}
-.foot-bot{position:relative;z-index:2;margin-top:2.6rem;padding-top:1.4rem;border-top:1px solid rgba(255,255,255,.14);display:flex;flex-wrap:wrap;gap:.8rem;justify-content:space-between;font-size:.8rem;color:rgba(255,255,255,.55)}
+.foot-bot{position:relative;z-index:2;margin-top:2.4rem;padding-top:1.4rem;border-top:1px solid rgba(255,255,255,.14);display:flex;flex-wrap:wrap;gap:.8rem;justify-content:space-between;font-size:.8rem;color:rgba(255,255,255,.55)}
 
-.totop{position:fixed;right:20px;bottom:20px;z-index:250;width:46px;height:46px;border-radius:50%;background:var(--blue);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transform:translateY(12px);transition:all .35s;box-shadow:0 8px 24px rgba(19,180,226,.4)}
-.totop.on{opacity:1;pointer-events:auto;transform:translateY(0)}
-.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
-@media(max-width:600px){.panel-head{flex-wrap:wrap;padding:20px}.panel-body{padding:18px 20px 24px}.hero{padding-top:120px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01ms!important}html{scroll-behavior:auto}}
+@media(max-width:600px){.panel-head{flex-wrap:wrap;padding:18px 20px}.panel-body{padding:16px 18px 22px}.vid-cover{padding:16px 18px}.cover-play{width:66px;height:66px}.cover-play svg{width:28px;height:28px}.cover-sub{font-size:.76rem}}
 </style>
 </head>
 <body>
 
-<!-- ====== SPRITE LOGO FLUXYM ====== -->
+<!-- ====== SPRITES ====== -->
 <svg width="0" height="0" style="display:none" aria-hidden="true" focusable="false">
+  <!-- logo Fluxym -->
   <symbol viewBox="0 0 140 46" fill="none" id="fluxym">
     <path d="M10.901 28.616l3.253 5.706-6.242 3.655-3.516 2.05v-11.41H10.9zm1.231-4.546H2.374C1.055 24.07 0 25.229 0 26.477v17.116A2.379 2.379 0 002.374 46c.351 0 .79-.089 1.143-.356l6.505-3.834 8.088-4.725c1.143-.624 1.495-2.14.88-3.298l-4.836-8.558c-.44-.624-1.23-1.16-2.022-1.16zM4.396 6.33l3.516 2.05 6.242 3.655-3.253 5.705H4.396V6.33zM1.934 0C.88 0 0 .802 0 1.961V20.326c0 1.07.88 1.96 1.934 1.96h10.462a1.88 1.88 0 001.67-.98l5.187-9.182c.527-.891.176-2.14-.703-2.674l-8.44-4.993L2.901.267C2.55.09 2.198 0 1.934 0zM23.56 17.383l6.242 3.655 3.43 2.05-3.43 2.051-6.241 3.655-3.253-5.705 3.253-5.706zm-.878-5.438c-.704 0-1.407.357-1.759 1.07l-5.099 9.004a2.124 2.124 0 000 2.05l5.1 9.004c.35.624 1.054 1.07 1.758 1.07.351 0 .703-.09 1.055-.267l8.351-4.903 7.033-4.101c1.319-.803 1.319-2.764 0-3.566l-7.033-4.101-8.352-4.903a1.674 1.674 0 00-1.055-.357z" fill="#13B4E2"/>
     <path d="M46.9 18.72v14.353h4.132v-8.29h4.923v-4.28h-4.923v-1.337c.088-1.248.527-2.318 2.198-2.318h4.22V12.57h-5.627c-2.989.179-4.923 2.764-4.923 6.152zM60.614 33.073h4.132V12.837l-4.132.267v19.97zM78.021 28.973c-.703.178-1.406.356-2.022.356-1.758 0-2.813-1.248-2.813-2.942v-7.845l-4.132.178v8.737c0 3.566 3.517 5.884 6.681 5.884 2.638 0 4.836-.714 6.418-1.427v-13.46l-4.132.267v10.252zM100 18.453h-4.132c-.44 1.605-1.67 3.031-3.165 4.457-1.495-1.426-2.726-2.763-3.165-4.457h-4.132c.527 2.675 2.637 4.636 4.835 6.864-1.934 1.962-3.868 4.28-4.923 7.756h4.132c.791-2.05 2.022-3.744 3.253-5.17 1.319 1.426 2.461 3.12 3.252 5.17h4.132c-1.142-3.477-2.989-5.884-4.923-7.756 2.198-2.228 4.22-4.19 4.836-6.864zM110.373 28.973c-1.582-3.388-3.077-7.043-3.516-10.43h-4.132c.527 4.902 3.253 10.162 5.538 14.62-.527 1.07-.967 1.96-2.461 1.96-1.143 0-1.583-.178-2.286-.802l-2.198 3.299c.528.535 2.638 1.515 4.396 1.515 3.956 0 5.363-3.209 6.769-5.883 2.286-4.458 4.923-9.718 5.539-14.62h-4.132c-.44 3.298-1.934 6.864-3.517 10.34zM133.319 18.275c-1.495 0-3.165.267-4.484.802-.967-.535-2.022-.802-3.341-.802-2.637 0-3.692.713-5.274 1.426v13.461h4.132V22.465c.263-.09.527-.09.879-.09 1.758 0 2.813 1.249 2.813 2.942v7.845h4.132V25.05c0-.892-.176-1.694-.44-2.496.528-.178 1.055-.178 1.319-.178 1.758 0 2.813 1.248 2.813 2.941v7.845H140V24.16c0-3.655-3.516-5.884-6.681-5.884z" fill="currentColor"/>
+  </symbol>
+  <!-- logo Esker officiel (wordmark) -->
+  <symbol viewBox="0 0 1283.327 289.74" id="eskerword">
+    <path d="M367.938,10.1a6.1,6.1,0,0,0-2.131-4.682,14.088,14.088,0,0,0-6.385-1.7h-7.241V24.155h3.833V16.064H360.7c2.127,0,3.4.853,3.4,2.555v5.535h3.833c0-.849-.428-2.127-.428-3.4V19.472h.428a4.976,4.976,0,0,0-3.408-4.682,4.984,4.984,0,0,0,3.408-4.686m-5.111,2.555c-.853,0-1.7.853-2.98.853h-4.258V7.124h3.833c1.7,0,2.98,0,3.829.853.853.425.853,1.278.853,2.552s0,1.706-1.277,2.131" transform="translate(904.743 9.554)" fill="currentColor"/>
+    <path d="M384.609,10.75A14.127,14.127,0,0,0,377.8,4.365C374.816,3.088,371.408,1.81,368,1.81A19.752,19.752,0,0,0,351.4,10.75a17.889,17.889,0,0,0-2.556,8.944,16.761,16.761,0,0,0,2.556,8.94,17.463,17.463,0,0,0,6.813,6.813,20.044,20.044,0,0,0,19.587,0,17.465,17.465,0,0,0,6.813-6.813,16.763,16.763,0,0,0,2.555-8.94,15.752,15.752,0,0,0-2.555-8.944m-2.555,16.606a15.021,15.021,0,0,1-5.961,5.535,16.451,16.451,0,0,1-16.182,0c-2.555-1.278-4.258-3.4-5.96-5.535a15.941,15.941,0,0,1-2.127-7.663,17.353,17.353,0,0,1,2.127-7.666,12.553,12.553,0,0,1,5.96-5.535,16.451,16.451,0,0,1,16.182,0c2.556,1.278,4.258,3.408,5.961,5.535a14.7,14.7,0,0,1,2.127,7.666,15.927,15.927,0,0,1-2.127,7.663" transform="translate(896.162 4.649)" fill="currentColor"/>
+    <rect width="199.695" height="43.431" transform="translate(0 237.661)" fill="currentColor"/>
+    <path d="M0,160.629H180.108V117.2H49.391V44.816h150.3V1.81H0Z" transform="translate(0 4.649)" fill="currentColor"/>
+    <path d="M216.177,276.442H415.871V233.012H265.143V161.054H396.285V117.623H265.143V44.813H415.871v-43H216.177Z" transform="translate(555.351 4.65)" fill="currentColor"/>
+    <path d="M317.884,1.81H255.292L160.343,120.6,268.918,276.442h65.573L219.952,120.6Z" transform="translate(411.916 4.649)" fill="currentColor"/>
+    <rect width="49.391" height="274.632" transform="translate(500.302 6.46)" fill="currentColor"/>
+    <path d="M501.434,79.3h0c0-47.689-31.935-77.493-77.918-77.493H285.133v43H413.723c21.288,0,36.618,15.329,37.042,34.915A36.185,36.185,0,0,1,414.573,117.2H285.133V276.018h49.391V161.054h63.87c7.662,13.2,64.291,114.964,64.291,114.964h61.74s-57.906-96.23-72.382-120.5c36.193-12.773,48.966-46.411,48.966-76.215Z" transform="translate(732.498 4.649)" fill="currentColor"/>
+    <path d="M256.147,148.672v-.853c-9.793-6.81-31.082-16.6-68.553-29.8-31.082-10.218-41.3-15.329-44.708-17.884-11.5-6.81-17.031-14.476-16.6-25.118.425-11.924,5.536-20.015,15.754-24.7,8.94-4.682,22.142-7.238,38.745-6.385,19.162.849,31.935,5.96,41.3,13.623,8.94,6.813,14.9,18.309,17.881,35.34v2.131h48.966v-1.7c-1.7-30.233-12.345-53.224-31.082-68.128-17.456-14.476-41.3-23.844-73.66-25.122C155.234-.778,130.54,6.035,110.526,18.38c-21.289,13.2-32.36,32.788-33.209,57.482s9.369,44.284,30.657,58.335c8.087,4.682,26.4,11.92,60.887,24.694,35.34,12.349,46.836,17.884,50.669,20.439,15.329,8.516,22.142,18.734,21.714,31.935,0,10.218-5.96,17.881-16.6,23.841-11.924,5.964-26.4,9.793-45.133,8.944-21.292-.853-36.621-7.238-46.839-14.476-11.5-8.944-17.456-21.292-19.158-43.006v-2.98H64.543v2.127c1.278,34.915,13.2,61.315,35.34,78.346,18.734,14.051,44.708,24.269,77.493,25.547,34.49,1.278,61.315-6.813,80.9-20.011q30.654-21.077,31.932-58.76c.853-25.971-10.643-46.836-34.062-62.164" transform="translate(165.809 0)" fill="currentColor"/>
+  </symbol>
+  <!-- marque "roue" Esker, inspirée de small_wheel esker.com -->
+  <symbol viewBox="0 0 100 100" id="eskerwheel">
+    <g class="espin">
+      <path class="eseg" d="M50 8 A42 42 0 0 1 86.4 29 L68.2 39.5 A21 21 0 0 0 50 29 Z" fill="#1dc0d5"/>
+      <path class="eseg" d="M86.4 71 A42 42 0 0 1 13.6 71 L31.8 60.5 A21 21 0 0 0 68.2 60.5 Z" fill="#9fe3ec"/>
+      <path class="eseg" d="M13.6 29 A42 42 0 0 1 50 8 L50 29 A21 21 0 0 0 31.8 39.5 Z" fill="#dfeef1"/>
+    </g>
   </symbol>
 </svg>
 
 <!-- ====== HEADER ====== -->
 <header class="header" id="hdr">
   <div class="header-in">
-    <a class="hlogo" href="https://www.fluxym.com/" aria-label="Fluxym - accueil">
-      <svg role="img" aria-label="Logo Fluxym" focusable="false"><use href="#fluxym"/></svg>
-      <span class="hlogo-tag">Esker en vidéo</span>
+    <a class="hlogo" href="https://www.fluxym.com/" aria-label="Fluxym, accueil">
+      <svg class="f-mark" role="img" aria-label="Logo Fluxym" focusable="false"><use href="#fluxym"/></svg>
+      <span class="hlogo-x" aria-hidden="true">×</span>
+      <svg class="e-mark" role="img" aria-label="Logo Esker" focusable="false"><use href="#eskerword"/></svg>
     </a>
     <nav class="hnav" aria-label="Navigation principale">
-      <a href="#roue">La suite Esker</a>
+      <a href="#roue">La roue Esker</a>
       <a href="#s2p">Source-to-Pay</a>
       <a href="#o2c">Order-to-Cash</a>
       <a href="https://www.fluxym.com/expertise/" target="_blank" rel="noopener">Notre expertise</a>
@@ -273,31 +434,33 @@ img,svg{max-width:100%}
 </header>
 
 <main>
-<!-- ====== HERO ====== -->
-<section class="hero">
-  <div class="wrap hero-in">
-    <span class="kicker">Fluxym <b>×</b> Esker</span>
+<!-- ====== SCENE PLEIN ECRAN ====== -->
+<section class="stage" id="roue">
+  <div class="stage-top">
+    <span class="kicker"><i></i>Fluxym × Esker</span>
     <h1>L'AI Automation Suite pour l'<em>Office of the CFO</em></h1>
-    <p>Découvrez en vidéo chaque module de la solution Esker, du sourcing fournisseur à l'encaissement client. Cliquez sur un module de la roue pour lancer sa présentation.</p>
-    <div class="hero-stats">
-      <div class="hstat"><b id="stMod">13</b><span>Modules</span></div>
-      <div class="hstat"><b id="stVid">10</b><span>Vidéos</span></div>
-      <div class="hstat"><b>2</b><span>Suites S2P &amp; O2C</span></div>
-      <div class="hstat"><b>FR</b><span>Langue</span></div>
+    <p>Survolez la roue pour explorer, cliquez sur un module ou sur le bouton central pour lancer sa démonstration vidéo.</p>
+  </div>
+
+  <div class="stage-mid">
+    <div class="wheel-box" id="wheelBox"></div>
+  </div>
+
+  <div class="stage-bot">
+    <div class="stage-stats">
+      <span class="sstat"><b id="stMod">13</b> modules</span>
+      <span class="sstat"><b id="stVid">10</b> vidéos</span>
+      <span class="sstat"><b>2</b> suites</span>
     </div>
+    <span class="hint">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+      Cliquez un module, la vidéo s'ouvre <b>juste en dessous</b>
+    </span>
   </div>
 </section>
 
-<!-- ====== ROUE ====== -->
-<section class="wheelsec" id="roue">
-  <div class="wrap">
-    <div class="stage"><div class="wheel-wrap" id="wheelWrap"></div></div>
-    <p class="wheel-help">Cliquez sur un module pour <b>lancer sa vidéo de présentation</b>.</p>
-  </div>
-</section>
-
-<!-- ====== PANNEAU MODULE ====== -->
-<section class="panelsec"><div class="wrap"><div id="panelHost"></div></div></section>
+<!-- ====== PANNEAU VIDEO ====== -->
+<section class="panelsec" id="playersec"><div class="wrap"><div id="panelHost"></div></div></section>
 
 <!-- ====== LISTE DES MODULES ====== -->
 <section class="listsec" id="modules">
@@ -318,7 +481,7 @@ img,svg{max-width:100%}
   <div class="wrap contact-grid">
     <div class="contact-left">
       <h2>Une <em>question&nbsp;?</em><br>Un <em>projet&nbsp;?</em></h2>
-      <p>Nous serons ravis de pouvoir y répondre et d'échanger avec vous dans les plus brefs délais. Contactez-nous en remplissant le formulaire ou en envoyant un email à <a href="/cdn-cgi/l/email-protection#82ebece4edc2e4eef7fafbeface1edef"><span class="__cf_email__" data-cfemail="1970777f76597f756c616074377a7674">[email&#160;protected]</span></a>.</p>
+      <p>Nous serons ravis de pouvoir y répondre et d'échanger avec vous dans les plus brefs délais. Contactez-nous en remplissant le formulaire ou en envoyant un email à <a href="/cdn-cgi/l/email-protection#7811161e17381e140d000115561b1715"><span class="__cf_email__" data-cfemail="355c5b535a755359404d4c581b565a58">[email&#160;protected]</span></a>.</p>
       <p>Vous souhaitez une démonstration personnalisée d'un module Esker sur vos propres processus&nbsp;? Précisez-le dans votre demande, un expert Fluxym vous recontacte.</p>
       <div class="offices">
         <div class="office"><b>Paris</b><span>+33 1 56 90 55 80</span><span>15 rue de la Faisanderie, 75116</span></div>
@@ -334,7 +497,7 @@ img,svg{max-width:100%}
         <div class="hs-form-frame" id="hsFormTarget"></div>
         <div class="formfallback" id="formFallback">
           Le formulaire ne s'est pas chargé (bloqueur de publicité ou connexion restreinte).
-          Écrivez-nous directement à <a href="/cdn-cgi/l/email-protection#bbd2d5ddd4fbddd7cec3c2d695d8d4d6" style="color:var(--blue);font-weight:600"><span class="__cf_email__" data-cfemail="3950575f56795f554c414054175a5654">[email&#160;protected]</span></a>
+          Écrivez-nous directement à <a href="/cdn-cgi/l/email-protection#87eee9e1e8c7e1ebf2fffeeaa9e4e8ea" style="color:var(--blue);font-weight:600"><span class="__cf_email__" data-cfemail="f990979f96b99f958c818094d79a9694">[email&#160;protected]</span></a>
           ou via <a href="https://www.fluxym.com/nous-contacter/" target="_blank" rel="noopener" style="color:var(--blue);font-weight:600">la page contact de fluxym.com</a>.
         </div>
       </div>
@@ -373,86 +536,104 @@ img,svg{max-width:100%}
   </div>
 </footer>
 
-<button class="totop" id="toTop" aria-label="Retour en haut">
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+<button class="totop" id="toTop" type="button" aria-label="Revenir en haut de la page" title="Revenir en haut">
+  <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
 </button>
+
+<!-- ====== WIDGET ROUE FLOTTANT ====== -->
+<!-- Pas de fenêtre : la bulle Esker se transforme en roue au survol. -->
+<div class="dock" id="dock">
+  <div class="dock-wheel" id="dockWheel" role="group" aria-label="Roue Esker, sélecteur rapide de module"></div>
+  <button class="dock-btn" id="dockBtn" type="button" aria-label="Ouvrir la roue Esker" aria-expanded="false">
+    <svg class="dock-halo" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <circle class="hring-a" cx="50" cy="50" r="45" fill="none" stroke="#1dc0d5" stroke-width="2" stroke-dasharray="30 170" stroke-linecap="round" opacity=".9"/>
+      <circle class="hring-a" cx="50" cy="50" r="45" fill="none" stroke="#1dc0d5" stroke-width="1.4" stroke-dasharray="2 12" opacity=".4"/>
+      <circle class="hring-b" cx="50" cy="50" r="48.5" fill="none" stroke="#6b51ed" stroke-width="1.6" stroke-dasharray="16 130" stroke-linecap="round" opacity=".55"/>
+    </svg>
+    <svg class="emark" aria-hidden="true"><use href="#eskerwheel"/></svg>
+    <svg class="ewordmark" aria-hidden="true"><use href="#eskerword"/></svg>
+    <span class="dock-badge" id="dockBadge">10</span>
+  </button>
+</div>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 /* =========================================================================
-   DONNÉES - modules Esker & vidéos de présentation
+   1. DONNÉES
    ========================================================================= */
 const CDN  = "https://26096000.fs1.hubspotusercontent-eu1.net/hubfs/26096000/";
 const F_O2C = CDN + "Vid%C3%A9o%20d%C3%A9mo%20Esker%20O2C/";
 const F_S2P = F_O2C + "Vid%C3%A9o%20d%C3%A9mo%20Esker%20S2P/";
 
 const M = [
-/* ---------------- SOURCE-TO-PAY ---------------- */
-{id:"so", suite:"S2P", label:"Sourcing", icon:"🔎", c:"#8CC63F",
+{id:"so", code:"SRC", suite:"S2P", label:"Sourcing", icon:"🔎", c:"#8CC63F",
  desc:"Digitalisez vos appels d'offres et enchères inversées avec Market Dojo. Centralisez les consultations, comparez les réponses fournisseurs et sécurisez vos décisions d'attribution.",
  videos:[{t:"Présentation globale du module Sourcing Esker (Market Dojo)", sz:"34 Mo", u:F_S2P+"Pr%C3%A9sentation%20globale%20du%20module%20Sourcing%20Esker%20(Market%20Dojo)%20(C).mp4"}]},
 
-{id:"sm", suite:"S2P", label:"Supplier Management", icon:"🤝", c:"#00A7E1",
+{id:"sm", code:"SM", suite:"S2P", label:"Supplier Management", icon:"🤝", c:"#00A7E1",
  desc:"Référencez, qualifiez et suivez vos fournisseurs dans un référentiel unique. Onboarding en self-service via le portail, contrôle des données et pilotage du risque fournisseur.",
  videos:[{t:"Présentation globale du module Gestion des Fournisseurs", sz:"29 Mo", u:F_S2P+"Pr%C3%A9sentation%20globale%20du%20module%20Gestion%20des%20Fournisseurs%20(C).mp4"}]},
 
-{id:"ctm", suite:"S2P", label:"Contract Management", icon:"📄", c:"#5B6B7A",
+{id:"ctm", code:"CTM", suite:"S2P", label:"Contract Management", icon:"📄", c:"#5B6B7A",
  desc:"Centralisez le cycle de vie contractuel : rédaction assistée, circuits de validation, signature électronique, alertes d'échéance et suivi des engagements.",
  videos:[{t:"Présentation globale du module Contrats Esker", sz:"29 Mo", u:F_S2P+"Pr%C3%A9sentation%20globale%20du%20module%20Contrats%20Esker%20(C).mp4"}]},
 
-{id:"pr", suite:"S2P", label:"Procurement", icon:"🛒", c:"#2E3F4F",
+{id:"pr", code:"PROC", suite:"S2P", label:"Procurement", icon:"🛒", c:"#2E3F4F",
  desc:"Canalisez la dépense vers les contrats négociés : catalogues et punch-out, demandes d'achat guidées, workflows d'approbation, commandes et réceptions.",
  videos:[{t:"Présentation globale du module Achats Esker", sz:"27 Mo", u:F_S2P+"Pr%C3%A9sentation%20globale%20du%20module%20Achats%20Esker%20(C).mp4"}]},
 
-{id:"ap", suite:"S2P", label:"Accounts Payable & Compliance", icon:"🧾", c:"#F5A623",
+{id:"ap", code:"AP", suite:"S2P", label:"Accounts Payable & Compliance", icon:"🧾", c:"#F5A623",
  desc:"Automatisez le traitement des factures fournisseurs : capture IA, rapprochement commande/réception, workflows d'approbation, conformité et facturation électronique.",
  videos:[{t:"Présentation globale du module Factures Fournisseurs Esker", sz:"30 Mo", u:F_S2P+"Pr%C3%A9sentation%20globale%20du%20module%20Factures%20Fournisseurs%20Esker%20(C).mp4"}]},
 
-{id:"em", suite:"S2P", label:"Expense Management", icon:"✈️", c:"#E8465A",
+{id:"em", code:"EM", suite:"S2P", label:"Expense Management", icon:"✈️", c:"#E8465A",
  desc:"Simplifiez les notes de frais : saisie mobile avec reconnaissance du justificatif, contrôle automatique de la politique de dépense et remboursement accéléré.",
  videos:[{t:"Présentation globale du module Notes de Frais Esker", sz:"30 Mo", u:F_S2P+"Pr%C3%A9sentation%20globale%20du%20module%20Notes%20de%20Frais%20Esker%20(C).mp4"}]},
 
-/* ---------------- ORDER-TO-CASH ---------------- */
-{id:"crm", suite:"O2C", label:"Credit Management", icon:"📊", c:"#7D8B99",
+{id:"crm", code:"CRM", suite:"O2C", label:"Credit Management", icon:"📊", c:"#7D8B99",
  desc:"Évaluez et surveillez le risque client en continu : scoring, encours et limites de crédit, demandes d'ouverture de compte et validation des blocages de commande.",
  videos:[]},
 
-{id:"cim", suite:"O2C", label:"Customer Inquiry Management", icon:"💬", c:"#2E3F4F",
+{id:"cim", code:"CIM", suite:"O2C", label:"Customer Inquiry Management", icon:"💬", c:"#2E3F4F",
  desc:"Centralisez toutes les demandes clients dans une boîte partagée intelligente : qualification automatique, routage vers le bon interlocuteur et suivi des délais de réponse.",
  videos:[]},
 
-{id:"om", suite:"O2C", label:"Order Management", icon:"📦", c:"#F5A623",
+{id:"om", code:"OM", suite:"O2C", label:"Order Management", icon:"📦", c:"#F5A623",
  desc:"Automatisez la saisie des commandes clients, quel que soit le canal (e-mail, PDF, EDI, portail). Détection des écarts, contrôle des prix et intégration directe à l'ERP.",
  videos:[]},
 
-{id:"id", suite:"O2C", label:"Invoice Delivery & Compliance", icon:"📤", c:"#E8465A",
+{id:"id", code:"ID", suite:"O2C", label:"Invoice Delivery & Compliance", icon:"📤", c:"#E8465A",
  desc:"Émettez et distribuez vos factures clients sur tous les canaux, en conformité avec les obligations de facturation électronique en France et à l'international.",
  videos:[{t:"Présentation globale du module Factures Clients Esker", sz:"27 Mo", u:F_O2C+"Pr%C3%A9sentation%20globale%20du%20module%20Factures%20Clients%20(C).mp4"}]},
 
-{id:"ca", suite:"O2C", label:"Cash Application", icon:"💰", c:"#8CC63F",
+{id:"ca", code:"CA", suite:"O2C", label:"Cash Application", icon:"💰", c:"#8CC63F",
  desc:"Lettrez automatiquement les encaissements : rapprochement IA des règlements et des avis de paiement, traitement des écarts et imputation comptable immédiate.",
  videos:[
   {t:"Présentation globale du module Encaissements Clients", sz:"40 Mo", u:F_O2C+"Pr%C3%A9sentation%20globale%20du%20module%20Encaissements%20Clients%20(C).mp4"},
   {t:"Présentation détaillée (version longue)", sz:"50 Mo", u:F_O2C+"Pr%C3%A9sentation%20globale%20du%20module%20Encaissements%20Clients%20%20(%20V%20longue)%20(C).mp4"}
  ]},
 
-{id:"cd", suite:"O2C", label:"Claims & Deductions", icon:"⚖️", c:"#4FC3D9",
+{id:"cd", code:"C&D", suite:"O2C", label:"Claims & Deductions", icon:"⚖️", c:"#4FC3D9",
  desc:"Traitez les litiges et déductions clients de bout en bout : qualification du motif, collecte des preuves, workflow de résolution et suivi du taux de recouvrement.",
  videos:[]},
 
-{id:"com", suite:"O2C", label:"Collections Management", icon:"📞", c:"#00A7E1",
+{id:"com", code:"COM", suite:"O2C", label:"Collections Management", icon:"📞", c:"#00A7E1",
  desc:"Pilotez le recouvrement avec des stratégies de relance personnalisées, une priorisation intelligente des dossiers et une vision temps réel du DSO.",
  videos:[{t:"Présentation globale du module Collection Management", sz:"37 Mo", u:F_O2C+"Pr%C3%A9sentation%20globale%20du%20module%20Collection%20Management%20(C).mp4"}]}
 ];
 
 const ORDER_S2P = ["so","sm","ctm","pr","ap","em"];
 const ORDER_O2C = ["crm","cim","om","id","ca","cd","com"];
+const ALL_ORDER = ORDER_S2P.concat(ORDER_O2C);
 const byId = id => M.find(m => m.id === id);
 const TOTV = M.reduce((a,m) => a + m.videos.length, 0);
-const COVERED = M.filter(m => m.videos.length).length;
+const WITHVID = M.filter(m => m.videos.length).map(m => m.id);
 
 /* =========================================================================
-   GÉOMÉTRIE SVG
+   2. GÉOMÉTRIE
    ========================================================================= */
+const C=410, R2=392, R1=252, HUB=228;
+const O1=4, O2=148, B1=152, B2=208, S1=212, S2=356;
+
 function pol(cx,cy,r,a){const t=(a-90)*Math.PI/180;return[cx+r*Math.cos(t),cy+r*Math.sin(t)]}
 function ring(cx,cy,r1,r2,a1,a2,pad){
   pad=pad||0;a1+=pad;a2-=pad;
@@ -464,13 +645,18 @@ function arc(cx,cy,r,a1,a2){
   const[x1,y1]=pol(cx,cy,r,a1),[x2,y2]=pol(cx,cy,r,a2),la=Math.abs(a2-a1)>180?1:0,sw=a2>a1?1:0;
   return`M${x1.toFixed(2)} ${y1.toFixed(2)}A${r} ${r} 0 ${la} ${sw} ${x2.toFixed(2)} ${y2.toFixed(2)}`;
 }
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
 function wrapTxt(txt,max){
   const w=txt.split(" "),l=[];let c="";
   w.forEach(x=>{if((c+" "+x).trim().length>max&&c){l.push(c);c=x}else c=(c?c+" ":"")+x});
   if(c)l.push(c);return l.slice(0,3);
 }
-function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
-function arcText(cx,cy,r,aMid,str,fs,fill,ls,inward,weight){
+/* largeur approximative d'un texte circulaire */
+function advW(str,fs,ls){
+  const adv=c=>(c===" "?fs*0.30:(/[·.\-&]/.test(c)?fs*0.38:fs*0.63))+ls;
+  return Array.from(str).reduce((a,c)=>a+adv(c),0);
+}
+function arcText(cx,cy,r,aMid,str,fs,fill,ls,inward,weight,cls){
   ls=(ls===undefined?0:ls);
   const adv=c=>(c===" "?fs*0.30:(/[·.\-&]/.test(c)?fs*0.38:fs*0.63))+ls;
   const chars=Array.from(str), ws=chars.map(adv);
@@ -478,119 +664,295 @@ function arcText(cx,cy,r,aMid,str,fs,fill,ls,inward,weight){
   let a=aMid-dir*totalDeg/2, out="";
   chars.forEach((ch,i)=>{
     const wd=ws[i]/perDeg, ac=a+dir*wd/2, [x,y]=pol(cx,cy,r,ac), rot=inward?ac+180:ac;
-    if(ch!==" ")out+=`<text x="${x.toFixed(2)}" y="${y.toFixed(2)}" transform="rotate(${rot.toFixed(2)} ${x.toFixed(2)} ${y.toFixed(2)})" text-anchor="middle" dy="${(fs*0.34).toFixed(2)}" font-size="${fs}" font-weight="${weight||700}" fill="${fill}" font-family="Miriam Libre, sans-serif">${esc(ch)}</text>`;
+    if(ch!==" ")out+=`<text x="${x.toFixed(2)}" y="${y.toFixed(2)}" transform="rotate(${rot.toFixed(2)} ${x.toFixed(2)} ${y.toFixed(2)})" text-anchor="middle" dy="${(fs*0.34).toFixed(2)}" font-size="${fs.toFixed(2)}" font-weight="${weight||700}" fill="${fill}" font-family="Miriam Libre, sans-serif">${esc(ch)}</text>`;
     a+=dir*wd;
   });
-  return `<g pointer-events="none">${out}</g>`;
+  return `<g class="${cls||''}" pointer-events="none">${out}</g>`;
+}
+/* ajuste automatiquement la taille pour tenir dans maxDeg degrés : corrige le débordement de CONNECTIVITY SUITE */
+function arcTextFit(cx,cy,r,aMid,str,fsMax,fill,inward,maxDeg,lsMax,cls){
+  let fs=fsMax, ls=(lsMax===undefined?1.2:lsMax);
+  const perDeg=Math.PI*r/180;
+  let guard=0;
+  while(guard++<80 && advW(str,fs,ls)/perDeg > maxDeg){
+    fs-=0.3; ls=Math.max(0,ls-0.06);
+    if(fs<=5.5){fs=5.5;break}
+  }
+  return arcText(cx,cy,r,aMid,str,fs,fill,ls,inward,700,cls);
 }
 
-/* ---------- un segment cliquable ---------- */
-function segment(cx,cy,r1,r2,a1,a2,id,fs,maxc){
+/* =========================================================================
+   3. LA GRANDE ROUE
+   ========================================================================= */
+function segment(a1,a2,id,fs,maxc,idx){
   const m=byId(id); if(!m) return "";
   const am=(a1+a2)/2, c=m.c, soon=!m.videos.length;
-  const[tx,ty]=pol(0,0,9,am);
+  const[tx,ty]=pol(0,0,10,am);
+  const[ix,iy]=pol(0,0,-26,am);
   let rot=((am-90)%360+360)%360; if(rot>90&&rot<270)rot+=180;
-  const rl=(r1+r2)/2+2,[lx,ly]=pol(cx,cy,rl,am);
+  const rl=(R1+R2)/2+2,[lx,ly]=pol(C,C,rl,am);
   const lines=wrapTxt(m.label,maxc||15);
   const lh=fs+2.4, blockH=lines.length*lh, off=-(blockH-lh)/2-lh*.25;
   const note = soon ? "Bientôt" : m.videos.length+" vidéo"+(m.videos.length>1?"s":"");
   let t=`<text class="slab" x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" transform="rotate(${rot.toFixed(2)} ${lx.toFixed(1)} ${ly.toFixed(1)})" text-anchor="middle" font-size="${fs}" font-weight="700" fill="#163467" letter-spacing=".2" font-family="Miriam Libre, sans-serif">`;
   lines.forEach((L,i)=>{t+=`<tspan x="${lx.toFixed(1)}" dy="${i===0?off.toFixed(1):lh.toFixed(1)}">${esc(L)}</tspan>`});
   t+=`<tspan class="scnt" x="${lx.toFixed(1)}" dy="${(lh+3).toFixed(1)}" font-size="${(fs-2.5).toFixed(1)}" font-weight="700" fill="${soon?'#9aa7bb':c}" font-family="Barlow, sans-serif">${note}</tspan></text>`;
-  return`<g class="seg${soon?' soon':''}" id="seg-${id}" role="button" tabindex="0" style="--c:${c};--tx:${tx.toFixed(2)}px;--ty:${ty.toFixed(2)}px" data-id="${id}">
-  <title>${esc(m.label)} - ${soon?'vidéo à venir':note}</title>
-  <path class="sfill" d="${ring(cx,cy,r1,r2,a1,a2,.55)}" fill="#fff" stroke="${c}" stroke-width="2.2" stroke-linejoin="round" ${soon?'opacity=".82"':''}/>
-  <path d="${ring(cx,cy,r1,r1+6,a1,a2,.55)}" fill="${c}" opacity="${soon?'.45':'.92'}" pointer-events="none"/>
+  return`<g class="seg${soon?' soon':''}" id="seg-${id}" role="button" tabindex="0"
+    style="--c:${c};--tx:${tx.toFixed(2)}px;--ty:${ty.toFixed(2)}px;--ix:${ix.toFixed(2)}px;--iy:${iy.toFixed(2)}px;--d:${(0.18+idx*0.045).toFixed(3)}s"
+    data-id="${id}" data-suite="${m.suite}">
+  <title>${esc(m.label)} : ${soon?'vidéo à venir':note}</title>
+  <path class="sglow" d="${ring(C,C,R1-5,R2+5,a1,a2,.3)}" fill="${c}" opacity="0" filter="url(#blur10)"/>
+  <path class="sfill" d="${ring(C,C,R1,R2,a1,a2,.55)}" fill="#fff" stroke="${c}" stroke-width="2.2" stroke-linejoin="round"${soon?' opacity=".86"':''}/>
+  <path class="srim" d="${ring(C,C,R1,R1+6,a1,a2,.55)}" fill="${c}" opacity="${soon?'.45':'.92'}" pointer-events="none"/>
   ${t}</g>`;
 }
 
-/* ---------- décor animé ---------- */
-function decor(cx,cy,R){
-  let d=`<g class="rot-slow" style="transform-origin:${cx}px ${cy}px">
-    <circle cx="${cx}" cy="${cy}" r="${R+26}" fill="none" stroke="#13b4e2" stroke-width="1.2" stroke-dasharray="2 13" opacity=".45"/></g>
-  <g class="rot-rev" style="transform-origin:${cx}px ${cy}px">
-    <circle cx="${cx}" cy="${cy}" r="${R+44}" fill="none" stroke="#6b51ed" stroke-width="1" stroke-dasharray="26 20" opacity=".2"/></g>
-  <g class="rot-fast" style="transform-origin:${cx}px ${cy}px">`;
-  for(let i=0;i<3;i++){const[x,y]=pol(cx,cy,R+26,i*120);d+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4.5" fill="#13b4e2" opacity=".85"/><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="9" fill="#13b4e2" opacity=".18"/>`}
-  d+=`</g><g class="rot-rev" style="transform-origin:${cx}px ${cy}px">`;
-  for(let i=0;i<2;i++){const[x,y]=pol(cx,cy,R+44,40+i*180);d+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3" fill="#6b51ed" opacity=".6"/>`}
+function suiteArc(a1,a2,suite,label){
+  const r=R1-30;
+  return `<g class="suitegrp" id="arc-${suite}" data-suite="${suite}">
+    <path class="suitearc-base" d="${arc(C,C,r,a1+4,a2-4)}" fill="none" stroke="#13b4e2" stroke-width="3.4" stroke-linecap="round" opacity=".75"/>
+    <path class="suitearc-flow" d="${arc(C,C,r,a1+4,a2-4)}" fill="none" stroke="#6b51ed" stroke-width="2.4" stroke-linecap="round" opacity=".5"/>
+    <path class="suitearc-comet" d="${arc(C,C,r,a1+4,a2-4)}" fill="none" stroke="url(#gComet)" stroke-width="4.6" stroke-linecap="round"/>
+    ${arcText(C,C,R1-14,(a1+a2)/2,label,18,"#163467",4,false,700,"suitelab")}
+    <circle class="suite-node" cx="${pol(C,C,r,a1+4)[0].toFixed(1)}" cy="${pol(C,C,r,a1+4)[1].toFixed(1)}" r="6.5" fill="#13b4e2"/>
+    <circle class="suite-node" cx="${pol(C,C,r,a2-4)[0].toFixed(1)}" cy="${pol(C,C,r,a2-4)[1].toFixed(1)}" r="6.5" fill="#13b4e2"/>
+  </g>`;
+}
+
+function decor(){
+  let d=`<g class="rot-slow" style="transform-origin:${C}px ${C}px">
+    <circle cx="${C}" cy="${C}" r="${R2+26}" fill="none" stroke="#13b4e2" stroke-width="1.2" stroke-dasharray="2 13" opacity=".45"/></g>
+  <g class="rot-rev" style="transform-origin:${C}px ${C}px">
+    <circle cx="${C}" cy="${C}" r="${R2+44}" fill="none" stroke="#6b51ed" stroke-width="1" stroke-dasharray="26 20" opacity=".2"/></g>
+  <g class="rot-med" style="transform-origin:${C}px ${C}px">
+    <circle cx="${C}" cy="${C}" r="${R2+62}" fill="none" stroke="#13b4e2" stroke-width="1" stroke-dasharray="1 18" opacity=".3"/></g>
+  <g class="rot-fast" style="transform-origin:${C}px ${C}px">`;
+  for(let i=0;i<3;i++){const[x,y]=pol(C,C,R2+26,i*120);
+    d+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4.5" fill="#13b4e2" opacity=".85"/><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="10" fill="#13b4e2" opacity=".16"/>`}
+  d+=`</g><g class="rot-rev" style="transform-origin:${C}px ${C}px">`;
+  for(let i=0;i<2;i++){const[x,y]=pol(C,C,R2+44,40+i*180);d+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.2" fill="#6b51ed" opacity=".6"/>`}
+  d+=`</g><g class="rot-med" style="transform-origin:${C}px ${C}px">`;
+  for(let i=0;i<5;i++){const[x,y]=pol(C,C,R2+62,22+i*72);d+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.2" fill="#13b4e2" opacity=".5"/>`}
   return d+`</g>`;
 }
 function icoAI(x,y,sc,c){
   let g=`<g transform="translate(${x} ${y}) scale(${sc})" stroke="${c}" stroke-width="1.8" fill="none">`;
   const P=[[0,-11],[10,-4],[7,8],[-7,8],[-10,-4]];
   P.forEach((a,i)=>{P.forEach((b,j)=>{if(j>i)g+=`<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" opacity=".45"/>`})});
-  P.forEach(a=>{g+=`<circle cx="${a[0]}" cy="${a[1]}" r="3" fill="${c}" stroke="none"/>`});
-  return g+`<circle cx="0" cy="0" r="2.2" fill="${c}" stroke="none"/></g>`;
-}
-function eskerLogo(cx,cy,sc){
-  return`<g transform="translate(${cx} ${cy}) scale(${sc})">
-    <text x="0" y="0" text-anchor="middle" font-size="46" font-weight="900" letter-spacing="1.5" fill="#ED1C24" font-family="Miriam Libre, sans-serif">ESKER</text>
-    <text x="78" y="-22" text-anchor="middle" font-size="13" font-weight="700" fill="#ED1C24">®</text></g>`;
+  P.forEach((a,i)=>{g+=`<circle class="ainode" style="animation-delay:${(i*0.35).toFixed(2)}s" cx="${a[0]}" cy="${a[1]}" r="3" fill="${c}" stroke="none"/>`});
+  return g+`<circle class="aicore" cx="0" cy="0" r="2.4" fill="${c}" stroke="none"/></g>`;
 }
 
-/* ---------- LA ROUE ---------- */
 function buildWheel(){
-  const C=410,R2=392,R1=252,HUB=228;
-  const o1=4,o2=150, b1=154,b2=206, s1=210,s2=356;
-  let g=`<svg class="wheel-svg wheel-fade" viewBox="0 0 820 820" role="img" aria-label="Roue des modules Esker pour l'Office of the CFO">
+  let g=`<svg class="wheel-svg" id="bigWheel" viewBox="-124 -124 1068 1068" role="img" aria-label="Roue interactive des modules Esker pour l'Office of the CFO">
   <defs>
     <linearGradient id="gBand" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFCF63"/><stop offset="1" stop-color="#F5A623"/></linearGradient>
-    <radialGradient id="gHub"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#F0F6F8"/></radialGradient>
+    <linearGradient id="gComet" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#13b4e2" stop-opacity="0"/><stop offset=".5" stop-color="#6b51ed"/><stop offset="1" stop-color="#13b4e2" stop-opacity="0"/></linearGradient>
+    <radialGradient id="gHub"><stop offset="0" stop-color="#ffffff"/><stop offset=".72" stop-color="#fbfdfe"/><stop offset="1" stop-color="#eaf3f7"/></radialGradient>
+    <radialGradient id="gSweep"><stop offset="0" stop-color="#13b4e2" stop-opacity=".22"/><stop offset="1" stop-color="#13b4e2" stop-opacity="0"/></radialGradient>
     <filter id="sh" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="10" stdDeviation="16" flood-color="#163467" flood-opacity=".1"/></filter>
+    <filter id="blur10" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="10"/></filter>
   </defs>`;
-  g+=decor(C,C,R2);
+  g+=decor();
+  /* noyau */
   g+=`<circle cx="${C}" cy="${C}" r="${HUB}" fill="url(#gHub)" filter="url(#sh)"/>`;
-  g+=`<circle class="breathe" cx="${C}" cy="${C}" r="${HUB-9}" fill="none" stroke="#13b4e2" stroke-width="1" stroke-dasharray="4 9"/>`;
-  g+=`<path d="${arc(C,C,R1-30,s1+4,s2-4)}" fill="none" stroke="#13b4e2" stroke-width="3.5" stroke-linecap="round"/>`;
-  g+=`<path d="${arc(C,C,R1-30,o1+4,o2-4)}" fill="none" stroke="#13b4e2" stroke-width="3.5" stroke-linecap="round"/>`;
-  g+=arcText(C,C,R1-14,(s1+s2)/2,"SOURCE-TO-PAY",18,"#163467",4,false,700);
-  g+=arcText(C,C,R1-14,(o1+o2)/2,"ORDER-TO-CASH",18,"#163467",4,false,700);
-  const[ax,ay]=pol(C,C,R1-30,s2-4),[bx,by]=pol(C,C,R1-30,o2-4);
-  g+=`<circle cx="${ax.toFixed(1)}" cy="${ay.toFixed(1)}" r="7" fill="#13b4e2"/><circle cx="${bx.toFixed(1)}" cy="${by.toFixed(1)}" r="7" fill="#13b4e2"/>`;
-  const ws=(s2-s1)/ORDER_S2P.length, wo=(o2-o1)/ORDER_O2C.length;
-  ORDER_S2P.forEach((id,i)=>{g+=segment(C,C,R1,R2,s1+i*ws,s1+(i+1)*ws,id,13,15)});
-  ORDER_O2C.forEach((id,i)=>{g+=segment(C,C,R1,R2,o1+i*wo,o1+(i+1)*wo,id,13,15)});
-  /* bandeau socle plateforme */
+  g+=`<g class="hub-sweep" style="transform-origin:${C}px ${C}px"><path d="M${C} ${C} L${C} ${C-HUB} A${HUB} ${HUB} 0 0 1 ${(C+HUB*Math.cos(-Math.PI/3)).toFixed(1)} ${(C+HUB*Math.sin(-Math.PI/3)).toFixed(1)} Z" fill="url(#gSweep)"/></g>`;
+  g+=`<circle class="hub-ring-a" style="transform-origin:${C}px ${C}px" cx="${C}" cy="${C}" r="${HUB-9}" fill="none" stroke="#13b4e2" stroke-width="1" stroke-dasharray="4 9" opacity=".45"/>`;
+  g+=`<circle class="hub-ring-b breathe" style="transform-origin:${C}px ${C}px" cx="${C}" cy="${C}" r="${HUB-22}" fill="none" stroke="#6b51ed" stroke-width=".9" stroke-dasharray="22 14"/>`;
+  /* arcs de suite animés */
+  g+=suiteArc(S1,S2,"S2P","SOURCE-TO-PAY");
+  g+=suiteArc(O1,O2,"O2C","ORDER-TO-CASH");
+  /* segments */
+  const ws=(S2-S1)/ORDER_S2P.length, wo=(O2-O1)/ORDER_O2C.length;
+  ORDER_S2P.forEach((id,i)=>{g+=segment(S1+i*ws,S1+(i+1)*ws,id,13,15,i)});
+  ORDER_O2C.forEach((id,i)=>{g+=segment(O1+i*wo,O1+(i+1)*wo,id,12.5,15,i+6)});
+  /* socle plateforme : textes auto-ajustés pour ne jamais déborder */
   g+=`<g class="bandg"><title>Socle plateforme Esker</title>
-    <path class="bandfill" d="${ring(C,C,R1,R2,b1,b2,.55)}" fill="url(#gBand)"/>`;
-  g+=arcText(C,C,R2-26,164,"AI AGENTS",12,"#6B3E00",1.2,true,700);
-  g+=arcText(C,C,R2-50,164,"B2B PAYMENTS",12,"#6B3E00",1.2,true,700);
-  g+=arcText(C,C,R2-74,164,"CONNECTIVITY SUITE",10.5,"#6B3E00",1.0,true,700);
-  g+=arcText(C,C,R2-26,196,"UNIFIED UX",12,"#6B3E00",1.2,true,700);
-  g+=arcText(C,C,R2-50,196,"DATALAKE",12,"#6B3E00",1.2,true,700);
-  g+=arcText(C,C,R2-74,196,"ISO 27001",12,"#6B3E00",1.2,true,700);
+    <path d="${ring(C,C,R1,R2,B1,B2,.55)}" fill="url(#gBand)"/>
+    <path class="bandsheen" d="${ring(C,C,R1,R2,B1,B2,.55)}" fill="#fff" opacity=".12"/>`;
+  const COLL=166, COLR=194, MAXD=24;
+  g+=arcTextFit(C,C,R2-26,COLL,"AI AGENTS",12,"#6B3E00",true,MAXD,1.2);
+  g+=arcTextFit(C,C,R2-50,COLL,"B2B PAYMENTS",12,"#6B3E00",true,MAXD,1.2);
+  g+=arcTextFit(C,C,R2-74,COLL,"CONNECTIVITY SUITE",11,"#6B3E00",true,MAXD,1.0);
+  g+=arcTextFit(C,C,R2-26,COLR,"UNIFIED UX",12,"#6B3E00",true,MAXD,1.2);
+  g+=arcTextFit(C,C,R2-50,COLR,"DATALAKE",12,"#6B3E00",true,MAXD,1.2);
+  g+=arcTextFit(C,C,R2-74,COLR,"ISO 27001",12,"#6B3E00",true,MAXD,1.2);
   g+=`</g>`;
+  /* pastille Synergy AI */
   const[sx,sy]=pol(C,C,R1+2,180);
-  g+=`<g class="hubwrap"><title>Synergy AI / Esker AI</title>
-    <circle cx="${sx.toFixed(1)}" cy="${sy.toFixed(1)}" r="42" fill="#fff" stroke="#F5A623" stroke-width="3"/>
-    <circle class="hubring rot-slow" style="transform-origin:${sx.toFixed(1)}px ${sy.toFixed(1)}px" cx="${sx.toFixed(1)}" cy="${sy.toFixed(1)}" r="48" fill="none" stroke="#F5A623" stroke-width="1.6" stroke-dasharray="5 7" opacity=".6"/>
-    ${icoAI(sx,sy-7,.72,"#B45309")}
-    <text x="${sx.toFixed(1)}" y="${(sy+22).toFixed(1)}" text-anchor="middle" font-size="8.5" font-weight="700" letter-spacing=".8" fill="#92400E" font-family="Miriam Libre, sans-serif">SYNERGY AI</text></g>`;
-  g+=eskerLogo(C,C-52,1);
-  g+=`<text x="${C}" y="${C-14}" text-anchor="middle" font-size="22" font-weight="700" fill="#163467" letter-spacing="-.5" font-family="Miriam Libre, sans-serif">AI Automation Suite</text>
-      <text x="${C}" y="${C+14}" text-anchor="middle" font-size="22" font-weight="700" fill="#163467" letter-spacing="-.5" font-family="Miriam Libre, sans-serif">for the Office of the CFO</text>
-      <text x="${C}" y="${C+48}" text-anchor="middle" font-size="12" font-weight="700" fill="#9aa7bb" letter-spacing="1.6" font-family="Barlow, sans-serif">${TOTV} VIDÉOS · ${M.length} MODULES</text>
-      <text x="${C}" y="${C+74}" text-anchor="middle" font-size="11.5" font-weight="700" fill="#13b4e2" letter-spacing=".4" font-family="Barlow, sans-serif">Cliquez sur un module pour explorer ▸</text>`;
+  g+=`<g class="aihub"><title>Synergy AI, le moteur d'intelligence artificielle Esker</title>
+    <g class="aiorb" style="transform-origin:${sx.toFixed(1)}px ${sy.toFixed(1)}px">
+      <circle cx="${sx.toFixed(1)}" cy="${sy.toFixed(1)}" r="42" fill="#fff" stroke="#F5A623" stroke-width="3"/>
+      <circle class="airing" style="transform-origin:${sx.toFixed(1)}px ${sy.toFixed(1)}px" cx="${sx.toFixed(1)}" cy="${sy.toFixed(1)}" r="49" fill="none" stroke="#F5A623" stroke-width="1.6" stroke-dasharray="5 7" opacity=".6"/>
+      ${icoAI(sx,sy-7,.72,"#B45309")}
+      <text x="${sx.toFixed(1)}" y="${(sy+22).toFixed(1)}" text-anchor="middle" font-size="8.5" font-weight="700" letter-spacing=".8" fill="#92400E" font-family="Miriam Libre, sans-serif">SYNERGY AI</text>
+    </g></g>`;
+  /* contenu du noyau : état par défaut */
+  g+=`<g class="hub-default">
+    <g transform="translate(${C-78} ${C-92}) scale(0.1215)"><use href="#eskerword" width="1283" height="290" style="color:#db001b"/></g>
+    <text x="${C}" y="${C-14}" text-anchor="middle" font-size="22" font-weight="700" fill="#163467" letter-spacing="-.5" font-family="Miriam Libre, sans-serif">AI Automation Suite</text>
+    <text x="${C}" y="${C+14}" text-anchor="middle" font-size="22" font-weight="700" fill="#163467" letter-spacing="-.5" font-family="Miriam Libre, sans-serif">for the Office of the CFO</text>
+    <text x="${C}" y="${C+50}" text-anchor="middle" font-size="12" font-weight="700" fill="#9aa7bb" letter-spacing="1.6" font-family="Barlow, sans-serif">${TOTV} VIDÉOS · ${M.length} MODULES</text>
+    <text x="${C}" y="${C+76}" text-anchor="middle" font-size="11.5" font-weight="700" fill="#13b4e2" letter-spacing=".4" font-family="Barlow, sans-serif">Survolez un module pour le découvrir</text>
+  </g>`;
+  /* contrôle de taille intégré au noyau : il reste au centre, donc il ne « saute » plus */
+  g+=`<g class="hubzoom" id="hubZoom" transform="translate(${C} ${C+152})">
+    <title>Ajuster la taille de la roue</title>
+    <rect class="hzbar" x="-70" y="-19" width="140" height="38" rx="19" fill="#ffffff" stroke="#163467" stroke-opacity=".12" stroke-width="1.2"/>
+    <g class="hz-btn" id="hzMinus" role="button" tabindex="0" data-step="-1">
+      <title>Réduire la roue</title>
+      <circle class="hz-bg" cx="-48" cy="0" r="14" fill="#f0f6f8" stroke="#163467" stroke-opacity=".1" stroke-width="1"/>
+      <path class="hz-ico" d="M-55 0 H-41" stroke="#163467" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+    </g>
+    <g class="hz-reset" id="hzReset" role="button" tabindex="0">
+      <title>Revenir au cadrage idéal</title>
+      <rect x="-30" y="-15" width="60" height="30" rx="15" fill="transparent"/>
+      <text id="hzVal" x="0" y="5" text-anchor="middle" font-size="13.5" font-weight="700" fill="#163467" font-family="Miriam Libre, sans-serif">120%</text>
+    </g>
+    <text x="0" y="-24" text-anchor="middle" font-size="8.5" font-weight="700" letter-spacing="1.6" fill="#a9b6c9" font-family="Barlow, sans-serif">TAILLE</text>
+    <g class="hz-btn" id="hzPlus" role="button" tabindex="0" data-step="1">
+      <title>Agrandir la roue</title>
+      <circle class="hz-bg" cx="48" cy="0" r="14" fill="#f0f6f8" stroke="#163467" stroke-opacity=".1" stroke-width="1"/>
+      <path class="hz-ico" d="M41 0 H55 M48 -7 V7" stroke="#163467" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+    </g>
+  </g>`;
+  /* contenu du noyau : état survol */
+  g+=`<g class="hub-hover" id="hubHover" role="button" tabindex="-1" style="cursor:pointer">
+    <circle id="hhRing" cx="${C}" cy="${C-72}" r="31" fill="#f0f6f8"/>
+    <text id="hhIcon" x="${C}" y="${C-61}" text-anchor="middle" font-size="31">🔎</text>
+    <text id="hhSuite" x="${C}" y="${C-18}" text-anchor="middle" font-size="11.5" font-weight="700" letter-spacing="2.4" fill="#13b4e2" font-family="Barlow, sans-serif">SOURCE-TO-PAY</text>
+    <text id="hhName" x="${C}" y="${C+16}" text-anchor="middle" font-size="25" font-weight="700" fill="#163467" font-family="Miriam Libre, sans-serif">Sourcing</text>
+    <text id="hhName2" x="${C}" y="${C+44}" text-anchor="middle" font-size="25" font-weight="700" fill="#163467" font-family="Miriam Libre, sans-serif"></text>
+    <g id="hhCta" transform="translate(${C} ${C+78})">
+      <rect x="-82" y="-15" width="164" height="30" rx="15" fill="#13b4e2"/>
+      <text id="hhCtaT" x="0" y="5" text-anchor="middle" font-size="12" font-weight="700" fill="#fff" letter-spacing=".6" font-family="Barlow, sans-serif">LANCER LA VIDÉO</text>
+    </g>
+  </g>`;
   return g+`</svg>`;
 }
 
 /* =========================================================================
-   PANNEAU MODULE
+   4. LA MINI ROUE (widget)
+   ========================================================================= */
+function miniSegment(a1,a2,id){
+  const m=byId(id); if(!m) return "";
+  const am=(a1+a2)/2, soon=!m.videos.length;
+  const[tx,ty]=pol(0,0,11,am);
+  let rot=((am-90)%360+360)%360; if(rot>90&&rot<270)rot+=180;
+  const[ex,ey]=pol(C,C,347,am);           /* emoji */
+  const[lx,ly]=pol(C,C,296,am);           /* code court */
+  return`<g class="mini-seg${soon?' soon':''}" data-id="${id}" role="button" tabindex="0"
+    style="--c:${m.c};--tx:${tx.toFixed(2)}px;--ty:${ty.toFixed(2)}px" data-suite="${m.suite}">
+    <title>${esc(m.label)}${soon?' (vidéo à venir)':''}</title>
+    <path class="msf" d="${ring(C,C,R1,R2,a1,a2,.8)}" fill="#fff" stroke="${m.c}" stroke-width="2.6" stroke-linejoin="round"${soon?' opacity=".86"':''}/>
+    <path class="mrim" d="${ring(C,C,R1,R1+8,a1,a2,.8)}" fill="${m.c}" opacity="${soon?'.45':'.92'}" pointer-events="none"/>
+    <text class="mico" x="${ex.toFixed(1)}" y="${ey.toFixed(1)}" transform="rotate(${rot.toFixed(2)} ${ex.toFixed(1)} ${ey.toFixed(1)})" text-anchor="middle" dy="13" font-size="38">${m.icon}</text>
+    <text class="mlab" x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" transform="rotate(${rot.toFixed(2)} ${lx.toFixed(1)} ${ly.toFixed(1)})" text-anchor="middle" dy="9" font-size="25" font-weight="700" letter-spacing="1" fill="#163467" font-family="Miriam Libre, sans-serif">${esc(m.code)}</text>
+  </g>`;
+}
+function miniSuiteArc(a1,a2,suite,label){
+  const r=R1-30;
+  return `<g class="suitegrp" id="marc-${suite}" data-suite="${suite}">
+    <path class="suitearc-base" d="${arc(C,C,r,a1+4,a2-4)}" fill="none" stroke="#13b4e2" stroke-width="3.2" stroke-linecap="round" opacity=".7"/>
+    <path class="suitearc-flow" d="${arc(C,C,r,a1+4,a2-4)}" fill="none" stroke="#6b51ed" stroke-width="2.2" stroke-linecap="round" opacity=".45"/>
+    <path class="suitearc-comet" d="${arc(C,C,r,a1+4,a2-4)}" fill="none" stroke="url(#gCometM)" stroke-width="4.4" stroke-linecap="round"/>
+    ${arcText(C,C,R1-13,(a1+a2)/2,label,17,"#163467",3.6,false,700,"suitelab")}
+    <circle class="suite-node" cx="${pol(C,C,r,a1+4)[0].toFixed(1)}" cy="${pol(C,C,r,a1+4)[1].toFixed(1)}" r="6" fill="#13b4e2"/>
+    <circle class="suite-node" cx="${pol(C,C,r,a2-4)[0].toFixed(1)}" cy="${pol(C,C,r,a2-4)[1].toFixed(1)}" r="6" fill="#13b4e2"/>
+  </g>`;
+}
+/* Mini roue : exactement la même géométrie et les mêmes cinématiques que la grande.
+   Seuls les libellés sont remplacés par emoji + acronyme. */
+function buildMiniWheel(){
+  let g=`<svg class="wheel-svg" id="miniWheel" viewBox="-86 -86 992 992" role="img" aria-label="Roue Esker, sélecteur rapide de module">
+  <defs>
+    <linearGradient id="gBandM" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFCF63"/><stop offset="1" stop-color="#F5A623"/></linearGradient>
+    <linearGradient id="gCometM" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#13b4e2" stop-opacity="0"/><stop offset=".5" stop-color="#6b51ed"/><stop offset="1" stop-color="#13b4e2" stop-opacity="0"/></linearGradient>
+    <radialGradient id="gHubM"><stop offset="0" stop-color="#ffffff"/><stop offset=".72" stop-color="#fbfdfe"/><stop offset="1" stop-color="#eaf3f7"/></radialGradient>
+    <radialGradient id="gSweepM"><stop offset="0" stop-color="#13b4e2" stop-opacity=".2"/><stop offset="1" stop-color="#13b4e2" stop-opacity="0"/></radialGradient>
+  </defs>`;
+  /* décor : anneaux en rotations opposées + particules, comme la grande roue */
+  g+=`<g class="rot-slow" style="transform-origin:${C}px ${C}px">
+        <circle cx="${C}" cy="${C}" r="${R2+20}" fill="none" stroke="#13b4e2" stroke-width="1.6" stroke-dasharray="2 14" opacity=".5"/></g>
+      <g class="rot-rev" style="transform-origin:${C}px ${C}px">
+        <circle cx="${C}" cy="${C}" r="${R2+38}" fill="none" stroke="#6b51ed" stroke-width="1.3" stroke-dasharray="24 20" opacity=".22"/></g>
+      <g class="rot-fast" style="transform-origin:${C}px ${C}px">`;
+  for(let i=0;i<3;i++){const[x,y]=pol(C,C,R2+20,i*120);
+    g+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="5" fill="#13b4e2" opacity=".85"/><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="11" fill="#13b4e2" opacity=".16"/>`}
+  g+=`</g>`;
+  /* noyau */
+  g+=`<circle cx="${C}" cy="${C}" r="${HUB}" fill="url(#gHubM)"/>
+      <g class="hub-sweep" style="transform-origin:${C}px ${C}px"><path d="M${C} ${C} L${C} ${C-HUB} A${HUB} ${HUB} 0 0 1 ${(C+HUB*Math.cos(-Math.PI/3)).toFixed(1)} ${(C+HUB*Math.sin(-Math.PI/3)).toFixed(1)} Z" fill="url(#gSweepM)"/></g>
+      <circle class="hub-ring-a" style="transform-origin:${C}px ${C}px" cx="${C}" cy="${C}" r="${HUB-9}" fill="none" stroke="#13b4e2" stroke-width="1.2" stroke-dasharray="4 9" opacity=".45"/>
+      <circle class="hub-ring-b breathe" style="transform-origin:${C}px ${C}px" cx="${C}" cy="${C}" r="${HUB-22}" fill="none" stroke="#6b51ed" stroke-width="1" stroke-dasharray="22 14"/>`;
+  g+=miniSuiteArc(S1,S2,"S2P","SOURCE-TO-PAY");
+  g+=miniSuiteArc(O1,O2,"O2C","ORDER-TO-CASH");
+  const ws=(S2-S1)/ORDER_S2P.length, wo=(O2-O1)/ORDER_O2C.length;
+  ORDER_S2P.forEach((id,i)=>{g+=miniSegment(S1+i*ws,S1+(i+1)*ws,id)});
+  ORDER_O2C.forEach((id,i)=>{g+=miniSegment(O1+i*wo,O1+(i+1)*wo,id)});
+  /* socle */
+  g+=`<g class="bandg"><title>Socle plateforme Esker</title>
+      <path d="${ring(C,C,R1,R2,B1,B2,.8)}" fill="url(#gBandM)"/>`;
+  g+=arcTextFit(C,C,R2-30,172,"PLATEFORME",13,"#6B3E00",true,30,1.4);
+  g+=arcTextFit(C,C,R2-30,196,"ESKER",13,"#6B3E00",true,22,1.4);
+  g+=arcTextFit(C,C,R2-62,180,"AI · PAYMENTS · DATALAKE",10,"#6B3E00",true,50,.6);
+  g+=`</g>`;
+  /* pastille Synergy AI */
+  const[sx,sy]=pol(C,C,R1+2,180);
+  g+=`<g class="aihub"><title>Synergy AI</title>
+      <g class="aiorb" style="transform-origin:${sx.toFixed(1)}px ${sy.toFixed(1)}px">
+        <circle cx="${sx.toFixed(1)}" cy="${sy.toFixed(1)}" r="36" fill="#fff" stroke="#F5A623" stroke-width="2.6"/>
+        <circle class="airing" style="transform-origin:${sx.toFixed(1)}px ${sy.toFixed(1)}px" cx="${sx.toFixed(1)}" cy="${sy.toFixed(1)}" r="42" fill="none" stroke="#F5A623" stroke-width="1.5" stroke-dasharray="5 7" opacity=".6"/>
+        ${icoAI(sx,sy-4,.62,"#B45309")}
+        <text x="${sx.toFixed(1)}" y="${(sy+21).toFixed(1)}" text-anchor="middle" font-size="7.6" font-weight="700" letter-spacing=".7" fill="#92400E" font-family="Miriam Libre, sans-serif">SYNERGY AI</text>
+      </g></g>`;
+  /* noyau : repos */
+  g+=`<g class="mini-hub-default">
+      <g transform="translate(${C-88} ${C-78}) scale(0.137)"><use href="#eskerword" width="1283" height="290" style="color:#db001b"/></g>
+      <text class="mini-hub-label" x="${C}" y="${C+6}" text-anchor="middle" font-size="31">Choisir un module</text>
+      <text x="${C}" y="${C+44}" text-anchor="middle" font-size="22" font-weight="700" fill="#9aa7bb" letter-spacing="2.4" font-family="Barlow, sans-serif">SURVOLEZ LA ROUE</text>
+      <text x="${C}" y="${C+92}" text-anchor="middle" font-size="21" font-weight="700" fill="#13b4e2" letter-spacing=".6" font-family="Barlow, sans-serif">${TOTV} vidéos · ${M.length} modules</text>
+    </g>`;
+  /* noyau : survol */
+  g+=`<g class="mini-hub-hover" id="miniHubHover">
+      <circle id="mhRing" cx="${C}" cy="${C-76}" r="40" fill="#f0f6f8"/>
+      <text id="mhIcon" x="${C}" y="${C-62}" text-anchor="middle" font-size="40">🔎</text>
+      <text id="mhSuite" x="${C}" y="${C-14}" text-anchor="middle" font-size="19" font-weight="700" letter-spacing="3" fill="#13b4e2" font-family="Barlow, sans-serif">SOURCE-TO-PAY</text>
+      <text class="mini-hub-label" id="mhName" x="${C}" y="${C+24}" text-anchor="middle" font-size="33">Sourcing</text>
+      <text class="mini-hub-label" id="mhName2" x="${C}" y="${C+62}" text-anchor="middle" font-size="33"></text>
+      <g id="mhCta" transform="translate(${C} ${C+108})">
+        <rect x="-96" y="-19" width="192" height="38" rx="19" fill="#13b4e2"/>
+        <text id="mhCtaT" x="0" y="7" text-anchor="middle" font-size="18" font-weight="700" fill="#fff" letter-spacing=".8" font-family="Barlow, sans-serif">LANCER LA VIDÉO</text>
+      </g>
+    </g>`;
+  return g+`</svg>`;
+}
+
+/* =========================================================================
+   5. PANNEAU VIDÉO
    ========================================================================= */
 const host = document.getElementById("panelHost");
 let current = null, currentVid = 0;
 
-function renderPanel(id, vidIdx){
+function posterBits(m){
+  return m.suite === "S2P" ? "Source-to-Pay" : "Order-to-Cash";
+}
+
+function renderPanel(id, vidIdx, autoplay){
   const m = byId(id); if(!m) return;
   current = id; currentVid = vidIdx || 0;
   const soon = !m.videos.length;
-  const suite = m.suite === "S2P" ? "Source-to-Pay" : "Order-to-Cash";
+  const suite = posterBits(m);
+  const pos = ALL_ORDER.indexOf(id);
+  const prev = ALL_ORDER[(pos - 1 + ALL_ORDER.length) % ALL_ORDER.length];
+  const next = ALL_ORDER[(pos + 1) % ALL_ORDER.length];
 
   let media;
   if(soon){
     media = `
-      <div class="soonbox">
+      <div class="soonbox" style="--c:${m.c}">
         <div class="sb-mesh"></div>
         <div class="sb-ico">${m.icon}</div>
         <h3>${esc(m.label)}</h3>
@@ -606,6 +968,11 @@ function renderPanel(id, vidIdx){
     const multi = m.videos.length > 1 ? `
       <div class="vidswitch">${m.videos.map((x,i)=>
         `<button type="button" class="${i===currentVid?'on':''}" data-vid="${i}">${esc(x.t)}</button>`).join("")}</div>` : "";
+    /* 3 suggestions : modules avec vidéo, hors module courant */
+    const sugg = WITHVID.filter(x => x !== id).slice(0,3).map(x => {
+      const s = byId(x);
+      return `<button class="vid-end-card" type="button" data-go="${x}"><span>${s.icon}</span>${esc(s.label)}</button>`;
+    }).join("");
     media = `
       <div class="vidframe" id="vidFrame">
         <video id="player" controls playsinline controlsList="nodownload" preload="metadata">
@@ -614,30 +981,27 @@ function renderPanel(id, vidIdx){
           <a href="${v.u}">Télécharger la vidéo</a>.
         </video>
         <div class="vid-cover" id="vidCover" role="button" tabindex="0" aria-label="Lancer la vidéo : ${esc(v.t)}" style="--c:${m.c}">
-          <div class="cover-bg">
-            <div class="cover-mesh"></div>
-            <div class="cover-glow"></div>
-            <div class="cover-circles"></div>
-          </div>
+          <div class="cover-bg"><div class="cover-mesh"></div><div class="cover-glow"></div><div class="cover-circles"></div></div>
           <div class="cover-top">
             <span class="cover-suite">${suite}</span>
             <span class="cover-tag">${esc(v.sz)} · MP4</span>
           </div>
           <div class="cover-center">
-            <div class="cover-play" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-            </div>
+            <div class="cover-play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
           </div>
           <div class="cover-bottom">
             <h3 class="cover-title">${esc(m.label)}</h3>
             <p class="cover-sub">
-              <span>Démonstration officielle</span>
-              <span class="cover-sub-dot"></span>
-              <span>Fluxym × Esker</span>
-              <span class="cover-sub-dot"></span>
+              <span>Démonstration officielle</span><span class="cover-sub-dot"></span>
+              <span>Fluxym × Esker</span><span class="cover-sub-dot"></span>
               <span class="cover-sub-cta">Cliquer pour lancer la vidéo →</span>
             </p>
           </div>
+        </div>
+        <div class="vid-end" id="vidEnd">
+          <h4>Continuer la découverte</h4>
+          <div class="vid-end-row">${sugg}</div>
+          <button class="vid-end-replay" type="button" id="replayBtn">↻ Revoir cette vidéo</button>
         </div>
       </div>
       <div class="vidmeta">
@@ -647,7 +1011,7 @@ function renderPanel(id, vidIdx){
       ${multi}
       <div class="warn">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8192ad" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-        <span>Vidéo optimisée (≈ 30 Mo) : démarrage instantané en cliquant directement sur l'image ou sur le bouton de lecture.</span>
+        <span>Vidéo optimisée : démarrage quasi instantané en cliquant directement sur l'image.</span>
       </div>`;
   }
 
@@ -660,101 +1024,94 @@ function renderPanel(id, vidIdx){
           <h2>${esc(m.label)}</h2>
           <p>${esc(m.desc)}</p>
         </div>
-        <button class="panel-close" type="button" id="pClose" aria-label="Fermer">&times;</button>
+        <div class="panel-nav">
+          <button class="pnav" type="button" data-go="${prev}" aria-label="Module précédent" title="Module précédent">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+          <button class="pnav" type="button" data-go="${next}" aria-label="Module suivant" title="Module suivant">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
+          <button class="pnav" type="button" id="pClose" aria-label="Fermer" title="Fermer">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+        </div>
       </header>
       <div class="panel-body">${media}</div>
     </article>`;
 
-  /* état actif sur la roue + les cartes */
-  document.querySelectorAll(".seg").forEach(s => s.classList.toggle("active", s.dataset.id === id));
-  document.querySelectorAll(".card").forEach(c => c.style.boxShadow = c.dataset.id === id ? "0 18px 40px rgba(22,52,103,.17)" : "");
+  markActive(id);
 
-  document.getElementById("pClose").addEventListener("click", closePanel);
-
-  /* Lancement au clic n'importe où sur l'overlay */
+  /* lecture au clic n'importe où */
   const cover = document.getElementById("vidCover");
   const player = document.getElementById("player");
+  const vidEnd = document.getElementById("vidEnd");
   const playVideo = () => {
     if(!player) return;
     if(cover) cover.classList.add("hidden");
+    if(vidEnd) vidEnd.classList.remove("on");
     const p = player.play();
     if(p && typeof p.catch === "function") p.catch(() => {});
   };
   if(cover){
     cover.addEventListener("click", playVideo);
-    cover.addEventListener("keydown", e => {
-      if(e.key === "Enter" || e.key === " "){ e.preventDefault(); playVideo(); }
-    });
+    cover.addEventListener("keydown", e => { if(e.key === "Enter" || e.key === " "){ e.preventDefault(); playVideo(); } });
   }
   if(player){
-    player.addEventListener("play", () => {
-      if(cover) cover.classList.add("hidden");
-    });
+    player.addEventListener("play", () => { if(cover) cover.classList.add("hidden"); if(vidEnd) vidEnd.classList.remove("on"); });
+    player.addEventListener("ended", () => { if(vidEnd) vidEnd.classList.add("on"); });
   }
+  const rb = document.getElementById("replayBtn");
+  if(rb) rb.addEventListener("click", () => { if(player){ player.currentTime = 0; playVideo(); } });
 
+  host.querySelectorAll("#pClose").forEach(b => b.addEventListener("click", closePanel));
+  host.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", () => sel(b.dataset.go, {keepPlace:true, focus:false})));
   host.querySelectorAll("[data-vid]").forEach(b =>
-    b.addEventListener("click", () => {
-      const targetVid = +b.dataset.vid;
-      renderPanel(id, targetVid);
-      scrollToPanel(false);
-      /* Si on change de version, on lance directement la nouvelle */
-      setTimeout(playVideo, 120);
-    }));
+    b.addEventListener("click", () => { renderPanel(id, +b.dataset.vid, true); scrollToPanel(false); }));
+
+  if(autoplay){ playVideo(); setTimeout(playVideo, 180); }
 }
 
-/* poster SVG généré (dégradé + nom du module), aucun asset externe requis */
-function posterFor(m){
-  const label = esc(m.label).replace(/&amp;/g,"&amp;amp;");
-  const suite = m.suite === "S2P" ? "SOURCE-TO-PAY" : "ORDER-TO-CASH";
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
-    <defs>
-      <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0" stop-color="#163467"/>
-        <stop offset="0.6" stop-color="#1a417c"/>
-        <stop offset="1" stop-color="${m.c}"/>
-      </linearGradient>
-      <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse">
-        <circle cx="3" cy="3" r="1.5" fill="#ffffff" opacity="0.14"/>
-      </pattern>
-    </defs>
-    <rect width="1280" height="720" fill="url(#bg)"/>
-    <rect width="1280" height="720" fill="url(#dots)"/>
-    <!-- Grand motif discret en arrière-plan -->
-    <circle cx="640" cy="360" r="240" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-dasharray="6 12" opacity="0.18"/>
-    <circle cx="640" cy="360" r="170" fill="none" stroke="#ffffff" stroke-width="1" opacity="0.12"/>
-    <circle cx="640" cy="360" r="100" fill="${m.c}" opacity="0.22"/>
-    <!-- Textes -->
-    <text x="640" y="240" text-anchor="middle" font-family="Barlow, Arial, sans-serif" font-size="20" font-weight="700" fill="#13b4e2" letter-spacing="5">${suite}</text>
-    <text x="640" y="470" text-anchor="middle" font-family="Miriam Libre, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">${label}</text>
-    <text x="640" y="520" text-anchor="middle" font-family="Barlow, Arial, sans-serif" font-size="20" font-weight="600" fill="#ffffff" opacity="0.75" letter-spacing="2">DÉMONSTRATION EN VIDÉO (FLUXYM × ESKER)</text>
-  </svg>`;
-  return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+function markActive(id){
+  document.querySelectorAll(".seg").forEach(s => s.classList.toggle("active", s.dataset.id === id));
+  document.querySelectorAll(".mini-seg").forEach(s => s.classList.toggle("active", s.dataset.id === id));
+  document.querySelectorAll(".card").forEach(c => c.classList.toggle("active", c.dataset.id === id));
 }
 
 function closePanel(){
-  const v = document.getElementById("player"); if(v){ v.pause(); }
+  const v = document.getElementById("player"); if(v) v.pause();
   host.innerHTML = ""; current = null;
-  document.querySelectorAll(".seg").forEach(s => s.classList.remove("active"));
-  document.querySelectorAll(".card").forEach(c => c.style.boxShadow = "");
+  markActive(null);
   document.getElementById("roue").scrollIntoView({behavior:"smooth", block:"start"});
 }
-
 function scrollToPanel(focus){
   const p = document.getElementById("panel"); if(!p) return;
   p.scrollIntoView({behavior:"smooth", block:"center"});
-  if(focus !== false) setTimeout(()=>p.focus({preventScroll:true}), 400);
+  if(focus !== false) setTimeout(()=>p.focus({preventScroll:true}), 420);
+}
+/* Sélection d'un module.
+   Règle unique et sans exception : tout clic sur un module amène au lecteur
+   et démarre la vidéo. opts.play === false sert uniquement au lien profond
+   (aucun geste utilisateur : le navigateur refuserait la lecture).
+   opts.keepPlace évite un défilement inutile quand le lecteur est déjà visible. */
+function panelVisible(){
+  const p = document.getElementById("panel"); if(!p) return false;
+  const r = p.getBoundingClientRect();
+  const vh = window.innerHeight || document.documentElement.clientHeight;
+  return r.top > -40 && r.top < vh * 0.62;
+}
+function sel(id, opts){
+  opts = opts || {};
+  const play = opts.play !== false;
+  const stay = opts.keepPlace === true && panelVisible();
+  renderPanel(id, 0, play);
+  if(!stay) scrollToPanel(opts.focus !== false);
+  history.replaceState(null, "", "#m=" + id);
 }
 
-function sel(id){ renderPanel(id, 0); scrollToPanel(true); }
-
 /* =========================================================================
-   CARTES MODULES
+   6. CARTES
    ========================================================================= */
 function cardHTML(m){
   const soon = !m.videos.length;
-  const tag = soon
-    ? `<span class="tag soon">Bientôt</span>`
-    : `<span class="tag ok">${m.videos.length} vidéo${m.videos.length>1?'s':''}</span>`;
+  const tag = soon ? `<span class="tag soon">Bientôt</span>`
+                   : `<span class="tag ok">${m.videos.length} vidéo${m.videos.length>1?'s':''}</span>`;
   return `<article class="card" style="--c:${m.c}" data-id="${m.id}" role="button" tabindex="0" aria-label="${esc(m.label)}">
     <div class="card-top"><div class="card-ico">${m.icon}</div><h3>${esc(m.label)}</h3></div>
     <p>${esc(m.desc)}</p>
@@ -763,26 +1120,19 @@ function cardHTML(m){
 }
 
 /* =========================================================================
-   FORMULAIRE HUBSPOT (identique à fluxym.com/nous-contacter)
+   7. FORMULAIRE HUBSPOT
    ========================================================================= */
 function loadHubspot(){
   const s = document.createElement("script");
-  s.src = "//js-eu1.hsforms.net/forms/embed/v2.js";
-  s.charset = "utf-8";
-  s.async = true;
+  s.src = "//js-eu1.hsforms.net/forms/embed/v2.js"; s.charset = "utf-8"; s.async = true;
   s.onload = () => {
     try{
-      window.hbspt.forms.create({
-        region: "eu1",
-        portalId: "26096000",
-        formId: "b3d5e891-cdf8-4a67-ac3c-37fb327c4eac",
-        target: "#hsFormTarget"
-      });
+      window.hbspt.forms.create({region:"eu1", portalId:"26096000",
+        formId:"b3d5e891-cdf8-4a67-ac3c-37fb327c4eac", target:"#hsFormTarget"});
     }catch(e){ document.getElementById("formFallback").classList.add("on"); }
   };
   s.onerror = () => document.getElementById("formFallback").classList.add("on");
   document.head.appendChild(s);
-  /* filet de sécurité si HubSpot est bloqué */
   setTimeout(() => {
     const t = document.getElementById("hsFormTarget");
     if(t && !t.children.length) document.getElementById("formFallback").classList.add("on");
@@ -790,17 +1140,202 @@ function loadHubspot(){
 }
 
 /* =========================================================================
-   INIT
+   8. DIMENSIONNEMENT : la roue tient TOUJOURS dans l'écran
+   ========================================================================= */
+let zoom = 1.2;
+/* ZFIT : le pourcentage auquel la roue, décor compris, est parfaitement cadrée
+   dans la scène. C'est la valeur par défaut. En dessous elle respire encore plus,
+   au-dessus elle déborde librement, jusqu'à 250 %. */
+const ZMIN = 0.6, ZMAX = 2.5, ZSTEP = 0.05, ZFIT = 1.2;
+const wheelBox = document.getElementById("wheelBox");
+const stageEl  = document.getElementById("roue");
+
+/* La roue est en position absolue : .stage-mid garde une hauteur constante,
+   quelle que soit la taille de la roue. Le calcul est donc parfaitement
+   linéaire et ne déclenche plus de boucle de redimensionnement. */
+function fitWheel(){
+  const mid = document.querySelector(".stage-mid");
+  if(!mid || !wheelBox) return;
+  const availH = mid.clientHeight - 10;
+  const availW = Math.min(stageEl.clientWidth - 36, 1120);
+  if(availH <= 0 || availW <= 0) return;
+  /* 100 % = la roue, décor compris, tient entièrement dans la scène.
+     Au-delà, on laisse librement déborder : la taille reste strictement
+     proportionnelle au pourcentage affiché, sans aucun plafond. */
+  const base = Math.max(200, Math.min(availH, availW)) / ZFIT;
+  const size = Math.round(base * zoom);
+  wheelBox.style.width  = size + "px";
+  wheelBox.style.height = size + "px";
+}
+function setZoom(v, save){
+  /* arrondi au pas de 5 % pour que l'affichage colle toujours à la taille réelle */
+  zoom = Math.min(ZMAX, Math.max(ZMIN, Math.round(v / ZSTEP) * ZSTEP));
+  const lbl = document.getElementById("hzVal");
+  if(lbl) lbl.textContent = Math.round(zoom * 100) + "%";
+  const mi = document.getElementById("hzMinus"), pl = document.getElementById("hzPlus");
+  if(mi) mi.classList.toggle("off", zoom <= ZMIN + 0.001);
+  if(pl) pl.classList.toggle("off", zoom >= ZMAX - 0.001);
+  /* au-delà de 100 % la roue peut déborder de la scène : c'est volontaire,
+     on ne bride plus l'envie de la voir en grand */
+  /* au-delà du cadrage idéal, la roue déborde : on efface discrètement les
+     éléments d'interface alentour pour ne jamais venir salir le dessin */
+  stageEl.classList.toggle("xl", zoom > ZFIT + 0.001);
+  fitWheel();
+  if(save !== false){ try{ localStorage.setItem("fx-wheel-zoom2", String(zoom)); }catch(e){} }
+}
+
+/* =========================================================================
+   9. CINÉMATIQUES DE SURVOL
+   ========================================================================= */
+let hovered = null;            /* module actuellement survolé sur la grande roue */
+let miniHovered = null;        /* module actuellement survolé sur la mini roue */
+
+function hubShow(m){
+  const svg = document.getElementById("bigWheel"); if(!svg) return;
+  hovered = m.id;
+  svg.classList.add("hovering","dimmed");
+  const lines = wrapTxt(m.label, 17);
+  const soon = !m.videos.length;
+  document.getElementById("hhIcon").textContent = m.icon;
+  document.getElementById("hhRing").setAttribute("fill", m.c + "22");
+  const su = document.getElementById("hhSuite");
+  su.textContent = m.suite === "S2P" ? "SOURCE-TO-PAY" : "ORDER-TO-CASH";
+  su.setAttribute("fill", m.c);
+  document.getElementById("hhName").textContent  = lines[0] || "";
+  document.getElementById("hhName2").textContent = lines.slice(1).join(" ") || "";
+  const cta = document.getElementById("hhCta"), ctaT = document.getElementById("hhCtaT");
+  ctaT.textContent = soon ? "BIENTÔT DISPONIBLE" : "LANCER LA VIDÉO";
+  cta.querySelector("rect").setAttribute("fill", soon ? "#ffcf63" : m.c);
+  ctaT.setAttribute("fill", soon ? "#5c4100" : "#fff");
+  ["S2P","O2C"].forEach(x => {
+    const g = document.getElementById("arc-" + x); if(!g) return;
+    g.classList.toggle("lit", x === m.suite);
+    g.classList.toggle("dim", x !== m.suite);
+  });
+}
+function hubReset(){
+  const svg = document.getElementById("bigWheel"); if(!svg) return;
+  hovered = null;
+  svg.classList.remove("hovering","dimmed");
+  ["S2P","O2C"].forEach(x => { const g = document.getElementById("arc-" + x); if(g) g.classList.remove("lit","dim"); });
+}
+function miniShow(m){
+  const mw = document.getElementById("miniWheel"); if(!mw) return;
+  miniHovered = m.id;
+  mw.classList.add("hovering","dimmed");
+  const lines = wrapTxt(m.label, 15);
+  const soon = !m.videos.length;
+  document.getElementById("mhIcon").textContent = m.icon;
+  document.getElementById("mhRing").setAttribute("fill", m.c + "22");
+  const su = document.getElementById("mhSuite");
+  su.textContent = m.suite === "S2P" ? "SOURCE-TO-PAY" : "ORDER-TO-CASH";
+  su.setAttribute("fill", m.c);
+  document.getElementById("mhName").textContent  = lines[0] || "";
+  document.getElementById("mhName2").textContent = lines.slice(1).join(" ") || "";
+  const cta = document.getElementById("mhCta"), ctaT = document.getElementById("mhCtaT");
+  ctaT.textContent = soon ? "BIENTÔT" : "LANCER LA VIDÉO";
+  cta.querySelector("rect").setAttribute("fill", soon ? "#ffcf63" : m.c);
+  ctaT.setAttribute("fill", soon ? "#5c4100" : "#fff");
+  ["S2P","O2C"].forEach(x => {
+    const g = document.getElementById("marc-" + x); if(!g) return;
+    g.classList.toggle("lit", x === m.suite);
+    g.classList.toggle("dim", x !== m.suite);
+  });
+}
+function miniReset(){
+  const mw = document.getElementById("miniWheel"); if(!mw) return;
+  miniHovered = null;
+  if(current){ miniShow(byId(current)); miniHovered = null; return; }
+  mw.classList.remove("hovering","dimmed");
+  ["S2P","O2C"].forEach(x => { const g = document.getElementById("marc-" + x); if(g) g.classList.remove("lit","dim"); });
+}
+
+/* =========================================================================
+   10. WIDGET FLOTTANT
+   ========================================================================= */
+const dock = document.getElementById("dock");
+let dockHoverTimer = null;
+const isTouch = window.matchMedia("(hover: none)").matches;
+
+function dockOpen(){
+  dock.classList.add("open");
+  document.getElementById("dockBtn").setAttribute("aria-expanded","true");
+}
+function dockClose(){
+  if(!dock.classList.contains("open")) return;
+  dock.classList.remove("open");
+  document.getElementById("dockBtn").setAttribute("aria-expanded","false");
+  miniReset();
+}
+function dockToggle(){ dock.classList.contains("open") ? dockClose() : dockOpen(); }
+
+/* =========================================================================
+   11. INITIALISATION
    ========================================================================= */
 (function init(){
-  /* roue */
-  document.getElementById("wheelWrap").innerHTML = buildWheel();
-  document.querySelectorAll(".seg").forEach(s => {
+  /* --- grande roue --- */
+  wheelBox.innerHTML = buildWheel();
+  document.querySelectorAll("#bigWheel .seg").forEach(s => {
+    const m = byId(s.dataset.id);
     s.addEventListener("click", () => sel(s.dataset.id));
     s.addEventListener("keydown", e => { if(e.key === "Enter" || e.key === " "){ e.preventDefault(); sel(s.dataset.id); } });
+    s.addEventListener("mouseenter", () => hubShow(m));
+    s.addEventListener("focus", () => hubShow(m));
   });
+  const bw = document.getElementById("bigWheel");
+  if(bw){
+    bw.addEventListener("mouseleave", hubReset);
+    bw.addEventListener("focusout", e => { if(!bw.contains(e.relatedTarget)) hubReset(); });
+  }
+  /* le noyau devient cliquable : il lance le module affiché en son centre */
+  const hubH = document.getElementById("hubHover");
+  if(hubH){
+    hubH.addEventListener("click", e => { e.stopPropagation(); if(hovered) sel(hovered); });
+    hubH.addEventListener("keydown", e => {
+      if((e.key === "Enter" || e.key === " ") && hovered){ e.preventDefault(); sel(hovered); }
+    });
+  }
 
-  /* cartes */
+  /* --- zoom intégré au noyau --- */
+  const hzM = document.getElementById("hzMinus"), hzP = document.getElementById("hzPlus");
+  const bindZoom = (el, dir) => {
+    if(!el) return;
+    el.addEventListener("click", e => { e.stopPropagation(); setZoom(zoom + dir * ZSTEP); });
+    el.addEventListener("keydown", e => {
+      if(e.key === "Enter" || e.key === " "){ e.preventDefault(); setZoom(zoom + dir * ZSTEP); }
+    });
+  };
+  bindZoom(hzM, -1); bindZoom(hzP, 1);
+  const hzR = document.getElementById("hzReset");
+  if(hzR){
+    hzR.addEventListener("click", e => { e.stopPropagation(); setZoom(ZFIT); });
+    hzR.addEventListener("keydown", e => { if(e.key === "Enter" || e.key === " "){ e.preventDefault(); setZoom(ZFIT); } });
+  }
+  const hz = document.getElementById("hubZoom");
+  if(hz) hz.addEventListener("mouseenter", e => e.stopPropagation());
+
+  /* --- mini roue du widget --- */
+  document.getElementById("dockWheel").innerHTML = buildMiniWheel();
+  document.querySelectorAll("#miniWheel .mini-seg").forEach(s => {
+    const m = byId(s.dataset.id);
+    s.addEventListener("click", () => { sel(s.dataset.id); dockClose(); });
+    s.addEventListener("keydown", e => { if(e.key === "Enter" || e.key === " "){ e.preventDefault(); sel(s.dataset.id); dockClose(); } });
+    s.addEventListener("mouseenter", () => miniShow(m));
+    s.addEventListener("focus", () => miniShow(m));
+  });
+  const mw = document.getElementById("miniWheel");
+  if(mw) mw.addEventListener("mouseleave", miniReset);
+  const mhub = document.getElementById("miniHubHover");
+  if(mhub){
+    mhub.style.cursor = "pointer";
+    mhub.addEventListener("click", e => {
+      e.stopPropagation();
+      const t = miniHovered || current;
+      if(t){ sel(t); dockClose(); }
+    });
+  }
+
+  /* --- cartes --- */
   document.getElementById("gridS2P").innerHTML = ORDER_S2P.map(id => cardHTML(byId(id))).join("");
   document.getElementById("gridO2C").innerHTML = ORDER_O2C.map(id => cardHTML(byId(id))).join("");
   document.querySelectorAll(".card").forEach(c => {
@@ -808,26 +1343,75 @@ function loadHubspot(){
     c.addEventListener("keydown", e => { if(e.key === "Enter" || e.key === " "){ e.preventDefault(); sel(c.dataset.id); } });
   });
 
-  /* compteurs */
+  /* --- compteurs --- */
   document.getElementById("stMod").textContent = M.length;
   document.getElementById("stVid").textContent = TOTV;
+  document.getElementById("dockBadge").textContent = TOTV;
   document.getElementById("yr").textContent = new Date().getFullYear();
 
-  /* header + bouton haut de page */
-  const hdr = document.getElementById("hdr"), top = document.getElementById("toTop");
+  /* --- zoom --- */
+  let z0 = ZFIT;
+  try{ const st = localStorage.getItem("fx-wheel-zoom2"); if(st) z0 = parseFloat(st) || ZFIT; }catch(e){}
+  setZoom(z0, false);
+
+
+  /* --- redimensionnement --- */
+  let rt = null;
+  const onResize = () => { clearTimeout(rt); rt = setTimeout(() => setZoom(zoom, false), 80); };
+  window.addEventListener("resize", onResize, {passive:true});
+  window.addEventListener("orientationchange", onResize);
+  if(window.ResizeObserver){ new ResizeObserver(() => fitWheel()).observe(stageEl); }
+  fitWheel(); setTimeout(fitWheel, 120); setTimeout(fitWheel, 600);
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(fitWheel);
+
+  /* --- header --- */
+  const hdr = document.getElementById("hdr");
+  const toTop = document.getElementById("toTop");
   const onScroll = () => {
     hdr.classList.toggle("scrolled", window.scrollY > 10);
-    top.classList.toggle("on", window.scrollY > 600);
+    /* le widget et la flèche n'apparaissent qu'une fois la grande roue dépassée */
+    const past = window.scrollY > (stageEl.offsetHeight * 0.55);
+    dock.classList.toggle("on", past);
+    toTop.classList.toggle("on", past);
+    if(!past && dock.classList.contains("open")) dockClose();
   };
   window.addEventListener("scroll", onScroll, {passive:true}); onScroll();
-  top.addEventListener("click", () => window.scrollTo({top:0, behavior:"smooth"}));
+  toTop.addEventListener("click", () => window.scrollTo({top:0, behavior:"smooth"}));
 
-  /* échap ferme le panneau */
-  document.addEventListener("keydown", e => { if(e.key === "Escape" && current) closePanel(); });
+  /* --- interactions du widget --- */
+  const dockBtn = document.getElementById("dockBtn");
+  dockBtn.addEventListener("click", e => { e.stopPropagation(); dockToggle(); });
+  /* un clic dans le vide autour de la roue la referme (indispensable au tactile,
+     puisque la bulle s'efface pendant que la roue est déployée) */
+  const dockWheelEl = document.getElementById("dockWheel");
+  dockWheelEl.addEventListener("click", e => {
+    if(e.target === dockWheelEl || e.target.id === "miniWheel") dockClose();
+  });
+  if(!isTouch){
+    dock.addEventListener("mouseenter", () => { clearTimeout(dockHoverTimer); dockHoverTimer = setTimeout(dockOpen, 130); });
+    dock.addEventListener("mouseleave", () => { clearTimeout(dockHoverTimer); dockHoverTimer = setTimeout(dockClose, 420); });
+  }
+  document.addEventListener("click", e => {
+    if(dock.classList.contains("open") && !dock.contains(e.target)) dockClose();
+  });
 
-  /* lien profond : index.html#m=ap */
+  /* --- clavier --- */
+  document.addEventListener("keydown", e => {
+    if(e.key === "Escape"){
+      if(dock.classList.contains("open")) { dockClose(); return; }
+      if(current) closePanel();
+    }
+    if(!current) return;
+    const tag = (e.target.tagName || "").toLowerCase();
+    if(tag === "input" || tag === "textarea" || tag === "select") return;
+    const i = ALL_ORDER.indexOf(current);
+    if(e.key === "ArrowRight"){ e.preventDefault(); sel(ALL_ORDER[(i+1)%ALL_ORDER.length], {keepPlace:true, focus:false}); }
+    if(e.key === "ArrowLeft"){ e.preventDefault(); sel(ALL_ORDER[(i-1+ALL_ORDER.length)%ALL_ORDER.length], {keepPlace:true, focus:false}); }
+  });
+
+  /* --- lien profond index.html#m=ap --- */
   const h = location.hash.match(/m=([a-z]+)/);
-  if(h && byId(h[1])) setTimeout(() => sel(h[1]), 400);
+  if(h && byId(h[1])) setTimeout(() => sel(h[1], {play:false}), 450);
 
   loadHubspot();
 })();
