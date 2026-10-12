@@ -525,245 +525,323 @@ img,svg{max-width:100%}
 @media(max-width:600px){.panel-head{flex-wrap:wrap;padding:18px 20px}.panel-body{padding:16px 18px 22px}.vid-cover{padding:16px 18px}.cover-play{width:66px;height:66px}.cover-play svg{width:28px;height:28px}.cover-sub{font-size:.76rem}}
 
 /* =====================================================================
-   UNIVERS MODULE (XP) : expérience immersive par module
-   Activée uniquement pour les modules déclarés dans XP (ex. Procurement)
+   UNIVERS MODULE (XP) : thème clair Fluxym, même langage que la roue
+   (halos qui dérivent, anneaux en rotation lente, segments, courbes
+   cubic-bezier(.23,1,.32,1)). Activé pour les modules déclarés dans XP.
    ===================================================================== */
-.panel--xp{--acc:#13b4e2;--acc2:#6b51ed;--ink:#e9f1ff;--mute:#9fb3d6;--line:rgba(160,190,255,.14);
-  max-width:1240px;background:#060f24;border-color:rgba(19,180,226,.22);color:var(--ink);
-  box-shadow:0 40px 120px rgba(6,15,36,.45),0 0 0 1px rgba(19,180,226,.08);position:relative;isolation:isolate}
-.panel--xp::before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
-  background:radial-gradient(60% 40% at 15% 0%,rgba(19,180,226,.20),transparent 70%),
-             radial-gradient(50% 35% at 90% 8%,rgba(107,81,237,.22),transparent 70%),
-             radial-gradient(70% 50% at 50% 100%,rgba(19,180,226,.08),transparent 70%)}
-.panel--xp::after{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.5;
-  background-image:radial-gradient(rgba(255,255,255,.55) .6px,transparent .8px);background-size:46px 46px;
-  -webkit-mask-image:linear-gradient(180deg,#000 0%,transparent 35%,transparent 70%,#000 100%);mask-image:linear-gradient(180deg,#000 0%,transparent 35%,transparent 70%,#000 100%)}
-.panel--xp .panel-head{border-bottom-color:var(--line);padding:30px 36px 22px}
-.panel--xp .panel-chip{background:linear-gradient(135deg,rgba(19,180,226,.25),rgba(107,81,237,.25));border-color:rgba(19,180,226,.4);box-shadow:0 0 30px rgba(19,180,226,.25)}
-.panel--xp .panel-suite{color:var(--acc)}
-.panel--xp .panel-ttl h2{font-size:clamp(1.7rem,3.2vw,2.5rem);color:#fff;letter-spacing:-.01em;
-  background:linear-gradient(100deg,#fff 0%,#cfe9ff 45%,var(--acc) 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.panel--xp .panel-ttl p{color:var(--mute);font-size:1rem}
-.panel--xp .pnav{background:rgba(255,255,255,.06);border-color:var(--line);color:#dfe9ff}
-.panel--xp .pnav:hover{background:var(--acc);border-color:var(--acc);color:#fff}
-.panel--xp .panel-body{padding:26px 36px 8px}
-.panel--xp .vidframe{box-shadow:0 30px 90px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.06);background:#020814}
-.panel--xp .vidframe::before{content:'';position:absolute;inset:-30%;z-index:-1}
-.xp-theater{position:relative}
-.xp-theater::before{content:'';position:absolute;left:6%;right:6%;top:8%;bottom:-6%;z-index:0;filter:blur(60px);opacity:.55;pointer-events:none;
-  background:linear-gradient(90deg,var(--acc),var(--acc2),var(--acc));border-radius:40px;animation:xpAmb 9s ease-in-out infinite alternate}
-.xp-theater>.vidframe{position:relative;z-index:1}
-@keyframes xpAmb{0%{opacity:.35;transform:scale(.97)}100%{opacity:.6;transform:scale(1.02)}}
-.panel--xp .vidmeta-t{color:#fff}
-.panel--xp .vidmeta-s,.panel--xp .warn{color:var(--mute)}
+.panel--xp{--navy:#163467;--cy:#13b4e2;--vi:#6b51ed;--sun:#ffcf63;--gl:#f0f6f8;--txt:#3d5174;--line:rgba(22,52,103,.10);
+  --ease:cubic-bezier(.23,1,.32,1);--spring:cubic-bezier(.34,1.42,.5,1);
+  max-width:1240px;position:relative;isolation:isolate;overflow:hidden;background:#fff}
+.xp-bg{position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden;
+  background:linear-gradient(180deg,#ffffff 0%,#f7fbfd 30%,#f0f6f8 100%)}
+.xp-bg i{position:absolute;display:block;border-radius:50%}
+.xp-bg .h1{top:-8%;right:-12%;width:62%;aspect-ratio:1;background:radial-gradient(circle,rgba(19,180,226,.16),transparent 62%);animation:drift 22s ease-in-out infinite alternate}
+.xp-bg .h2{top:30%;left:-18%;width:58%;aspect-ratio:1;background:radial-gradient(circle,rgba(107,81,237,.12),transparent 62%);animation:drift 26s ease-in-out infinite alternate-reverse}
+.xp-bg .h3{bottom:-10%;right:10%;width:46%;aspect-ratio:1;background:radial-gradient(circle,rgba(255,207,99,.16),transparent 62%);animation:drift 30s ease-in-out infinite alternate}
+.xp-bg .dots{position:absolute;inset:0;border-radius:0;background-image:radial-gradient(rgba(22,52,103,.10) 1px,transparent 1.2px);background-size:28px 28px;
+  -webkit-mask-image:linear-gradient(180deg,#000,transparent 40%,transparent 60%,#000);mask-image:linear-gradient(180deg,#000,transparent 40%,transparent 60%,#000);animation:xpDots 60s linear infinite}
+@keyframes xpDots{to{background-position:280px 140px}}
+.panel--xp .panel-head{background:rgba(255,255,255,.7);backdrop-filter:blur(8px)}
 .panel--xp .warn{display:none}
 
-/* --- chapitres --- */
-.xp-chap{margin-top:16px}
-.xp-chap-bar{display:flex;gap:4px;height:8px}
-.xp-chap-seg{position:relative;flex:1;border:0;padding:0;cursor:pointer;background:rgba(255,255,255,.12);border-radius:4px;overflow:hidden;transition:transform .2s,background .2s}
-.xp-chap-seg:hover{transform:scaleY(1.6);background:rgba(255,255,255,.22)}
-.xp-chap-seg i{position:absolute;inset:0;transform-origin:left;transform:scaleX(0);background:linear-gradient(90deg,var(--acc),#7fe3ff)}
-.xp-chap-seg.done i{transform:scaleX(1)}
-.xp-chap-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:6px 14px;margin-top:12px}
-.xp-chap-it{display:flex;gap:8px;align-items:baseline;background:none;border:0;padding:6px 8px;border-radius:8px;cursor:pointer;text-align:left;color:var(--mute);font:600 .82rem Barlow,sans-serif;transition:background .2s,color .2s}
-.xp-chap-it b{font:700 .74rem 'Miriam Libre',monospace;color:var(--acc);min-width:34px}
-.xp-chap-it:hover{background:rgba(255,255,255,.06);color:#fff}
-.xp-chap-it.on{background:rgba(19,180,226,.14);color:#fff}
-
-/* --- sections génériques --- */
-.xp{padding:0 36px 40px}
-.xp-sec{padding-top:64px}
-.xp-kick{display:inline-flex;align-items:center;gap:.55rem;font:700 .7rem Barlow,sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--acc)}
-.xp-kick::before{content:'';width:26px;height:2px;background:linear-gradient(90deg,var(--acc),transparent)}
-.xp-h{font:700 clamp(1.5rem,2.8vw,2.2rem)/1.15 'Miriam Libre',Barlow,sans-serif;color:#fff;margin:.55rem 0 .5rem;letter-spacing:-.01em}
-.xp-h em{font-style:normal;background:linear-gradient(90deg,var(--acc),#b6a6ff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.xp-lead{color:var(--mute);font-size:1.02rem;max-width:62ch;line-height:1.55}
-.xp-rv{opacity:0;transform:translateY(26px);transition:opacity .8s cubic-bezier(.23,1,.32,1),transform .8s cubic-bezier(.23,1,.32,1)}
-.xp-rv.in{opacity:1;transform:none}
-
-/* --- filmstrip --- */
-.xp-film{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(260px,1fr);gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding:22px 2px 14px;scrollbar-width:thin}
-.xp-card{scroll-snap-align:start;position:relative;border-radius:18px;overflow:hidden;cursor:pointer;background:#0b1834;border:1px solid var(--line);text-align:left;padding:0;color:var(--ink);font-family:Barlow,sans-serif;
-  transition:transform .45s cubic-bezier(.23,1,.32,1),border-color .3s,box-shadow .45s}
-.xp-card:hover{transform:translateY(-6px);border-color:rgba(19,180,226,.55);box-shadow:0 24px 60px rgba(0,0,0,.45),0 0 0 1px rgba(19,180,226,.25)}
-.xp-card.on{border-color:var(--acc);box-shadow:0 0 0 2px var(--acc),0 24px 60px rgba(19,180,226,.25)}
-.xp-card-vis{position:relative;aspect-ratio:16/9;overflow:hidden;background:#0d1f3e}
-.xp-card-vis img{width:100%;height:100%;object-fit:cover;object-position:top left;filter:saturate(.9) brightness(.8);transform:scale(1.04);transition:transform .8s cubic-bezier(.23,1,.32,1),filter .5s}
-.xp-card:hover .xp-card-vis img{transform:scale(1.12);filter:saturate(1.05) brightness(.95)}
-.xp-card-vis::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,15,36,0) 30%,rgba(6,15,36,.92) 100%)}
-.xp-card-num{position:absolute;left:14px;bottom:8px;z-index:2;font:700 2.6rem/1 'Miriam Libre',sans-serif;color:transparent;-webkit-text-stroke:1.2px rgba(255,255,255,.75)}
-.xp-card-dur{position:absolute;right:12px;top:12px;z-index:2;font:700 .72rem Barlow,sans-serif;padding:4px 9px;border-radius:50px;background:rgba(6,15,36,.75);backdrop-filter:blur(6px);color:#fff;border:1px solid rgba(255,255,255,.15)}
-.xp-card-play{position:absolute;right:14px;bottom:12px;z-index:2;width:42px;height:42px;border-radius:50%;background:#fff;color:#0b1834;display:flex;align-items:center;justify-content:center;transform:scale(.85);opacity:.9;transition:all .35s cubic-bezier(.34,1.4,.64,1)}
-.xp-card-play svg{width:16px;height:16px;margin-left:2px}
-.xp-card:hover .xp-card-play,.xp-card.on .xp-card-play{transform:scale(1);background:var(--acc);color:#fff;opacity:1}
-.xp-card-bd{padding:14px 16px 16px}
-.xp-card-tag{font:700 .66rem Barlow,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--acc)}
-.xp-card-t{font:700 1rem/1.25 'Miriam Libre',Barlow,sans-serif;color:#fff;margin:.35rem 0 .4rem}
-.xp-card-d{font-size:.84rem;color:var(--mute);line-height:1.45}
-.xp-card-live{display:none;align-items:center;gap:6px;margin-top:10px;font:700 .72rem Barlow,sans-serif;color:var(--acc);letter-spacing:.06em;text-transform:uppercase}
-.xp-card.on .xp-card-live{display:inline-flex}
-.xp-eq{display:inline-flex;gap:2px;height:11px;align-items:flex-end}
-.xp-eq span{width:3px;background:currentColor;border-radius:1px;animation:xpEq 1s ease-in-out infinite}
-.xp-eq span:nth-child(2){animation-delay:.25s}.xp-eq span:nth-child(3){animation-delay:.5s}
+/* ---------- scène vidéo : lecteur + rail compact à droite ---------- */
+.xp-stage{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;align-items:stretch}
+.xp-main{min-width:0}
+.xp-rail{position:relative;min-height:240px}
+.xp-rail-in{position:absolute;inset:0;display:flex;flex-direction:column;border-radius:1.2rem;background:rgba(255,255,255,.82);backdrop-filter:blur(10px);border:1px solid var(--line);box-shadow:0 18px 50px rgba(22,52,103,.08);overflow:hidden}
+.xp-rail-h{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px;border-bottom:1px solid var(--line)}
+.xp-rail-h b{font:700 .68rem Barlow,sans-serif;letter-spacing:.17em;text-transform:uppercase;color:var(--cy);display:inline-flex;align-items:center;gap:.5rem}
+.xp-rail-h b i{width:6px;height:6px;border-radius:50%;background:var(--cy);animation:ping 2.4s infinite}
+.xp-rail-h span{font:600 .76rem Barlow,sans-serif;color:#8192ad}
+.xp-rail-l{flex:1;min-height:0;overflow-y:auto;padding:8px;display:flex;flex-direction:column;gap:6px;scrollbar-width:thin}
+.xp-ri{position:relative;display:grid;grid-template-columns:92px minmax(0,1fr);gap:11px;align-items:center;padding:7px;border-radius:.9rem;border:1px solid transparent;background:transparent;cursor:pointer;text-align:left;font-family:Barlow,sans-serif;color:var(--navy);
+  transition:background .3s var(--ease),border-color .3s,transform .35s var(--spring)}
+.xp-ri:hover{background:#fff;border-color:rgba(19,180,226,.35);transform:translateX(-3px)}
+.xp-ri.on{background:linear-gradient(90deg,rgba(19,180,226,.12),rgba(19,180,226,.03));border-color:rgba(19,180,226,.45)}
+.xp-ri.on::before{content:'';position:absolute;left:-8px;top:14%;bottom:14%;width:3px;border-radius:3px;background:var(--cy);box-shadow:0 0 12px rgba(19,180,226,.8)}
+.xp-ri-th{position:relative;aspect-ratio:16/10;border-radius:.6rem;overflow:hidden;background:var(--gl)}
+.xp-ri-th img{width:100%;height:100%;object-fit:cover;object-position:top left;transition:transform .8s var(--ease)}
+.xp-ri:hover .xp-ri-th img{transform:scale(1.12)}
+.xp-ri-th em{position:absolute;left:5px;bottom:4px;font:700 .95rem/1 'Miriam Libre',sans-serif;font-style:normal;color:#fff;text-shadow:0 2px 8px rgba(22,52,103,.6)}
+.xp-ri-th::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(22,52,103,.55))}
+.xp-ri-t{font:700 .82rem/1.25 'Miriam Libre',Barlow,sans-serif;color:var(--navy);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.xp-ri-m{display:flex;align-items:center;gap:6px;margin-top:4px;font:600 .72rem Barlow,sans-serif;color:#8192ad}
+.xp-ri-m .tg{color:var(--cy);font-weight:700}
+.xp-ri-m .eq{display:none;align-items:flex-end;gap:2px;height:10px;color:var(--cy)}
+.xp-ri.on .xp-ri-m .eq{display:inline-flex}
+.xp-ri-m .eq span{width:2px;background:currentColor;border-radius:1px;animation:xpEq 1s ease-in-out infinite}
+.xp-ri-m .eq span:nth-child(2){animation-delay:.25s}.xp-ri-m .eq span:nth-child(3){animation-delay:.5s}
 @keyframes xpEq{0%,100%{height:30%}50%{height:100%}}
-.xp-card.soon{cursor:default}
-.xp-card.soon .xp-card-play{display:none}
-.xp-card.soon .xp-card-dur{background:rgba(255,207,99,.92);color:#2a1d00;border-color:transparent}
+.xp-ri.soon{cursor:default;opacity:.62}
+.xp-ri.soon:hover{transform:none;background:transparent;border-color:transparent}
+.xp-ri .bt{display:inline-block;padding:1px 7px;border-radius:50px;background:rgba(255,207,99,.35);color:#7a5a00;font-weight:700}
+.vid-cover.xp-swap{animation:xpSwap .7s var(--ease)}
+@keyframes xpSwap{0%{opacity:.2;transform:scale(1.04);filter:blur(8px)}100%{opacity:1;transform:none;filter:none}}
 
-/* --- compteurs d'impact --- */
-.xp-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1px;margin-top:28px;border-radius:22px;overflow:hidden;background:var(--line);border:1px solid var(--line)}
-.xp-kpi{background:linear-gradient(180deg,#0a1630,#071229);padding:26px 22px 24px;position:relative;overflow:hidden}
-.xp-kpi::before{content:'';position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,var(--acc),transparent);opacity:.0;transition:opacity .6s}
-.xp-kpi.in::before{opacity:1}
-.xp-kpi-v{font:700 clamp(2rem,3.6vw,2.9rem)/1 'Miriam Libre',sans-serif;letter-spacing:-.02em;background:linear-gradient(180deg,#fff 20%,#9fdcff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap}
-.xp-kpi-l{margin-top:10px;font-size:.9rem;color:#d4e2fb;line-height:1.35;font-weight:600}
-.xp-kpi-s{margin-top:8px;font-size:.72rem;color:#7f93b8;letter-spacing:.04em}
+/* ---------- chapitres ---------- */
+.xp-chap{margin-top:14px}
+.xp-chap-bar{display:flex;gap:4px;height:7px}
+.xp-chap-seg{position:relative;border:0;padding:0;cursor:pointer;background:rgba(22,52,103,.10);border-radius:4px;overflow:hidden;transition:transform .25s var(--ease),background .25s}
+.xp-chap-seg:hover{transform:scaleY(1.7);background:rgba(19,180,226,.25)}
+.xp-chap-seg i{position:absolute;inset:0;transform-origin:left;transform:scaleX(0);background:linear-gradient(90deg,var(--cy),var(--vi))}
+.xp-chap-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.xp-chap-it{display:inline-flex;gap:7px;align-items:baseline;border:1px solid var(--line);background:rgba(255,255,255,.75);padding:5px 11px;border-radius:50px;cursor:pointer;color:var(--txt);font:600 .78rem Barlow,sans-serif;transition:all .25s var(--ease)}
+.xp-chap-it b{font:700 .72rem 'Miriam Libre',monospace;color:var(--cy)}
+.xp-chap-it:hover{border-color:var(--cy);color:var(--navy);transform:translateY(-2px)}
+.xp-chap-it.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.xp-chap-it.on b{color:var(--sun)}
 
-/* --- orbite du parcours --- */
-.xp-orbit-wrap{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:34px;align-items:center;margin-top:26px}
-.xp-orbit{position:relative;width:100%;max-width:560px;aspect-ratio:1;margin:0 auto}
-.xp-orbit svg.xp-ring{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
-.xp-ring .r-track{fill:none;stroke:rgba(255,255,255,.08);stroke-width:2}
-.xp-ring .r-dash{fill:none;stroke:rgba(19,180,226,.35);stroke-width:1;stroke-dasharray:2 9;transform-origin:300px 300px;animation:xpSpin 80s linear infinite}
-.xp-ring .r-prog{fill:none;stroke:url(#xpGrad);stroke-width:4;stroke-linecap:round;transform:rotate(-90deg);transform-origin:300px 300px;transition:stroke-dashoffset 1s cubic-bezier(.23,1,.32,1);filter:drop-shadow(0 0 8px rgba(19,180,226,.8))}
-.xp-ring .r-comet{fill:#fff;filter:drop-shadow(0 0 10px #7fe3ff)}
-@keyframes xpSpin{to{transform:rotate(360deg)}}
-.xp-node{position:absolute;width:15%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;border:1px solid rgba(160,190,255,.25);background:radial-gradient(circle at 30% 25%,#163467,#0a1630 70%);color:#cfe0ff;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;
-  transition:transform .45s cubic-bezier(.34,1.4,.64,1),background .4s,border-color .4s,box-shadow .4s,opacity .4s,filter .4s}
-.xp-node svg{width:42%;height:42%}
-.xp-node .n-num{position:absolute;top:-6px;right:-6px;width:24px;height:24px;border-radius:50%;background:#0a1630;border:1px solid rgba(160,190,255,.3);font:700 .68rem 'Miriam Libre',sans-serif;display:flex;align-items:center;justify-content:center;color:#9fb3d6}
-.xp-node .n-lab{position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);white-space:nowrap;font:700 .74rem Barlow,sans-serif;color:#9fb3d6;letter-spacing:.02em;transition:color .3s}
-.xp-node:hover{transform:translate(-50%,-50%) scale(1.1);border-color:var(--acc)}
-.xp-node.on{transform:translate(-50%,-50%) scale(1.18);background:radial-gradient(circle at 30% 25%,#3fd0ff,#13b4e2 45%,#0c6fa3);border-color:#bdefff;color:#fff;box-shadow:0 0 0 8px rgba(19,180,226,.15),0 0 50px rgba(19,180,226,.65)}
-.xp-node.on .n-num{background:#fff;color:#0b1834;border-color:#fff}
-.xp-node.on .n-lab{color:#fff}
-.xp-node.done{border-color:rgba(19,180,226,.55);color:#9fe6ff}
-.xp-orbit.has-persona .xp-node:not(.hit){opacity:.28;filter:grayscale(1)}
-.xp-orbit.has-persona .xp-node.hit:not(.on){border-color:#b6a6ff;box-shadow:0 0 0 6px rgba(107,81,237,.18),0 0 32px rgba(107,81,237,.5)}
-.xp-core{position:absolute;left:50%;top:50%;width:46%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:6%;
-  background:radial-gradient(circle at 50% 35%,rgba(19,180,226,.22),rgba(6,15,36,.95) 68%);border:1px solid rgba(19,180,226,.3);box-shadow:inset 0 0 60px rgba(19,180,226,.18),0 0 80px rgba(6,15,36,.8)}
-.xp-core::before{content:'';position:absolute;inset:-10px;border-radius:50%;background:conic-gradient(from 0deg,transparent,rgba(19,180,226,.6),transparent 30%,transparent 50%,rgba(107,81,237,.6),transparent 80%);
-  -webkit-mask:radial-gradient(circle,transparent 66%,#000 67%,#000 69%,transparent 70%);mask:radial-gradient(circle,transparent 66%,#000 67%,#000 69%,transparent 70%);animation:xpSpin 12s linear infinite}
-.xp-core-n{font:700 .72rem Barlow,sans-serif;letter-spacing:.22em;color:var(--acc)}
-.xp-core-t{font:700 clamp(1rem,2vw,1.45rem)/1.15 'Miriam Libre',sans-serif;color:#fff;margin:.4rem 0}
-.xp-core-s{font-size:.8rem;color:var(--mute);line-height:1.35}
-.xp-core-anim{animation:xpCore .6s cubic-bezier(.23,1,.32,1)}
-@keyframes xpCore{from{opacity:0;transform:translateY(8px) scale(.96)}to{opacity:1;transform:none}}
+/* ---------- sections ---------- */
+.xp{padding:0 30px 40px;position:relative}
+.xp-sec{padding-top:78px}
+.xp-k{display:inline-flex;align-items:center;gap:.55rem;font-size:.68rem;font-weight:700;letter-spacing:.17em;text-transform:uppercase;color:var(--cy);background:rgba(19,180,226,.09);border:1px solid rgba(19,180,226,.25);padding:6px 15px;border-radius:50px}
+.xp-k i{width:6px;height:6px;border-radius:50%;background:var(--green,#7eefa0);animation:ping 2.4s infinite}
+.xp-h{font:700 clamp(1.6rem,3vw,2.35rem)/1.15 'Miriam Libre',Barlow,sans-serif;color:var(--navy);margin:.8rem 0 .5rem;letter-spacing:-.015em}
+.xp-h em{font-style:normal;color:var(--cy);position:relative;white-space:nowrap}
+.xp-h em::after{content:'';position:absolute;left:0;right:0;bottom:.04em;height:.28em;background:rgba(255,207,99,.55);z-index:-1;border-radius:3px;transform-origin:left;transform:scaleX(0);transition:transform .9s .35s var(--ease)}
+.xp-rv.in .xp-h em::after,.xp-h.in em::after{transform:scaleX(1)}
+.xp-lead{color:var(--txt);font-size:1.02rem;max-width:64ch;line-height:1.6}
+.xp-rv{opacity:0;transform:translateY(34px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.xp-rv.in{opacity:1;transform:none}
+.xp-rv.d1{transition-delay:.08s}.xp-rv.d2{transition-delay:.16s}.xp-rv.d3{transition-delay:.24s}.xp-rv.d4{transition-delay:.32s}
 
-.xp-step{position:relative;border-radius:24px;background:linear-gradient(160deg,rgba(255,255,255,.07),rgba(255,255,255,.02));border:1px solid var(--line);padding:26px 26px 22px;backdrop-filter:blur(10px)}
-.xp-step-anim{animation:xpStep .55s cubic-bezier(.23,1,.32,1)}
-@keyframes xpStep{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}
-.xp-step-k{font:700 .7rem Barlow,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--acc)}
-.xp-step-h{font:700 1.45rem/1.2 'Miriam Libre',sans-serif;color:#fff;margin:.45rem 0 .6rem}
-.xp-step-p{color:#c3d3ee;font-size:.95rem;line-height:1.55}
-.xp-step ul{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:8px}
-.xp-step li{display:flex;gap:10px;align-items:flex-start;font-size:.9rem;color:#dbe6fb;line-height:1.4}
-.xp-step li::before{content:'';flex:none;width:18px;height:18px;margin-top:1px;border-radius:50%;background:rgba(19,180,226,.15) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2313b4e2' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5L20 7'/%3E%3C/svg%3E") center/11px no-repeat;border:1px solid rgba(19,180,226,.4)}
-.xp-step-shot{margin-top:18px;position:relative;display:block;width:100%;border-radius:14px;overflow:hidden;border:1px solid var(--line);cursor:zoom-in;padding:0;background:#0d1f3e;aspect-ratio:16/8}
-.xp-step-shot img{width:100%;height:100%;object-fit:cover;object-position:top left;transition:transform 1.2s cubic-bezier(.23,1,.32,1)}
-.xp-step-shot:hover img{transform:scale(1.06)}
-.xp-step-shot span{position:absolute;left:10px;bottom:10px;font:700 .72rem Barlow,sans-serif;padding:5px 10px;border-radius:50px;background:rgba(6,15,36,.8);color:#fff;backdrop-filter:blur(6px)}
-.xp-step-act{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px;align-items:center}
-.xp-btn{display:inline-flex;align-items:center;gap:8px;font:700 .85rem Barlow,sans-serif;padding:10px 16px;border-radius:50px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:#fff;cursor:pointer;text-decoration:none;transition:all .25s}
-.xp-btn:hover{border-color:var(--acc);background:rgba(19,180,226,.14)}
-.xp-btn.pri{background:linear-gradient(90deg,var(--acc),#3fc6ee);border-color:transparent;color:#04203a}
-.xp-btn.pri:hover{filter:brightness(1.08);box-shadow:0 10px 30px rgba(19,180,226,.35)}
-.xp-btn svg{width:15px;height:15px}
-.xp-tour{margin-left:auto;display:flex;gap:6px}
-.xp-ic{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:rgba(255,255,255,.05);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .25s}
-.xp-ic:hover,.xp-ic.on{border-color:var(--acc);background:rgba(19,180,226,.18)}
-.xp-ic svg{width:15px;height:15px}
-.xp-tourbar{height:2px;background:rgba(255,255,255,.08);border-radius:2px;margin-top:14px;overflow:hidden}
-.xp-tourbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--acc),#b6a6ff)}
+/* ---------- CE QUE ÇA CHANGE : infographies animées ---------- */
+.xp-imp{display:grid;grid-template-columns:repeat(6,1fr);gap:16px;margin-top:30px}
+.xp-ic{position:relative;border-radius:1.4rem;background:#fff;border:1px solid var(--line);box-shadow:0 18px 50px rgba(22,52,103,.07);padding:24px 24px 22px;overflow:hidden;
+  transition:transform .5s var(--spring),box-shadow .5s var(--ease)}
+.xp-ic:hover{transform:translateY(-6px);box-shadow:0 30px 70px rgba(22,52,103,.13)}
+.xp-ic.s4{grid-column:span 4}.xp-ic.s2{grid-column:span 2}
+.xp-ic-n{font:700 clamp(2.4rem,4.4vw,3.6rem)/1 'Miriam Libre',sans-serif;color:var(--navy);letter-spacing:-.03em;white-space:nowrap}
+.xp-ic-n small{font-size:.45em;color:var(--cy);letter-spacing:0;margin-left:.15em}
+.xp-ic-l{margin-top:8px;font-size:.95rem;font-weight:600;color:var(--navy);line-height:1.35;max-width:34ch}
+.xp-ic-s{margin-top:6px;font-size:.72rem;color:#8192ad;letter-spacing:.04em}
+.xp-ic-v{margin-top:18px}
+/* A : course des barres */
+.xp-race{display:grid;gap:12px}
+.xp-race-r{display:grid;grid-template-columns:92px minmax(0,1fr);gap:12px;align-items:center;font:700 .78rem Barlow,sans-serif;color:var(--txt)}
+.xp-race-b{position:relative;height:30px;border-radius:9px;background:var(--gl);overflow:hidden}
+.xp-race-b i{position:absolute;left:0;top:0;bottom:0;border-radius:9px;display:flex;align-items:center;padding-left:12px;font-style:normal;font:700 .74rem Barlow,sans-serif;color:#fff;white-space:nowrap;width:100%}
+.xp-race-b.old i{background:repeating-linear-gradient(135deg,#9aa9c2 0 10px,#8b9bb6 10px 20px);animation:xpBarber 1.2s linear infinite}
+.xp-race-b.new i{background:linear-gradient(90deg,var(--cy),var(--vi));width:100%;transition:width 1.8s .4s var(--spring);box-shadow:0 6px 20px rgba(19,180,226,.4)}
+.xp-ic.in .xp-race-b.new i{width:24%}
+.xp-race-b.new i::after{content:'';position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.55) 50%,transparent 70%);background-size:200% 100%;animation:xpShine 2.4s linear infinite;border-radius:9px}
+@keyframes xpBarber{to{background-position:28px 0}}
+@keyframes xpShine{from{background-position:150% 0}to{background-position:-50% 0}}
+/* B : chronomètre */
+.xp-chrono{position:relative;width:130px;height:130px;margin:6px auto 0}
+.xp-chrono svg{width:100%;height:100%;transform:rotate(-90deg)}
+.xp-chrono .tr{fill:none;stroke:var(--gl);stroke-width:10}
+.xp-chrono .ar{fill:none;stroke:url(#xpG1);stroke-width:10;stroke-linecap:round;stroke-dasharray:339.3;stroke-dashoffset:339.3}
+.xp-ic.in .xp-chrono .ar{animation:xpChrono 4s var(--ease) infinite}
+.xp-chrono .hd{position:absolute;left:50%;top:50%;width:3px;height:48px;margin-left:-1.5px;margin-top:-48px;background:var(--navy);border-radius:3px;transform-origin:50% 100%}
+.xp-ic.in .xp-chrono .hd{animation:xpHand 4s var(--ease) infinite}
+.xp-chrono b{position:absolute;left:50%;top:50%;width:12px;height:12px;margin:-6px;border-radius:50%;background:var(--cy);box-shadow:0 0 0 4px #fff}
+@keyframes xpChrono{0%{stroke-dashoffset:339.3}55%,85%{stroke-dashoffset:169.6}100%{stroke-dashoffset:339.3}}
+@keyframes xpHand{0%{transform:rotate(0)}55%,85%{transform:rotate(180deg)}100%{transform:rotate(360deg)}}
+/* C : jauge */
+.xp-gauge{position:relative;width:170px;height:96px;margin:4px auto 0}
+.xp-gauge svg{width:100%;height:100%;overflow:visible}
+.xp-gauge .gt{fill:none;stroke:var(--gl);stroke-width:14;stroke-linecap:round}
+.xp-gauge .ga{fill:none;stroke:url(#xpG2);stroke-width:14;stroke-linecap:round;stroke-dasharray:235.6;stroke-dashoffset:0;transition:stroke-dashoffset 1.8s .5s var(--spring)}
+.xp-ic.in .xp-gauge .ga{stroke-dashoffset:117.8}
+.xp-gauge .nd{transform-origin:85px 85px;transform:rotate(90deg);transition:transform 1.8s .5s var(--spring)}
+.xp-ic.in .xp-gauge .nd{transform:rotate(0deg);animation:xpWig 3s 2.4s ease-in-out infinite}
+@keyframes xpWig{0%,100%{transform:rotate(0)}50%{transform:rotate(-5deg)}}
+/* D : visibilité (flou -> net) */
+.xp-vis{position:relative;border-radius:.9rem;overflow:hidden;aspect-ratio:16/9;border:1px solid var(--line)}
+.xp-vis img{width:100%;height:100%;object-fit:cover;object-position:top left;display:block}
+.xp-vis .bl{position:absolute;inset:0;backdrop-filter:blur(7px) grayscale(1);-webkit-backdrop-filter:blur(7px) grayscale(1);background:rgba(240,246,248,.35);clip-path:inset(0 0 0 0)}
+.xp-ic.in .xp-vis .bl{animation:xpScan 5s var(--ease) infinite}
+.xp-vis .sc{position:absolute;top:0;bottom:0;width:3px;left:0;background:var(--cy);box-shadow:0 0 18px 4px rgba(19,180,226,.7);opacity:0}
+.xp-ic.in .xp-vis .sc{animation:xpScanL 5s var(--ease) infinite}
+@keyframes xpScan{0%{clip-path:inset(0 0 0 0)}50%,85%{clip-path:inset(0 0 0 100%)}100%{clip-path:inset(0 0 0 0)}}
+@keyframes xpScanL{0%{left:0;opacity:1}50%{left:100%;opacity:1}55%,100%{left:100%;opacity:0}}
+/* E : cadran 24 h */
+.xp-dial{position:relative;width:130px;height:130px;margin:6px auto 0;border-radius:50%;background:conic-gradient(from 180deg,#163467 0 50%,#f0f6f8 50% 100%);box-shadow:inset 0 0 0 8px #fff,0 10px 30px rgba(22,52,103,.15)}
+.xp-dial::before{content:'';position:absolute;inset:16px;border-radius:50%;background:#fff}
+.xp-dial i{position:absolute;left:50%;top:50%;width:2px;height:58px;margin-left:-1px;margin-top:-58px;transform-origin:50% 100%;background:linear-gradient(var(--cy),transparent);animation:spin 8s linear infinite}
+.xp-dial span{position:absolute;font:700 .9rem/1 sans-serif}
+.xp-dial .su{top:22px;left:50%;transform:translateX(-50%)}.xp-dial .mo{bottom:22px;left:50%;transform:translateX(-50%)}
+.xp-dial b{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font:700 1.05rem 'Miriam Libre',sans-serif;color:var(--navy)}
 
-/* --- personas --- */
-.xp-pers{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
-.xp-pchip{display:inline-flex;align-items:center;gap:10px;padding:8px 16px 8px 8px;border-radius:50px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:#dbe6fb;cursor:pointer;font:700 .88rem Barlow,sans-serif;transition:all .3s}
-.xp-pchip i{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:.95rem;background:rgba(255,255,255,.08)}
-.xp-pchip:hover{border-color:#b6a6ff}
-.xp-pchip.on{background:linear-gradient(90deg,rgba(107,81,237,.35),rgba(19,180,226,.25));border-color:#b6a6ff;color:#fff;box-shadow:0 10px 30px rgba(107,81,237,.3)}
-.xp-pcard{margin-top:18px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:24px;border-radius:22px;padding:24px 26px;background:linear-gradient(120deg,rgba(107,81,237,.16),rgba(19,180,226,.08));border:1px solid rgba(182,166,255,.25)}
+/* ---------- ROUE DU PARCOURS ---------- */
+.xp-wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:46px;align-items:center;margin-top:30px}
+.xp-orb{position:relative;width:100%;max-width:560px;aspect-ratio:1;margin:0 auto}
+.xp-orb .deco{position:absolute;inset:-5%;width:110%;height:110%;pointer-events:none;overflow:visible}
+.xp-orb .deco circle{fill:none}
+.xp-wheel{position:absolute;inset:0;--rot:90deg;transform:rotate(var(--rot));transition:transform 1.15s var(--spring)}
+.xp-wheel svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.xp-seg{fill:#fff;stroke:rgba(22,52,103,.16);stroke-width:2;cursor:pointer;transition:fill .45s var(--ease),stroke .45s,transform .7s var(--spring),opacity .45s,filter .45s;filter:drop-shadow(0 6px 14px rgba(22,52,103,.08))}
+.xp-seg:hover{stroke:var(--cy);fill:#f6fcfe}
+.xp-seg.on{fill:url(#xpSegG);stroke:#fff;filter:drop-shadow(0 14px 30px rgba(19,180,226,.45))}
+.xp-seg.done{stroke:rgba(19,180,226,.55)}
+.xp-orb.pers .xp-seg:not(.hit){opacity:.28}
+.xp-orb.pers .xp-seg.hit:not(.on){stroke:var(--vi);stroke-width:3;animation:xpHit 1.6s ease-in-out infinite}
+@keyframes xpHit{50%{filter:drop-shadow(0 0 18px rgba(107,81,237,.55))}}
+.xp-lab{position:absolute;transform:translate(-50%,-50%) rotate(calc(-1 * var(--rot)));transition:transform 1.15s var(--spring),color .4s,opacity .45s;pointer-events:none;
+  display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--navy);text-align:center;width:16%}
+.xp-lab svg{width:30%;min-width:20px;height:auto;aspect-ratio:1;color:var(--cy);transition:color .4s,transform .6s var(--spring)}
+.xp-lab b{font:700 clamp(.6rem,1.15vw,.8rem)/1.1 Barlow,sans-serif;letter-spacing:.02em}
+.xp-lab em{font:700 .62rem 'Miriam Libre',sans-serif;font-style:normal;color:#8192ad}
+.xp-lab.on{color:#fff}.xp-lab.on svg{color:#fff;transform:scale(1.25)}.xp-lab.on em{color:rgba(255,255,255,.8)}
+.xp-orb.pers .xp-lab:not(.hit){opacity:.35}
+.xp-hub{position:absolute;left:50%;top:50%;width:60%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle at 50% 30%,#fff,#f7fbfd 70%);
+  box-shadow:0 30px 80px rgba(22,52,103,.14),inset 0 0 0 1px rgba(22,52,103,.06);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:9%}
+.xp-hub::before{content:'';position:absolute;inset:7%;border-radius:50%;border:1.5px dashed rgba(107,81,237,.35);animation:spin 40s linear infinite}
+.xp-hub::after{content:'';position:absolute;inset:-2px;border-radius:50%;background:conic-gradient(from var(--hubA,0deg),transparent 0 70%,rgba(19,180,226,.9) 85%,transparent 100%);
+  -webkit-mask:radial-gradient(circle,transparent 69%,#000 70%);mask:radial-gradient(circle,transparent 69%,#000 70%);animation:spin 6s linear infinite}
+.xp-hub-n{font:700 clamp(2.4rem,5vw,3.8rem)/1 'Miriam Libre',sans-serif;letter-spacing:-.04em;background:linear-gradient(135deg,var(--cy),var(--vi));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.xp-hub-n small{font-size:.32em;-webkit-text-fill-color:#8192ad;letter-spacing:0;margin-left:2px}
+.xp-hub-t{font:700 clamp(.95rem,1.8vw,1.25rem)/1.2 'Miriam Libre',sans-serif;color:var(--navy);margin-top:8px}
+.xp-hub-s{font-size:.78rem;color:#64779a;margin-top:6px;line-height:1.35;max-width:22ch}
+.xp-hub .xin{animation:xpIn .7s var(--ease) both}
+.xp-hub .xin:nth-child(2){animation-delay:.08s}.xp-hub .xin:nth-child(3){animation-delay:.16s}
+@keyframes xpIn{from{opacity:0;transform:translateY(16px);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}
+.xp-ptr{position:absolute;width:0;height:0;pointer-events:none}
+.xp-ptr.r{left:100%;top:50%}.xp-ptr.b{left:50%;top:100%}
+.xp-ptr i{position:absolute;left:-9px;top:-9px;width:18px;height:18px;border-radius:50%;background:var(--cy);box-shadow:0 0 0 6px rgba(19,180,226,.2);animation:ping 2s infinite}
+.xp-spark{position:absolute;left:0;top:0;width:8px;height:8px;margin:-4px;border-radius:50%;pointer-events:none;animation:xpSpark .8s var(--ease) forwards}
+@keyframes xpSpark{from{transform:translate(0,0) scale(1);opacity:1}to{transform:translate(var(--dx),var(--dy)) scale(0);opacity:0}}
+
+.xp-card{position:relative;border-radius:1.6rem;background:#fff;border:1px solid var(--line);box-shadow:0 30px 80px rgba(22,52,103,.10);padding:28px 28px 22px;overflow:hidden}
+.xp-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(var(--cy),var(--vi))}
+.xp-card .xin{animation:xpIn .7s var(--ease) both}
+.xp-card-k{font:700 .7rem Barlow,sans-serif;letter-spacing:.17em;text-transform:uppercase;color:var(--cy)}
+.xp-card-h{font:700 1.5rem/1.2 'Miriam Libre',sans-serif;color:var(--navy);margin:.5rem 0 .6rem}
+.xp-card-p{color:var(--txt);font-size:.96rem;line-height:1.6}
+.xp-card ul{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:9px}
+.xp-card li{display:flex;gap:10px;align-items:flex-start;font-size:.92rem;color:var(--navy);font-weight:600;line-height:1.4}
+.xp-card li::before{content:'';flex:none;width:20px;height:20px;border-radius:50%;background:var(--cy) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5L20 7'/%3E%3C/svg%3E") center/11px no-repeat;box-shadow:0 4px 10px rgba(19,180,226,.35)}
+.xp-shot{margin-top:18px;position:relative;display:block;width:100%;border-radius:1rem;overflow:hidden;border:1px solid var(--line);cursor:zoom-in;padding:0;background:var(--gl);aspect-ratio:16/8}
+.xp-shot img{width:100%;height:100%;object-fit:cover;object-position:top left;animation:xpKen 16s ease-in-out infinite alternate}
+.xp-shot.xin{animation:xpWipe .9s .25s var(--ease) both}
+@keyframes xpWipe{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes xpKen{from{transform:scale(1.02) translate(0,0)}to{transform:scale(1.12) translate(-3%,-4%)}}
+.xp-shot span{position:absolute;left:10px;bottom:10px;font:700 .74rem Barlow,sans-serif;padding:5px 11px;border-radius:50px;background:rgba(255,255,255,.92);color:var(--navy);box-shadow:0 4px 14px rgba(22,52,103,.15)}
+.xp-act{margin-top:18px;display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.xp-go{display:inline-flex;align-items:center;gap:12px;border:0;cursor:pointer;text-align:left;padding:10px 18px 10px 10px;border-radius:50px;background:var(--navy);color:#fff;font-family:Barlow,sans-serif;transition:all .35s var(--spring);box-shadow:0 10px 26px rgba(22,52,103,.25)}
+.xp-go:hover{background:var(--cy);transform:translateY(-2px);box-shadow:0 16px 36px rgba(19,180,226,.4)}
+.xp-go .pl{width:36px;height:36px;border-radius:50%;background:var(--cy);display:flex;align-items:center;justify-content:center;flex:none;transition:background .3s}
+.xp-go:hover .pl{background:#fff;color:var(--cy)}
+.xp-go .pl svg{width:14px;height:14px;margin-left:2px}
+.xp-go b{display:block;font-size:.86rem;line-height:1.2}
+.xp-go small{display:block;font-size:.72rem;opacity:.75;margin-top:2px}
+.xp-go.off{background:var(--gl);color:#64779a;box-shadow:none;cursor:default}
+.xp-go.off .pl{background:rgba(22,52,103,.12)}
+.xp-nav{margin-left:auto;display:flex;gap:6px}
+.xp-nb{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:#fff;color:var(--navy);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s var(--spring)}
+.xp-nb:hover,.xp-nb.on{border-color:var(--cy);background:var(--cy);color:#fff;transform:scale(1.08)}
+.xp-nb svg{width:15px;height:15px}
+.xp-tbar{height:3px;background:var(--gl);border-radius:3px;margin-top:16px;overflow:hidden}
+.xp-tbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--cy),var(--vi))}
+
+/* ---------- personas ---------- */
+.xp-pers{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.xp-pc{display:inline-flex;align-items:center;gap:10px;padding:7px 16px 7px 7px;border-radius:50px;border:1px solid var(--line);background:#fff;color:var(--navy);cursor:pointer;font:700 .9rem Barlow,sans-serif;box-shadow:0 6px 18px rgba(22,52,103,.06);transition:all .35s var(--spring)}
+.xp-pc i{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-style:normal;background:var(--gl);transition:transform .5s var(--spring)}
+.xp-pc:hover{transform:translateY(-3px);border-color:var(--vi)}
+.xp-pc:hover i{transform:rotate(-12deg) scale(1.1)}
+.xp-pc.on{background:var(--vi);border-color:var(--vi);color:#fff;box-shadow:0 14px 34px rgba(107,81,237,.35)}
+.xp-pc.on i{background:#fff}
+.xp-pcard{margin-top:18px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:26px;border-radius:1.4rem;padding:26px 28px;background:linear-gradient(120deg,#fff,#f4f1ff);border:1px solid rgba(107,81,237,.22);box-shadow:0 20px 60px rgba(107,81,237,.10)}
 .xp-pcard[hidden]{display:none}
-.xp-pq{font:700 1.15rem/1.4 'Miriam Libre',sans-serif;color:#fff}
-.xp-pq small{display:block;margin-top:10px;font:600 .82rem Barlow,sans-serif;color:#b6a6ff;letter-spacing:.04em}
-.xp-pg{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
-.xp-pg div{border-radius:14px;padding:12px 14px;background:rgba(6,15,36,.45);border:1px solid var(--line)}
-.xp-pg b{display:block;font-size:.9rem;color:#fff}
-.xp-pg span{display:block;font-size:.8rem;color:var(--mute);margin-top:3px;line-height:1.4}
+.xp-pq{font:700 1.2rem/1.45 'Miriam Libre',sans-serif;color:var(--navy)}
+.xp-pq small{display:block;margin-top:10px;font:700 .8rem Barlow,sans-serif;color:var(--vi);letter-spacing:.04em}
+.xp-pg{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.xp-pg div{border-radius:1rem;padding:13px 15px;background:#fff;border:1px solid var(--line)}
+.xp-pg b{display:block;font-size:.92rem;color:var(--navy)}
+.xp-pg span{display:block;font-size:.82rem;color:var(--txt);margin-top:3px;line-height:1.4}
+.xp-pcard .xin{animation:xpIn .6s var(--ease) both}
 
-/* --- mosaïque d'écrans --- */
-.xp-bento{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:170px;gap:14px;margin-top:26px}
-.xp-tile{position:relative;border-radius:18px;overflow:hidden;cursor:zoom-in;border:1px solid var(--line);background:#0d1f3e;padding:0}
+/* ---------- écrans réels ---------- */
+.xp-bento{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:180px;gap:14px;margin-top:28px}
+.xp-tile{position:relative;border-radius:1.2rem;overflow:hidden;cursor:zoom-in;border:1px solid var(--line);background:#fff;padding:0;box-shadow:0 14px 40px rgba(22,52,103,.08);transition:transform .5s var(--spring),box-shadow .5s}
+.xp-tile:hover{transform:translateY(-5px) rotate(-.4deg);box-shadow:0 26px 60px rgba(22,52,103,.16)}
 .xp-tile.w2{grid-column:span 2}.xp-tile.h2{grid-row:span 2}
-.xp-tile img{width:100%;height:100%;object-fit:cover;object-position:top left;transition:transform 1.4s cubic-bezier(.23,1,.32,1),filter .6s;filter:brightness(.85)}
-.xp-tile:hover img{transform:scale(1.08);filter:brightness(1)}
-.xp-tile::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,rgba(6,15,36,.9))}
-.xp-tile figcaption{position:absolute;left:14px;right:14px;bottom:12px;z-index:2;text-align:left}
-.xp-tile figcaption b{display:block;font:700 .95rem 'Miriam Libre',sans-serif;color:#fff}
-.xp-tile figcaption span{font-size:.78rem;color:#b9c9e6}
-.xp-tile .zoom{position:absolute;right:12px;top:12px;z-index:2;width:32px;height:32px;border-radius:50%;background:rgba(6,15,36,.7);display:flex;align-items:center;justify-content:center;color:#fff;opacity:0;transform:scale(.8);transition:all .3s}
-.xp-tile:hover .zoom{opacity:1;transform:none}
+.xp-tile img{width:100%;height:100%;object-fit:cover;object-position:top left;animation:xpKen 18s ease-in-out infinite alternate}
+.xp-tile:nth-child(2n) img{animation-duration:22s;animation-direction:alternate-reverse}
+.xp-tile figcaption{position:absolute;left:10px;right:10px;bottom:10px;z-index:2;text-align:left;padding:9px 12px;border-radius:.8rem;background:rgba(255,255,255,.92);backdrop-filter:blur(6px);box-shadow:0 6px 18px rgba(22,52,103,.12);transform:translateY(4px);transition:transform .4s var(--ease)}
+.xp-tile:hover figcaption{transform:none}
+.xp-tile figcaption b{display:block;font:700 .88rem 'Miriam Libre',sans-serif;color:var(--navy)}
+.xp-tile figcaption span{font-size:.76rem;color:var(--txt)}
 
-/* --- calendrier projet --- */
-.xp-road{position:relative;margin-top:34px;padding:58px 0 10px}
-.xp-road-line{position:absolute;left:0;right:0;top:34px;height:4px;border-radius:4px;background:rgba(255,255,255,.08)}
-.xp-road-line i{position:absolute;inset:0;transform-origin:left;transform:scaleX(0);background:linear-gradient(90deg,var(--acc),#b6a6ff);border-radius:4px;transition:transform 2.2s cubic-bezier(.23,1,.32,1)}
+/* ---------- calendrier ---------- */
+.xp-road{position:relative;margin-top:30px;padding:56px 0 6px}
+.xp-road-line{position:absolute;left:0;right:0;top:32px;height:6px;border-radius:6px;background:rgba(22,52,103,.08);overflow:hidden}
+.xp-road-line i{position:absolute;inset:0;transform-origin:left;transform:scaleX(0);background:linear-gradient(90deg,var(--cy),var(--vi));transition:transform 2.4s var(--ease)}
+.xp-road-line u{position:absolute;top:0;bottom:0;width:80px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.9),transparent);animation:xpRun 3s linear infinite}
+@keyframes xpRun{from{left:-80px}to{left:100%}}
 .xp-road.in .xp-road-line i{transform:scaleX(1)}
 .xp-road-pts{position:relative;display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
-.xp-road-pt{position:relative;text-align:center;opacity:0;transform:translateY(10px);transition:all .6s cubic-bezier(.23,1,.32,1)}
+.xp-road-pt{position:relative;text-align:center;opacity:0;transform:translateY(14px);transition:all .7s var(--spring)}
 .xp-road.in .xp-road-pt{opacity:1;transform:none}
-.xp-road-pt::before{content:'';position:absolute;left:50%;top:-30px;width:14px;height:14px;transform:translateX(-50%);border-radius:50%;background:#060f24;border:3px solid var(--acc);box-shadow:0 0 16px rgba(19,180,226,.6)}
-.xp-road-pt.last::before{background:var(--acc);width:18px;height:18px;top:-32px}
-.xp-road-pt b{display:block;font:700 .74rem Barlow,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--acc)}
-.xp-road-pt span{display:block;font-size:.84rem;color:#dbe6fb;margin-top:4px;line-height:1.3}
+.xp-road-pt::before{content:'';position:absolute;left:50%;top:-31px;width:16px;height:16px;transform:translateX(-50%);border-radius:50%;background:#fff;border:4px solid var(--cy);box-shadow:0 4px 12px rgba(19,180,226,.4)}
+.xp-road-pt.last::before{background:var(--sun);border-color:var(--navy);width:22px;height:22px;top:-34px;animation:ping 2.4s infinite}
+.xp-road-pt b{display:block;font:700 .72rem Barlow,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--cy)}
+.xp-road-pt span{display:block;font-size:.86rem;color:var(--navy);font-weight:600;margin-top:4px;line-height:1.3}
 
-/* --- barre de partage --- */
-.xp-share{margin-top:64px;border-radius:26px;padding:30px 32px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px;
-  background:linear-gradient(110deg,rgba(19,180,226,.18),rgba(107,81,237,.18));border:1px solid rgba(19,180,226,.3);position:relative;overflow:hidden}
-.xp-share h4{font:700 1.3rem 'Miriam Libre',sans-serif;color:#fff;margin:0}
-.xp-share p{color:#c3d3ee;font-size:.92rem;margin-top:4px}
-.xp-share-act{display:flex;flex-wrap:wrap;gap:10px}
-.xp-toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);opacity:0;z-index:9999;padding:12px 20px;border-radius:50px;background:#0b1834;color:#fff;font:700 .88rem Barlow,sans-serif;border:1px solid var(--acc,#13b4e2);box-shadow:0 20px 50px rgba(0,0,0,.4);transition:all .4s cubic-bezier(.23,1,.32,1);pointer-events:none}
+/* ---------- partage ---------- */
+.xp-share{margin-top:78px;border-radius:1.6rem;padding:32px 34px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px;color:#fff;position:relative;overflow:hidden;
+  background:linear-gradient(110deg,#163467,#13b4e2 55%,#6b51ed);background-size:200% 100%;animation:xpFlow 12s ease-in-out infinite alternate;box-shadow:0 30px 70px rgba(22,52,103,.25)}
+@keyframes xpFlow{to{background-position:100% 0}}
+.xp-share h4{font:700 1.35rem 'Miriam Libre',sans-serif;margin:0;color:#fff}
+.xp-share p{opacity:.88;font-size:.94rem;margin-top:4px}
+.xp-sa{display:flex;flex-wrap:wrap;gap:10px}
+.xp-sb{display:inline-flex;align-items:center;gap:8px;font:700 .86rem Barlow,sans-serif;padding:11px 18px;border-radius:50px;border:1px solid rgba(255,255,255,.45);background:rgba(255,255,255,.12);color:#fff;cursor:pointer;text-decoration:none;transition:all .3s var(--spring)}
+.xp-sb:hover{background:#fff;color:var(--navy);transform:translateY(-2px)}
+.xp-sb.pri{background:#fff;color:var(--navy);border-color:#fff}
+.xp-sb.pri:hover{background:var(--sun);border-color:var(--sun)}
+.xp-sb svg{width:15px;height:15px}
+.xp-toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);opacity:0;z-index:9999;padding:12px 20px;border-radius:50px;background:#163467;color:#fff;font:700 .88rem Barlow,sans-serif;box-shadow:0 20px 50px rgba(22,52,103,.35);transition:all .4s cubic-bezier(.23,1,.32,1);pointer-events:none}
 .xp-toast.on{opacity:1;transform:translate(-50%,0)}
 
-/* --- visionneuse --- */
-.xp-lb{position:fixed;inset:0;z-index:9998;display:flex;align-items:center;justify-content:center;padding:4vh 5vw;background:rgba(3,8,20,.92);backdrop-filter:blur(10px);opacity:0;visibility:hidden;transition:opacity .35s,visibility .35s}
+/* ---------- visionneuse ---------- */
+.xp-lb{position:fixed;inset:0;z-index:9998;display:flex;align-items:center;justify-content:center;padding:4vh 5vw;background:rgba(240,246,248,.94);backdrop-filter:blur(12px);opacity:0;visibility:hidden;transition:opacity .35s,visibility .35s}
 .xp-lb.on{opacity:1;visibility:visible}
-.xp-lb figure{margin:0;max-width:min(1400px,100%);max-height:100%;display:flex;flex-direction:column;align-items:center;gap:14px;transform:scale(.96);transition:transform .45s cubic-bezier(.23,1,.32,1)}
+.xp-lb figure{margin:0;max-width:min(1400px,100%);display:flex;flex-direction:column;align-items:center;gap:14px;transform:scale(.94) translateY(10px);transition:transform .5s cubic-bezier(.34,1.42,.5,1)}
 .xp-lb.on figure{transform:none}
-.xp-lb img{max-width:100%;max-height:78vh;border-radius:14px;box-shadow:0 40px 120px rgba(0,0,0,.6);background:#fff}
-.xp-lb figcaption{color:#dbe6fb;font:600 .95rem Barlow,sans-serif;text-align:center}
-.xp-lb figcaption b{color:#fff;font-family:'Miriam Libre',sans-serif;margin-right:8px}
-.xp-lb button{position:absolute;width:48px;height:48px;border-radius:50%;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .25s}
-.xp-lb button:hover{background:#13b4e2;border-color:#13b4e2}
+.xp-lb img{max-width:100%;max-height:78vh;border-radius:14px;box-shadow:0 40px 120px rgba(22,52,103,.3);background:#fff}
+.xp-lb figcaption{color:#3d5174;font:600 .95rem Barlow,sans-serif;text-align:center}
+.xp-lb figcaption b{color:#163467;font-family:'Miriam Libre',sans-serif;margin-right:8px}
+.xp-lb button{position:absolute;width:48px;height:48px;border-radius:50%;border:1px solid rgba(22,52,103,.15);background:#fff;color:#163467;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .25s;box-shadow:0 8px 24px rgba(22,52,103,.12)}
+.xp-lb button:hover{background:#13b4e2;border-color:#13b4e2;color:#fff}
 .xp-lb .lb-x{top:20px;right:20px}.xp-lb .lb-p{left:20px;top:50%;margin-top:-24px}.xp-lb .lb-n{right:20px;top:50%;margin-top:-24px}
-
-/* --- mode présentation (plein écran) --- */
 .panel--xp:fullscreen{max-width:none;border-radius:0;overflow:auto}
-.panel--xp:fullscreen .xp-theater{max-width:min(100%,calc((100vh - 220px) * 16 / 9));margin:0 auto}
 
+@media(max-width:1060px){
+  .xp-stage{grid-template-columns:1fr}
+  .xp-rail{min-height:0}
+  .xp-rail-in{position:static}
+  .xp-rail-l{flex-direction:row;overflow-x:auto;overflow-y:hidden}
+  .xp-ri{flex:0 0 260px}
+  .xp-ri.on::before{left:14%;right:14%;top:-6px;bottom:auto;width:auto;height:3px}
+  .xp-ri:hover{transform:translateY(-2px)}
+}
 @media(max-width:980px){
-  .xp-orbit-wrap{grid-template-columns:1fr}
+  .xp-wrap{grid-template-columns:1fr;gap:30px}
   .xp-pcard{grid-template-columns:1fr}
+  .xp-imp{grid-template-columns:repeat(2,1fr)}
+  .xp-ic.s4,.xp-ic.s2{grid-column:span 2}
   .xp-bento{grid-template-columns:repeat(2,1fr)}
-  .xp-road-pts{grid-template-columns:repeat(4,1fr);row-gap:44px}
+  .xp-road-pts{grid-template-columns:repeat(4,1fr);row-gap:46px}
 }
 @media(max-width:640px){
-  .panel--xp .panel-head{padding:20px 18px 16px}
-  .panel--xp .panel-body{padding:16px 14px 4px}
   .xp{padding:0 16px 28px}
-  .xp-sec{padding-top:46px}
-  .xp-node .n-lab{display:none}
-  .xp-node .n-num{width:19px;height:19px;font-size:.6rem}
-  .xp-core-s{display:none}
-  .xp-bento{grid-template-columns:1fr;grid-auto-rows:190px}
+  .xp-sec{padding-top:56px}
+  .xp-lab b{display:none}
+  .xp-hub-s{display:none}
+  .xp-imp{grid-template-columns:1fr}.xp-ic.s4,.xp-ic.s2{grid-column:auto}
+  .xp-bento{grid-template-columns:1fr;grid-auto-rows:200px}
   .xp-tile.w2,.xp-tile.h2{grid-column:auto;grid-row:auto}
   .xp-road-pts{grid-template-columns:repeat(2,1fr)}
-  .xp-film{grid-auto-columns:82%}
-  .xp-tour{margin-left:0}
+  .xp-nav{margin-left:0}
+  .xp-race-r{grid-template-columns:70px minmax(0,1fr)}
 }
-@media(prefers-reduced-motion:reduce){.xp-rv{opacity:1;transform:none}.xp-road-line i{transform:scaleX(1)}.xp-road-pt{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){
+  .xp-rv{opacity:1;transform:none}
+  .xp-road-line i{transform:scaleX(1)}.xp-road-pt{opacity:1;transform:none}
+  .xp-ic .xp-race-b.new i{width:24%}
+}
 </style>
 </head>
 <body>
@@ -1531,17 +1609,11 @@ function renderPanel(id, vidIdx, autoplay){
   if(XP[id] && !soon) xpMount(id);
   else if(xpS){ if(xpS.tour) clearInterval(xpS.tour); xpS = null; }
 
-  if(autoplay){ playVideo(); setTimeout(playVideo, 180); }
+  /* Plusieurs vidéos disponibles : on montre la vignette et on laisse choisir, sans lecture automatique. */
+  const several = !!XP[id] || m.videos.length > 1;
+  if(autoplay && !several){ playVideo(); setTimeout(playVideo, 180); }
 }
 
-
-/* =====================================================================
-   UNIVERS MODULE (XP)
-   Données éditoriales et rendu immersif par module.
-   Sources : transcripts des démos Fluxym (B. Bartoli), BtS Esker Procurement.
-   Pour ajouter un module : déclarer XP.<id> sur le même modèle.
-   Vidéo sans URL publique (u:"") : affichée « bientôt en ligne », jamais lue.
-   ===================================================================== */
 const XP_IMG = "assets/procurement/";
 const XP_ICONS = {
   kpi:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
@@ -1573,56 +1645,56 @@ const XP = {
       erp:        {t:"Intégration ERP", d:"Une application, de multiples ERP"}
     },
     videos: [
-      {main:true, tag:"Vue d'ensemble", t:"Le module Achats de A à Z", dur:"≈ 7 min", len:440, img:"dashboard",
+      {main:true, tag:"Vue d'ensemble", t:"Le module Achats de A à Z", nm:"la présentation globale du module Achats", dur:"≈ 7 min", len:440, img:"dashboard",
        d:"Tableaux de bord, demande d'achat sous tous ses formats, Synergy, approbation, commande automatique et portail fournisseur.",
        ch:[[0,"Tableaux de bord"],[56,"Catalogue et punch-out"],[107,"Devis PDF lu en 30 s"],[180,"Score fournisseurs"],[229,"Demande à Synergy"],[285,"Approbation"],[380,"Commande et réception"],[404,"Portail fournisseur"]]},
-      {tag:"Cas d'usage", t:"Une commande, plusieurs sites de livraison", dur:"≈ 4 min", len:235, img:"commande", u:"",
+      {tag:"Cas d'usage", t:"Une commande, plusieurs sites de livraison", nm:"la démo « Commande multi-sites »", dur:"≈ 4 min", len:235, img:"commande", u:"",
        d:"Ventiler un même article sur plusieurs adresses, approuver à la voix et envoyer une commande unique au fournisseur.",
        ch:[[0,"Le besoin"],[47,"Ventiler par site"],[93,"Approbation vocale"],[141,"Commande unique"],[190,"Côté fournisseur"]]},
-      {tag:"Cas d'usage", t:"Commandes récurrentes, zéro saisie", dur:"≈ 4 min 30", len:275, img:"reception", u:"",
+      {tag:"Cas d'usage", t:"Commandes récurrentes, zéro saisie", nm:"la démo « Commandes récurrentes »", dur:"≈ 4 min 30", len:275, img:"reception", u:"",
        d:"Synergy crée douze échéances en une phrase, la réception se fait toute seule et les factures non parvenues restent justes.",
        ch:[[0,"Deux approches"],[82,"12 échéances par Synergy"],[158,"Réception automatique"],[186,"Factures non parvenues"],[231,"Option contrat"]]},
-      {tag:"Cas d'usage", t:"Modifier une commande après envoi", dur:"≈ 9 min 30", len:575, img:"portail", u:"",
+      {tag:"Cas d'usage", t:"Modifier une commande après envoi", nm:"la démo « Modifier une commande »", dur:"≈ 9 min 30", len:575, img:"portail", u:"",
        d:"Approbation dans Teams, ajustement par le fournisseur sur son portail, garde-fou budgétaire et avenants synchronisés avec l'ERP.",
        ch:[[0,"Modes de saisie"],[112,"Devis et copier-coller Excel"],[197,"Approbation Teams (bientôt)"],[274,"Le fournisseur ajuste"],[374,"Garde-fou budgétaire"],[432,"Avenants et réception partielle"],[551,"Cas du punch-out"]]}
     ],
     kpis: [
-      {pre:"÷", to:3, suf:" à 5", l:"Temps de création d'une demande d'achat", s:"Démo Fluxym · vue d'ensemble"},
-      {pre:"< ", to:30, suf:" s", l:"Pour transformer un devis PDF en lignes de demande", s:"Démo Fluxym · vue d'ensemble"},
-      {pre:"−", to:50, suf:" %", l:"De temps de traitement côté demandeur", s:"Esker · Behind the Scene"},
-      {pre:"+", to:100, suf:" %", l:"De visibilité sur les processus achats et finances", s:"Esker · Behind the Scene"},
-      {pre:"", to:24, suf:"/7", l:"Portail fournisseurs : commandes et suivi en continu", s:"Esker · Behind the Scene"},
+      {v:"race", pre:"÷", to:3, suf:" à 5", l:"Temps de création d'une demande d'achat", s:"Démo Fluxym · vue d'ensemble"},
+      {v:"chrono", pre:"< ", to:30, suf:" s", l:"Pour transformer un devis PDF en lignes de demande", s:"Démo Fluxym · vue d'ensemble"},
+      {v:"gauge", pre:"−", to:50, suf:" %", l:"De temps de traitement côté demandeur", s:"Esker · Behind the Scene"},
+      {v:"vis", pre:"+", to:100, suf:" %", l:"De visibilité sur les processus achats et finances", s:"Esker · Behind the Scene"},
+      {v:"dial", pre:"", to:24, suf:"/7", l:"Portail fournisseurs : commandes et suivi en continu", s:"Esker · Behind the Scene"},
       {pre:"", to:14, suf:" sem.", l:"Du démarrage à la mise en production", s:"Esker · calendrier projet type"}
     ],
     steps: [
       {ic:"kpi", lab:"Pilotage", core:"Décider sur des chiffres", h:"Piloter sur des chiffres, pas sur des intuitions",
        p:"Chaque profil ouvre Esker sur son propre tableau de bord : l'acheteur voit l'activité globale, le demandeur uniquement ce qui le concerne.",
        b:["Vues, indicateurs et graphiques 100 % personnalisables","Conformité et exceptions : achats avec ou sans commande","Visibilité dès le départ sur les dépenses engagées"],
-       shot:"dashboard", go:[0,0,"Voir les tableaux de bord"]},
+       shot:"dashboard", go:[0,0,"les tableaux de bord"]},
       {ic:"cart", lab:"Demande", core:"Acheter comme en ligne", h:"Acheter aussi simplement que sur un site marchand",
        p:"Catalogue interne, site fournisseur en punch-out, devis PDF, copier-coller depuis Excel ou simple phrase à l'agent Synergy : chacun commande comme il en a l'habitude.",
        b:["Devis PDF transformé en lignes en moins de 30 secondes","Punch-out : le panier du site fournisseur revient dans la demande","Temps de création divisé par 3, voire par 5"],
-       shot:"catalogue", go:[0,56,"Voir la création d'une demande"]},
+       shot:"catalogue", go:[0,56,"la création d'une demande"]},
       {ic:"shield", lab:"Validation", core:"Approuver partout", h:"Valider en un clic, où que l'on soit",
        p:"La demande suit automatiquement le bon circuit d'approbation. Le valideur décide depuis un e-mail, son mobile ou en parlant à Synergy.",
        b:["Rappels automatiques et délégation en cas d'absence","Budget visible avant d'engager la dépense","Approbation à la voix ; approbation dans Teams bientôt disponible"],
-       shot:"validation", go:[0,285,"Voir l'approbation"]},
+       shot:"validation", go:[0,285,"l'approbation"]},
       {ic:"doc", lab:"Commande", core:"Zéro ressaisie", h:"De la demande à la commande, sans ressaisie",
        p:"Dès l'approbation, la commande peut être créée et envoyée automatiquement. L'acheteur garde la main pour regrouper, ventiler ou modifier.",
        b:["Une commande unique livrée sur plusieurs sites","Commandes groupées pour obtenir des remises","Avenants numérotés et synchronisés avec l'ERP"],
-       shot:"commande", go:[1,141,"Voir la commande multi-sites"]},
+       shot:"commande", go:[1,141,"la commande multi-sites"]},
       {ic:"phone", lab:"Mobilité", core:"Le bureau en poche", h:"Le bureau dans la poche",
        p:"Consulter une demande, l'approuver ou suivre une commande : tout se fait aussi depuis un smartphone, ou simplement à la voix.",
        b:["Approbation depuis n'importe où","Détail des articles commandés","Notification dès qu'une action est attendue"],
-       shot:"mobile", go:[1,93,"Voir l'approbation vocale"]},
+       shot:"mobile", go:[1,93,"l'approbation à la voix"]},
       {ic:"box", lab:"Réception", core:"Préparer le paiement", h:"Réceptionner, c'est déjà préparer le paiement",
        p:"Le demandeur réceptionne lui-même, partiellement ou totalement. Pour les prestations récurrentes, la réception se fait même toute seule à la date prévue.",
        b:["Réceptions partielles et reliquats suivis ligne à ligne","Réception automatique des commandes récurrentes","Factures non parvenues justes à chaque clôture"],
-       shot:"reception", go:[2,158,"Voir la réception automatique"]},
+       shot:"reception", go:[2,158,"la réception automatique"]},
       {ic:"globe", lab:"Fournisseurs", core:"Collaborer 24 h/24", h:"Vos fournisseurs travaillent avec vous, 24 h/24",
        p:"Le fournisseur reçoit la commande, la confirme ou propose un ajustement depuis son portail. Chaque échange est tracé.",
        b:["Confirmation, ajustement de quantités ou de dates","Garde-fou : impossible de dépasser le montant approuvé","Chat intégré pour clarifier une commande"],
-       shot:"portail", go:[3,274,"Voir le portail fournisseur"]},
+       shot:"portail", go:[3,274,"le portail fournisseur"]},
       {ic:"layers", lab:"ERP", core:"L'ERP reste maître", h:"Votre ERP reste la référence",
        p:"Commandes, réceptions et avenants remontent dans l'ERP. Esker s'appuie sur plus de 35 ans d'expertise en intégration.",
        b:["Une application qui fonctionne avec de multiples ERP","100 % connecté à SAP MM","Connexion ERP activée dès la semaine 3 du projet"],
@@ -1647,6 +1719,7 @@ const XP = {
   }
 };
 
+
 let xpS = null;          /* état de l'univers ouvert */
 let xpIO = null;         /* IntersectionObserver courant */
 
@@ -1658,213 +1731,250 @@ function xpToast(msg){
   t.textContent = msg; t.classList.add("on");
   clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove("on"), 2600);
 }
+function xpReduce(){ return !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches); }
+function xpAim(){ return window.innerWidth < 980 ? 90 : 0; }   /* étape active : à droite (bureau) ou en bas (mobile) */
 
 /* ---------- gabarits ---------- */
-function xpFilmHTML(x){
+function xpRailHTML(x){
   return x.videos.map((v, i) => {
     const ok = v.main || !!v.u;
-    return `<button type="button" class="xp-card${i===0?' on':''}${ok?'':' soon'}" data-xvid="${i}" aria-label="${esc(v.t)}">
-      <div class="xp-card-vis"><img src="${XP_IMG}${v.img}.webp" alt="" loading="lazy">
-        <span class="xp-card-num">${String(i+1).padStart(2,"0")}</span>
-        <span class="xp-card-dur">${ok ? esc(v.dur) : "Bientôt en ligne"}</span>
-        <span class="xp-card-play">${XP_PLAY}</span></div>
-      <div class="xp-card-bd"><div class="xp-card-tag">${esc(v.tag)}</div>
-        <div class="xp-card-t">${esc(v.t)}</div><div class="xp-card-d">${esc(v.d)}</div>
-        <div class="xp-card-live"><span class="xp-eq"><span></span><span></span><span></span></span>Dans le lecteur</div></div>
+    return `<button type="button" class="xp-ri${i===0?' on':''}${ok?'':' soon'}" data-xvid="${i}" aria-label="${esc(v.t)}${ok?'':' (bientôt en ligne)'}">
+      <span class="xp-ri-th"><img src="${XP_IMG}${v.img}.webp" alt="" loading="lazy"><em>${String(i+1).padStart(2,"0")}</em></span>
+      <span><span class="xp-ri-t">${esc(v.t)}</span>
+      <span class="xp-ri-m">${ok ? `<span class="tg">${esc(v.tag)}</span>· ${esc(v.dur)}` : `<span class="bt">Bientôt en ligne</span>`}
+        <span class="eq"><span></span><span></span><span></span></span></span></span>
     </button>`;
   }).join("");
 }
 
+function xpImpactHTML(x){
+  const k = {}; x.kpis.forEach(o => { if(o.v) k[o.v] = o; });
+  const head = (o) => `<div class="xp-ic-n" data-to="${o.to}" data-pre="${esc(o.pre)}" data-suf="${esc(o.suf)}">${esc(o.pre)}0${esc(o.suf)}</div>
+      <div class="xp-ic-l">${esc(o.l)}</div><div class="xp-ic-s">${esc(o.s)}</div>`;
+  const out = [];
+  if(k.race) out.push(`<div class="xp-ic s4 xp-rv">${head(k.race)}
+      <div class="xp-ic-v xp-race">
+        <div class="xp-race-r">Sans outil<div class="xp-race-b old"><i>Formulaires, e-mails, relances</i></div></div>
+        <div class="xp-race-r">Avec Esker<div class="xp-race-b new"><i>Synergy, devis, punch-out</i></div></div>
+      </div></div>`);
+  if(k.chrono) out.push(`<div class="xp-ic s2 xp-rv d1">${head(k.chrono)}
+      <div class="xp-ic-v xp-chrono" aria-hidden="true"><svg viewBox="0 0 120 120"><defs><linearGradient id="xpG1"><stop offset="0" stop-color="#13b4e2"/><stop offset="1" stop-color="#6b51ed"/></linearGradient></defs>
+        <circle class="tr" cx="60" cy="60" r="54"/><circle class="ar" cx="60" cy="60" r="54"/></svg><span class="hd"></span><b></b></div></div>`);
+  if(k.gauge) out.push(`<div class="xp-ic s2 xp-rv">${head(k.gauge)}
+      <div class="xp-ic-v xp-gauge" aria-hidden="true"><svg viewBox="0 0 170 96"><defs><linearGradient id="xpG2"><stop offset="0" stop-color="#13b4e2"/><stop offset="1" stop-color="#6b51ed"/></linearGradient></defs>
+        <path class="gt" d="M10 85 A75 75 0 0 1 160 85"/><path class="ga" d="M10 85 A75 75 0 0 1 160 85"/>
+        <g class="nd"><line x1="85" y1="85" x2="85" y2="22" stroke="#163467" stroke-width="4" stroke-linecap="round"/><circle cx="85" cy="85" r="8" fill="#163467"/></g></svg></div></div>`);
+  if(k.vis) out.push(`<div class="xp-ic s2 xp-rv d1">${head(k.vis)}
+      <div class="xp-ic-v xp-vis" aria-hidden="true"><img src="${XP_IMG}dashboard.webp" alt="" loading="lazy"><span class="bl"></span><span class="sc"></span></div></div>`);
+  if(k.dial) out.push(`<div class="xp-ic s2 xp-rv d2">${head(k.dial)}
+      <div class="xp-ic-v xp-dial" aria-hidden="true"><span class="su">☀️</span><span class="mo">🌙</span><i></i><b>24 h</b></div></div>`);
+  return out.join("");
+}
+
+function xpSegPath(i, n){
+  const c = -90 + i * 360 / n, g = 1.4, R = 292, r = 192, cx = 300, cy = 300;
+  const a0 = (c - 180 / n + g) * Math.PI / 180, a1 = (c + 180 / n - g) * Math.PI / 180;
+  const P = (rad, a) => (cx + rad * Math.cos(a)).toFixed(2) + " " + (cy + rad * Math.sin(a)).toFixed(2);
+  return `M${P(R,a0)} A${R} ${R} 0 0 1 ${P(R,a1)} L${P(r,a1)} A${r} ${r} 0 0 0 ${P(r,a0)} Z`;
+}
+
 function xpHTML(m){
-  const x = XP[m.id];
-  const n = x.steps.length;
-  const nodes = x.steps.map((s, i) => {
-    const a = (-90 + i * 360 / n) * Math.PI / 180;
-    const L = (50 + 41 * Math.cos(a)).toFixed(2), T = (50 + 41 * Math.sin(a)).toFixed(2);
-    return `<button type="button" class="xp-node" data-step="${i}" style="left:${L}%;top:${T}%" aria-label="Étape ${i+1} : ${esc(s.lab)}">
-      ${XP_SVG(XP_ICONS[s.ic])}<span class="n-num">${i+1}</span><span class="n-lab">${esc(s.lab)}</span></button>`;
+  const x = XP[m.id], n = x.steps.length;
+  const segs = x.steps.map((s, i) => `<path class="xp-seg" data-step="${i}" d="${xpSegPath(i, n)}" role="button" tabindex="0" aria-label="Étape ${i+1} : ${esc(s.lab)}"/>`).join("");
+  const labs = x.steps.map((s, i) => {
+    const a = (-90 + i * 360 / n) * Math.PI / 180, rr = 242 / 6;
+    return `<div class="xp-lab" data-lab="${i}" style="left:${(50 + rr * Math.cos(a)).toFixed(2)}%;top:${(50 + rr * Math.sin(a)).toFixed(2)}%">${XP_SVG(XP_ICONS[s.ic])}<b>${esc(s.lab)}</b><em>${String(i+1).padStart(2,"0")}</em></div>`;
   }).join("");
-  const kpis = x.kpis.map(k => `<div class="xp-kpi xp-rv"><div class="xp-kpi-v" data-to="${k.to}" data-pre="${esc(k.pre)}" data-suf="${esc(k.suf)}">${esc(k.pre)}0${esc(k.suf)}</div>
-      <div class="xp-kpi-l">${esc(k.l)}</div><div class="xp-kpi-s">${esc(k.s)}</div></div>`).join("");
-  const pers = x.personas.map((p, i) => `<button type="button" class="xp-pchip" data-pers="${i}" aria-pressed="false"><i>${p.e}</i>${esc(p.n)}</button>`).join("");
+  const pers = x.personas.map((p, i) => `<button type="button" class="xp-pc" data-pers="${i}" aria-pressed="false"><i>${p.e}</i>${esc(p.n)}</button>`).join("");
   const bento = x.bento.map(([k, cls]) => `<button type="button" class="xp-tile ${cls}" data-shot="${k}" aria-label="Agrandir : ${esc(x.shots[k].t)}">
       <img src="${XP_IMG}${k}.webp" alt="${esc(x.shots[k].t)}" loading="lazy">
-      <span class="zoom">${XP_SVG('<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/>',2)}</span>
       <figcaption><b>${esc(x.shots[k].t)}</b><span>${esc(x.shots[k].d)}</span></figcaption></button>`).join("");
-  const road = x.road.map((r, i) => `<div class="xp-road-pt${i===x.road.length-1?' last':''}" style="transition-delay:${.25 + i*.22}s"><b>${esc(r[0])}</b><span>${esc(r[1])}</span></div>`).join("");
-  const C = (2 * Math.PI * 246).toFixed(1);
+  const road = x.road.map((r, i) => `<div class="xp-road-pt${i===x.road.length-1?' last':''}" style="transition-delay:${.3 + i*.24}s"><b>${esc(r[0])}</b><span>${esc(r[1])}</span></div>`).join("");
 
   return `<div class="xp" id="xp">
-    <section class="xp-sec xp-rv">
-      <span class="xp-kick">Ce que ça change</span>
-      <h3 class="xp-h">Des gains <em>mesurés</em>, pas promis.</h3>
-      <p class="xp-lead">Chiffres issus des démonstrations Fluxym et de la documentation Esker.</p>
-      <div class="xp-kpis">${kpis}</div>
+    <section class="xp-sec">
+      <div class="xp-rv"><span class="xp-k"><i></i>Ce que ça change</span>
+      <h3 class="xp-h">Moins de saisie, <em>plus de maîtrise</em>.</h3>
+      <p class="xp-lead">Les gains observés dans nos démonstrations et documentés par Esker, en un coup d'œil.</p></div>
+      <div class="xp-imp">${xpImpactHTML(x)}</div>
     </section>
 
     <section class="xp-sec">
-      <div class="xp-rv"><span class="xp-kick">Le parcours achat</span>
-      <h3 class="xp-h">${n} étapes, <em>un seul flux</em>, de la demande à l'ERP.</h3>
-      <p class="xp-lead">Cliquez sur une étape, ou lancez la visite guidée pour dérouler le parcours pendant le rendez-vous.</p></div>
-      <div class="xp-orbit-wrap">
-        <div class="xp-orbit xp-rv" id="xpOrbit">
-          <svg class="xp-ring" viewBox="0 0 600 600" aria-hidden="true">
-            <defs><linearGradient id="xpGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#13b4e2"/><stop offset="1" stop-color="#b6a6ff"/></linearGradient></defs>
-            <circle class="r-dash" cx="300" cy="300" r="282"/>
-            <circle class="r-track" cx="300" cy="300" r="246"/>
-            <circle class="r-prog" id="xpProg" cx="300" cy="300" r="246" stroke-dasharray="${C}" stroke-dashoffset="${C}" data-c="${C}"/>
-            <circle class="r-comet" r="3.5"><animateMotion dur="16s" repeatCount="indefinite" path="M300,54 a246,246 0 1,1 -0.01,0"/></circle>
+      <div class="xp-rv"><span class="xp-k"><i></i>Le parcours achat</span>
+      <h3 class="xp-h">${n} étapes, <em>un seul flux</em>.</h3>
+      <p class="xp-lead">Cliquez sur un secteur de la roue, utilisez les flèches du clavier, ou lancez la visite guidée pendant le rendez-vous.</p></div>
+      <div class="xp-wrap">
+        <div class="xp-orb xp-rv" id="xpOrb">
+          <svg class="deco" viewBox="0 0 660 660" aria-hidden="true">
+            <circle class="rot-slow" style="transform-origin:330px 330px" cx="330" cy="330" r="326" stroke="rgba(19,180,226,.35)" stroke-width="1.2" stroke-dasharray="2 10"/>
+            <circle class="rot-rev" style="transform-origin:330px 330px" cx="330" cy="330" r="314" stroke="rgba(107,81,237,.25)" stroke-width="1" stroke-dasharray="40 18"/>
+            <g class="rot-fast" style="transform-origin:330px 330px"><circle cx="330" cy="4" r="5" fill="#13b4e2"/><circle cx="330" cy="656" r="3.5" fill="#6b51ed"/></g>
           </svg>
-          ${nodes}
-          <div class="xp-core" id="xpCore" aria-live="polite"></div>
+          <div class="xp-wheel" id="xpWheel">
+            <svg viewBox="0 0 600 600" aria-hidden="false">
+              <defs><linearGradient id="xpSegG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#13b4e2"/><stop offset="1" stop-color="#6b51ed"/></linearGradient></defs>
+              ${segs}
+            </svg>
+            ${labs}
+          </div>
+          <div class="xp-hub" id="xpHub" aria-live="polite"></div>
+          <span class="xp-ptr" id="xpPtr"><i></i></span>
         </div>
-        <div class="xp-step" id="xpStep" aria-live="polite"></div>
+        <div class="xp-card" id="xpCard" aria-live="polite"></div>
       </div>
     </section>
 
     <section class="xp-sec">
-      <div class="xp-rv"><span class="xp-kick">Pour chaque acteur</span>
+      <div class="xp-rv"><span class="xp-k"><i></i>Pour chaque acteur</span>
       <h3 class="xp-h">Qui y gagne <em>quoi</em> ?</h3>
-      <p class="xp-lead">Choisissez un profil : les étapes qui le concernent s'illuminent dans le parcours ci-dessus.</p></div>
-      <div class="xp-pers xp-rv" id="xpPers">${pers}</div>
+      <p class="xp-lead">Choisissez un profil : ses étapes s'allument dans la roue.</p></div>
+      <div class="xp-pers xp-rv d1" id="xpPers">${pers}</div>
       <div class="xp-pcard" id="xpPcard" hidden></div>
     </section>
 
     <section class="xp-sec">
-      <div class="xp-rv"><span class="xp-kick">Écrans réels</span>
+      <div class="xp-rv"><span class="xp-k"><i></i>Écrans réels</span>
       <h3 class="xp-h">La solution, <em>telle qu'elle est</em>.</h3>
       <p class="xp-lead">Captures de l'application Esker. Cliquez pour agrandir, puis naviguez avec les flèches.</p></div>
-      <div class="xp-bento xp-rv">${bento}</div>
+      <div class="xp-bento xp-rv d1">${bento}</div>
     </section>
 
     <section class="xp-sec">
-      <div class="xp-rv"><span class="xp-kick">Mise en œuvre</span>
+      <div class="xp-rv"><span class="xp-k"><i></i>Mise en œuvre</span>
       <h3 class="xp-h">En production en <em>14 semaines</em>.</h3>
       <p class="xp-lead">Calendrier type d'un projet de digitalisation des achats, avec une solution standard prête dès la semaine 4.</p></div>
-      <div class="xp-road" id="xpRoad"><div class="xp-road-line"><i></i></div><div class="xp-road-pts">${road}</div></div>
+      <div class="xp-road" id="xpRoad"><div class="xp-road-line"><i></i><u></u></div><div class="xp-road-pts">${road}</div></div>
     </section>
 
     <div class="xp-share xp-rv">
-      <div><h4>Partagez ce module avec votre équipe</h4><p>Le lien ouvre directement cette page, vidéos et parcours compris.</p></div>
-      <div class="xp-share-act">
-        <button type="button" class="xp-btn" id="xpCopy">${XP_SVG('<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/>',2)}Copier le lien</button>
-        <button type="button" class="xp-btn" id="xpFull">${XP_SVG('<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>',2)}Mode présentation</button>
-        <a class="xp-btn pri" href="#contact">Demander une démonstration</a>
+      <div><h4>Partagez ce module avec votre équipe</h4><p>Le lien ouvre directement cette page : vidéos, parcours et écrans compris.</p></div>
+      <div class="xp-sa">
+        <button type="button" class="xp-sb" id="xpCopy">${XP_SVG('<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/>',2)}Copier le lien</button>
+        <button type="button" class="xp-sb" id="xpFull">${XP_SVG('<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>',2)}Mode présentation</button>
+        <a class="xp-sb pri" href="#contact">Demander une démonstration</a>
       </div>
     </div>
   </div>`;
 }
 
-/* ---------- montage et interactions ---------- */
+/* ---------- montage ---------- */
 function xpMount(id){
   const x = XP[id]; if(!x) return;
   const panel = document.getElementById("panel");
   const body = panel.querySelector(".panel-body");
   const frame = document.getElementById("vidFrame");
+  const meta = body.querySelector(".vidmeta");
   const player = document.getElementById("player");
   if(xpS && xpS.tour) clearInterval(xpS.tour);
-  xpS = {id, x, vid:0, step:0, tour:null, pers:-1};
+  xpS = {id, x, vid:0, step:0, rot:null, tour:null, pers:-1};
 
-  /* théâtre : halo autour du lecteur, pleine largeur conservée */
+  /* fond animé */
+  const bg = document.createElement("div"); bg.className = "xp-bg"; bg.setAttribute("aria-hidden","true");
+  bg.innerHTML = '<i class="h1"></i><i class="h2"></i><i class="h3"></i><i class="dots"></i>';
+  panel.insertBefore(bg, panel.firstChild);
+
+  /* scène : lecteur (grand) + rail compact à droite */
+  const stage = document.createElement("div"); stage.className = "xp-stage";
+  stage.innerHTML = `<div class="xp-main" id="xpMain"></div>
+    <aside class="xp-rail" aria-label="Vidéos du module"><div class="xp-rail-in">
+      <div class="xp-rail-h"><b><i></i>${x.videos.length} vidéos</b><span>Choisir, puis lancer</span></div>
+      <div class="xp-rail-l">${xpRailHTML(x)}</div></div></aside>`;
   if(frame){
-    const th = document.createElement("div"); th.className = "xp-theater";
-    frame.parentNode.insertBefore(th, frame); th.appendChild(frame);
+    frame.parentNode.insertBefore(stage, frame);
+    const main = stage.querySelector("#xpMain") || document.getElementById("xpMain");
+    main.appendChild(frame);
+    if(meta) main.appendChild(meta);
+    const ch = document.createElement("div"); ch.className = "xp-chap"; ch.id = "xpChap"; main.appendChild(ch);
   }
-  /* chapitres + bande de vidéos d'approfondissement, sous le lecteur */
-  const meta = body.querySelector(".vidmeta");
-  const extra = document.createElement("div");
-  extra.innerHTML = `<div class="xp-chap" id="xpChap"></div>
-    <div class="xp-sec" style="padding-top:40px"><span class="xp-kick">Approfondir en vidéo</span>
-    <h3 class="xp-h" style="font-size:clamp(1.25rem,2.2vw,1.65rem)">${x.videos.length} vidéos, <em>un sujet chacune</em>.</h3>
-    <div class="xp-film" id="xpFilm">${xpFilmHTML(x)}</div></div>`;
-  if(meta) meta.after(...extra.childNodes); else body.append(...extra.childNodes);
-
-  body.querySelectorAll("[data-xvid]").forEach(b => b.addEventListener("click", () => xpPlay(+b.dataset.xvid, 0, false)));
+  panel.querySelectorAll("[data-xvid]").forEach(b => b.addEventListener("click", () => xpSelect(+b.dataset.xvid)));
   xpChapters();
   if(player) player.addEventListener("timeupdate", xpTick);
 
-  /* orbite */
-  panel.querySelectorAll(".xp-node").forEach(b => b.addEventListener("click", () => { xpTourStop(); xpStep(+b.dataset.step); }));
+  /* roue */
+  panel.querySelectorAll(".xp-seg").forEach(s => {
+    const go = () => { xpTourStop(); xpStep(+s.dataset.step); };
+    s.addEventListener("click", go);
+    s.addEventListener("keydown", e => { if(e.key === "Enter" || e.key === " "){ e.preventDefault(); go(); } });
+  });
+  const orb = document.getElementById("xpOrb");
+  if(orb){ orb.tabIndex = -1; orb.addEventListener("keydown", e => {
+    if(e.key === "ArrowRight" || e.key === "ArrowDown"){ e.preventDefault(); xpTourStop(); xpStep((xpS.step + 1) % x.steps.length); }
+    if(e.key === "ArrowLeft" || e.key === "ArrowUp"){ e.preventDefault(); xpTourStop(); xpStep((xpS.step - 1 + x.steps.length) % x.steps.length); }
+  }); }
   xpStep(0, true);
 
-  /* personas */
   panel.querySelectorAll("[data-pers]").forEach(b => b.addEventListener("click", () => xpPersona(+b.dataset.pers)));
+  panel.querySelectorAll(".xp-tile[data-shot]").forEach(b => b.addEventListener("click", () => xpLightbox(b.dataset.shot)));
 
-  /* visionneuse */
-  panel.querySelectorAll("[data-shot]").forEach(b => b.addEventListener("click", () => xpLightbox(b.dataset.shot)));
-
-  /* partage */
   const cp = document.getElementById("xpCopy");
   if(cp) cp.addEventListener("click", () => {
     const url = location.href.split("#")[0] + "#m=" + id;
-    const done = () => xpToast("Lien copié : collez-le dans un e-mail ou Teams");
+    const done = () => xpToast("Lien copié : collez-le dans un e-mail ou dans Teams");
     if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(done, () => prompt("Copiez ce lien :", url));
     else prompt("Copiez ce lien :", url);
   });
   const fs = document.getElementById("xpFull");
   if(fs){
     if(!panel.requestFullscreen) fs.style.display = "none";
-    else fs.addEventListener("click", () => {
-      if(document.fullscreenElement) document.exitFullscreen();
-      else panel.requestFullscreen().then(() => panel.scrollTo({top:0})).catch(() => {});
-    });
+    else fs.addEventListener("click", () => { if(document.fullscreenElement) document.exitFullscreen(); else panel.requestFullscreen().catch(() => {}); });
   }
 
-  /* apparitions et compteurs */
+  /* apparitions au défilement + compteurs */
   if(xpIO) xpIO.disconnect();
-  const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const reveal = el => {
-    el.classList.add("in");
-    if(el.classList.contains("xp-kpi")) xpCount(el.querySelector(".xp-kpi-v"), reduce);
-    el.querySelectorAll && el.querySelectorAll(".xp-kpi").forEach(k => { if(!k.classList.contains("in")){ k.classList.add("in"); xpCount(k.querySelector(".xp-kpi-v"), reduce); } });
-  };
+  const reveal = el => { el.classList.add("in"); const n = el.querySelector && el.querySelector(".xp-ic-n"); if(n) xpCount(n); };
   const targets = panel.querySelectorAll(".xp-rv, .xp-road");
   if("IntersectionObserver" in window){
-    xpIO = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting){ reveal(e.target); xpIO.unobserve(e.target); } }), {threshold:.18});
+    xpIO = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting){ reveal(e.target); xpIO.unobserve(e.target); } }), {threshold:.2});
     targets.forEach(t => xpIO.observe(t));
   } else targets.forEach(reveal);
 }
 
-function xpCount(el, instant){
+function xpCount(el){
   if(!el || el._done) return; el._done = true;
   const to = +el.dataset.to, pre = el.dataset.pre || "", suf = el.dataset.suf || "";
-  if(instant){ el.textContent = pre + to + suf; return; }
-  const t0 = performance.now(), D = 1600;
-  const f = now => {
-    const k = Math.min(1, (now - t0) / D), e = 1 - Math.pow(1 - k, 4);
-    el.textContent = pre + Math.round(to * e) + suf;
-    if(k < 1) requestAnimationFrame(f);
-  };
+  if(xpReduce()){ el.textContent = pre + to + suf; return; }
+  const t0 = performance.now(), D = 1700;
+  const f = now => { const k = Math.min(1, (now - t0) / D), e = 1 - Math.pow(1 - k, 4);
+    el.textContent = pre + Math.round(to * e) + suf; if(k < 1) requestAnimationFrame(f); };
   requestAnimationFrame(f);
 }
 
-/* lecture d'une vidéo de la bande (ou d'un passage) sans reconstruire le panneau */
+/* ---------- vidéos ---------- */
+/* Choix dans le rail : on prépare la vidéo et sa vignette, sans la lancer. */
+function xpSelect(i){
+  if(!xpS) return;
+  const v = xpVid(xpS.x, i);
+  if(!v.u){ xpToast("Cette vidéo sera en ligne très prochainement"); return; }
+  const player = document.getElementById("player"), cover = document.getElementById("vidCover"), end = document.getElementById("vidEnd");
+  if(!player) return;
+  if(i !== xpS.vid){
+    xpS.vid = i;
+    try{ player.pause(); }catch(e){}
+    const src = player.querySelector("source"); if(src) src.src = v.u; else player.src = v.u;
+    player.load();
+    const q = s => document.querySelector(".panel--xp " + s);
+    const mt = q(".vidmeta-t"); if(mt) mt.textContent = v.t;
+    const ms = q(".vidmeta-s"); if(ms) ms.textContent = v.tag + " · " + v.dur + " · Français";
+    const ct = q(".cover-title"); if(ct) ct.textContent = v.t;
+    const tg = q(".cover-tag"); if(tg) tg.textContent = v.tag + " · " + v.dur;
+    document.querySelectorAll(".panel--xp [data-xvid]").forEach(c => c.classList.toggle("on", +c.dataset.xvid === i));
+    xpChapters();
+  }
+  if(end) end.classList.remove("on");
+  if(cover){ cover.classList.remove("hidden"); cover.setAttribute("aria-label", "Lancer la vidéo : " + v.t);
+    cover.classList.remove("xp-swap"); void cover.offsetWidth; cover.classList.add("xp-swap"); }
+}
+/* Lecture explicite (bouton « Lancer… » ou chapitre) : démarre au passage demandé. */
 function xpPlay(i, t, scroll){
   if(!xpS) return;
   const v = xpVid(xpS.x, i);
   if(!v.u){ xpToast("Cette vidéo sera en ligne très prochainement"); return; }
-  const player = document.getElementById("player");
-  const cover = document.getElementById("vidCover");
-  const end = document.getElementById("vidEnd");
+  const player = document.getElementById("player"), cover = document.getElementById("vidCover"), end = document.getElementById("vidEnd");
   if(!player) return;
-  const go = () => {
-    try{ player.currentTime = t || 0; }catch(e){}
-    if(cover) cover.classList.add("hidden");
-    if(end) end.classList.remove("on");
-    const p = player.play(); if(p && p.catch) p.catch(() => {});
-  };
-  if(i !== xpS.vid){
-    xpS.vid = i;
-    const src = player.querySelector("source");
-    if(src) src.src = v.u; else player.src = v.u;
-    player.load();
-    player.addEventListener("loadedmetadata", go, {once:true});
-    const mt = document.querySelector(".panel--xp .vidmeta-t"); if(mt) mt.textContent = v.t;
-    const ms = document.querySelector(".panel--xp .vidmeta-s"); if(ms) ms.textContent = v.tag + " · " + v.dur + " · Français";
-    const ct = document.querySelector(".panel--xp .cover-title"); if(ct) ct.textContent = v.t;
-    document.querySelectorAll(".panel--xp [data-xvid]").forEach(c => c.classList.toggle("on", +c.dataset.xvid === i));
-    xpChapters();
-  } else go();
+  const go = () => { try{ player.currentTime = t || 0; }catch(e){} if(cover) cover.classList.add("hidden"); if(end) end.classList.remove("on");
+    const p = player.play(); if(p && p.catch) p.catch(() => {}); };
+  if(i !== xpS.vid){ xpSelect(i); if(player.readyState >= 1) go(); else player.addEventListener("loadedmetadata", go, {once:true}); }
+  else go();
   if(scroll){ const f = document.getElementById("vidFrame"); if(f) f.scrollIntoView({behavior:"smooth", block:"center"}); }
 }
 
@@ -1872,115 +1982,123 @@ function xpChapters(){
   const box = document.getElementById("xpChap"); if(!box || !xpS) return;
   const v = xpS.x.videos[xpS.vid];
   if(!v.ch || !v.ch.length){ box.innerHTML = ""; return; }
-  const segs = v.ch.map((c, k) => {
-    const nxt = k < v.ch.length - 1 ? v.ch[k+1][0] : v.len;
-    return `<button type="button" class="xp-chap-seg" style="flex-grow:${Math.max(1, nxt - c[0])}" data-t="${c[0]}" aria-label="${esc(c[1])} (${xpFmt(c[0])})" title="${esc(c[1])}"><i></i></button>`;
-  }).join("");
+  const segs = v.ch.map((c, k) => { const nx = k < v.ch.length - 1 ? v.ch[k+1][0] : v.len;
+    return `<button type="button" class="xp-chap-seg" style="flex:${Math.max(1, nx - c[0])} 1 0" data-t="${c[0]}" aria-label="${esc(c[1])} (${xpFmt(c[0])})" title="${esc(c[1])}"><i></i></button>`; }).join("");
   const list = v.ch.map(c => `<button type="button" class="xp-chap-it" data-t="${c[0]}"><b>${xpFmt(c[0])}</b>${esc(c[1])}</button>`).join("");
   box.innerHTML = `<div class="xp-chap-bar">${segs}</div><div class="xp-chap-list">${list}</div>`;
   box.querySelectorAll("[data-t]").forEach(b => b.addEventListener("click", () => xpPlay(xpS.vid, +b.dataset.t, false)));
 }
-
 function xpTick(){
   if(!xpS) return;
-  const p = document.getElementById("player"); const v = xpS.x.videos[xpS.vid];
+  const p = document.getElementById("player"), v = xpS.x.videos[xpS.vid];
   if(!p || !v.ch) return;
   const ct = p.currentTime, len = p.duration && isFinite(p.duration) ? p.duration : v.len;
-  const segs = document.querySelectorAll("#xpChap .xp-chap-seg i");
-  const its = document.querySelectorAll("#xpChap .xp-chap-it");
-  v.ch.forEach((c, k) => {
-    const s = c[0], e = k < v.ch.length - 1 ? v.ch[k+1][0] : len;
+  const segs = document.querySelectorAll("#xpChap .xp-chap-seg i"), its = document.querySelectorAll("#xpChap .xp-chap-it");
+  v.ch.forEach((c, k) => { const s = c[0], e = k < v.ch.length - 1 ? v.ch[k+1][0] : len;
     const r = Math.max(0, Math.min(1, (ct - s) / Math.max(1, e - s)));
     if(segs[k]) segs[k].style.transform = "scaleX(" + r + ")";
-    if(its[k]) its[k].classList.toggle("on", ct >= s && ct < e);
-  });
+    if(its[k]) its[k].classList.toggle("on", ct >= s && ct < e); });
 }
 
+/* ---------- roue du parcours ---------- */
 function xpStep(i, silent){
   if(!xpS) return;
   const x = xpS.x, n = x.steps.length, s = x.steps[i];
   xpS.step = i;
-  document.querySelectorAll(".panel--xp .xp-node").forEach((b, k) => { b.classList.toggle("on", k === i); b.classList.toggle("done", k < i); });
-  const pr = document.getElementById("xpProg");
-  if(pr){ const C = +pr.dataset.c; pr.style.strokeDashoffset = (C * (1 - Math.max(.02, i / n))).toFixed(1); }
-  const core = document.getElementById("xpCore");
-  if(core){
-    core.innerHTML = `<div class="xp-core-n">ÉTAPE ${String(i+1).padStart(2,"0")} / ${String(n).padStart(2,"0")}</div><div class="xp-core-t">${esc(s.core)}</div><div class="xp-core-s">${esc(s.lab)}</div>`;
-    core.classList.remove("xp-core-anim"); void core.offsetWidth; core.classList.add("xp-core-anim");
-  }
-  const st = document.getElementById("xpStep"); if(!st) return;
+  /* rotation : le secteur choisi vient se placer face à la fiche, par le chemin le plus court */
+  const target = xpAim() - (-90 + i * 360 / n);
+  if(xpS.rot === null) xpS.rot = target;
+  else { let d = ((target - xpS.rot) % 360 + 540) % 360 - 180; xpS.rot += d; }
+  const wh = document.getElementById("xpWheel"); if(wh) wh.style.setProperty("--rot", xpS.rot + "deg");
+  const ptr = document.getElementById("xpPtr"); if(ptr) ptr.className = "xp-ptr " + (xpAim() ? "b" : "r");
+  document.querySelectorAll(".panel--xp .xp-seg").forEach((b, k) => { b.classList.toggle("on", k === i); b.classList.toggle("done", k < i);
+    const c = (-90 + k * 360 / n) * Math.PI / 180, pop = k === i ? 12 : 0;
+    b.style.transform = `translate(${(Math.cos(c)*pop).toFixed(1)}px,${(Math.sin(c)*pop).toFixed(1)}px)`; });
+  document.querySelectorAll(".panel--xp .xp-lab").forEach((b, k) => b.classList.toggle("on", k === i));
+  if(!silent) xpSpark();
+
+  const hub = document.getElementById("xpHub");
+  if(hub) hub.innerHTML = `<div class="xp-hub-n xin">${String(i+1).padStart(2,"0")}<small>/${String(n).padStart(2,"0")}</small></div>
+    <div class="xp-hub-t xin">${esc(s.core)}</div><div class="xp-hub-s xin">${esc(s.lab)}</div>`;
+
+  const card = document.getElementById("xpCard"); if(!card) return;
   const v = s.go ? xpVid(x, s.go[0]) : null;
-  const goBtn = s.go ? (v.u
-      ? `<button type="button" class="xp-btn pri" id="xpGo">${XP_PLAY.replace('<svg','<svg width="14" height="14"')}${esc(s.go[2])} · ${xpFmt(s.go[1])}</button>`
-      : `<span class="xp-btn" style="opacity:.6;cursor:default">${esc(s.go[2])} · bientôt en ligne</span>`) : "";
+  let go = "";
+  if(s.go){
+    go = v.u
+      ? `<button type="button" class="xp-go xin" id="xpGo" style="animation-delay:.42s"><span class="pl">${XP_PLAY}</span><span><b>Lancer ${esc(v.nm)}</b><small>La vidéo démarre directement sur ${esc(s.go[2])}, à ${xpFmt(s.go[1])}</small></span></button>`
+      : `<span class="xp-go off xin" style="animation-delay:.42s"><span class="pl">${XP_PLAY}</span><span><b>${esc(v.nm.charAt(0).toUpperCase() + v.nm.slice(1))}</b><small>Vidéo bientôt en ligne</small></span></span>`;
+  }
   const tourOn = !!xpS.tour;
-  st.innerHTML = `
-    <div class="xp-step-k">Étape ${i+1} · ${esc(s.lab)}</div>
-    <h4 class="xp-step-h">${esc(s.h)}</h4>
-    <p class="xp-step-p">${esc(s.p)}</p>
-    <ul>${s.b.map(t => `<li>${esc(t)}</li>`).join("")}</ul>
-    <button type="button" class="xp-step-shot" data-shot="${s.shot}" aria-label="Agrandir : ${esc(x.shots[s.shot].t)}">
-      <img src="${XP_IMG}${s.shot}.webp" alt="${esc(x.shots[s.shot].t)}" loading="lazy"><span>🔍 ${esc(x.shots[s.shot].t)}</span></button>
-    <div class="xp-step-act">${goBtn}
-      <div class="xp-tour">
-        <button type="button" class="xp-ic" id="xpPrev" aria-label="Étape précédente">${XP_SVG('<path d="M15 18l-6-6 6-6"/>',2.4)}</button>
-        <button type="button" class="xp-ic${tourOn?' on':''}" id="xpTour" aria-label="${tourOn?'Arrêter':'Lancer'} la visite guidée" title="Visite guidée">${tourOn ? XP_SVG('<path d="M9 5v14M15 5v14"/>',2.6) : XP_SVG('<path d="M8 5v14l11-7z"/>',2)}</button>
-        <button type="button" class="xp-ic" id="xpNext" aria-label="Étape suivante">${XP_SVG('<path d="M9 18l6-6-6-6"/>',2.4)}</button>
+  card.innerHTML = `
+    <div class="xp-card-k xin">Étape ${i+1} sur ${n} · ${esc(s.lab)}</div>
+    <h4 class="xp-card-h xin" style="animation-delay:.06s">${esc(s.h)}</h4>
+    <p class="xp-card-p xin" style="animation-delay:.12s">${esc(s.p)}</p>
+    <ul>${s.b.map((t, k) => `<li class="xin" style="animation-delay:${.18 + k*.07}s">${esc(t)}</li>`).join("")}</ul>
+    <button type="button" class="xp-shot xin" data-shot="${s.shot}" aria-label="Agrandir l'écran : ${esc(x.shots[s.shot].t)}"><img src="${XP_IMG}${s.shot}.webp" alt="${esc(x.shots[s.shot].t)}" loading="lazy"><span>🔍 ${esc(x.shots[s.shot].t)}</span></button>
+    <div class="xp-act">${go}
+      <div class="xp-nav">
+        <button type="button" class="xp-nb" id="xpPrev" aria-label="Étape précédente">${XP_SVG('<path d="M15 18l-6-6 6-6"/>',2.4)}</button>
+        <button type="button" class="xp-nb${tourOn?' on':''}" id="xpTour" aria-label="${tourOn?'Arrêter':'Lancer'} la visite guidée" title="Visite guidée">${tourOn ? XP_SVG('<path d="M9 5v14M15 5v14"/>',2.6) : XP_SVG('<path d="M8 5v14l11-7z"/>',2)}</button>
+        <button type="button" class="xp-nb" id="xpNext" aria-label="Étape suivante">${XP_SVG('<path d="M9 18l6-6-6-6"/>',2.4)}</button>
       </div>
     </div>
-    <div class="xp-tourbar"><i id="xpTourBar"></i></div>`;
-  if(!silent){ st.classList.remove("xp-step-anim"); void st.offsetWidth; st.classList.add("xp-step-anim"); }
+    <div class="xp-tbar"><i id="xpTbar"></i></div>`;
   const g = document.getElementById("xpGo"); if(g) g.addEventListener("click", () => { xpTourStop(); xpPlay(s.go[0], s.go[1], true); });
-  st.querySelector("[data-shot]").addEventListener("click", () => xpLightbox(s.shot));
+  card.querySelector("[data-shot]").addEventListener("click", () => xpLightbox(s.shot));
   document.getElementById("xpPrev").addEventListener("click", () => { xpTourStop(); xpStep((i - 1 + n) % n); });
   document.getElementById("xpNext").addEventListener("click", () => { xpTourStop(); xpStep((i + 1) % n); });
   document.getElementById("xpTour").addEventListener("click", () => xpS.tour ? xpTourStop() : xpTourStart());
-  if(xpS.tour) xpTourBar();
+  if(xpS.tour) xpTbar();
 }
-
-const XP_TOUR_MS = 7000;
-function xpTourBar(){
-  const b = document.getElementById("xpTourBar"); if(!b) return;
-  b.style.transition = "none"; b.style.width = "0";
-  void b.offsetWidth;
-  b.style.transition = "width " + XP_TOUR_MS + "ms linear"; b.style.width = "100%";
+/* étincelles au point d'impact (pointeur) */
+function xpSpark(){
+  if(xpReduce()) return;
+  const ptr = document.getElementById("xpPtr"); if(!ptr || !ptr.appendChild) return;
+  const cols = ["#13b4e2","#6b51ed","#ffcf63","#7eefa0"];
+  for(let k = 0; k < 14; k++){
+    const sp = document.createElement("span"); sp.className = "xp-spark";
+    const a = Math.random() * Math.PI * 2, d = 40 + Math.random() * 70;
+    sp.style.setProperty("--dx", (Math.cos(a) * d).toFixed(0) + "px");
+    sp.style.setProperty("--dy", (Math.sin(a) * d).toFixed(0) + "px");
+    sp.style.background = cols[k % cols.length];
+    sp.style.animationDelay = (.35 + Math.random() * .15).toFixed(2) + "s";
+    ptr.appendChild(sp);
+    setTimeout(() => { if(sp.remove) sp.remove(); }, 1500);
+  }
 }
+const XP_TOUR_MS = 6500;
+function xpTbar(){ const b = document.getElementById("xpTbar"); if(!b) return;
+  b.style.transition = "none"; b.style.width = "0"; void b.offsetWidth;
+  b.style.transition = "width " + XP_TOUR_MS + "ms linear"; b.style.width = "100%"; }
 function xpTourStart(){
   if(!xpS) return;
-  xpS.tour = setInterval(() => {
-    if(!xpS || !document.getElementById("xpStep")){ xpTourStop(); return; }
-    xpStep((xpS.step + 1) % xpS.x.steps.length);
-  }, XP_TOUR_MS);
+  xpS.tour = setInterval(() => { if(!xpS || !document.getElementById("xpCard")){ xpTourStop(); return; } xpStep((xpS.step + 1) % xpS.x.steps.length); }, XP_TOUR_MS);
   xpStep(xpS.step, true);
 }
-function xpTourStop(){
-  if(xpS && xpS.tour){ clearInterval(xpS.tour); xpS.tour = null; const t = document.getElementById("xpTour"); if(t) xpStep(xpS.step, true); }
-}
+function xpTourStop(){ if(xpS && xpS.tour){ clearInterval(xpS.tour); xpS.tour = null; if(document.getElementById("xpCard")) xpStep(xpS.step, true); } }
 
 function xpPersona(i){
   if(!xpS) return;
-  const x = xpS.x, card = document.getElementById("xpPcard"), orbit = document.getElementById("xpOrbit");
+  const x = xpS.x, card = document.getElementById("xpPcard"), orb = document.getElementById("xpOrb");
   xpS.pers = xpS.pers === i ? -1 : i;
   document.querySelectorAll(".panel--xp [data-pers]").forEach(b => { const on = +b.dataset.pers === xpS.pers; b.classList.toggle("on", on); b.setAttribute("aria-pressed", on); });
-  if(xpS.pers < 0){
-    card.hidden = true; orbit.classList.remove("has-persona");
-    document.querySelectorAll(".panel--xp .xp-node").forEach(b => b.classList.remove("hit"));
-    return;
-  }
+  const segs = document.querySelectorAll(".panel--xp .xp-seg"), labs = document.querySelectorAll(".panel--xp .xp-lab");
+  if(xpS.pers < 0){ card.hidden = true; orb.classList.remove("pers"); segs.forEach(b => b.classList.remove("hit")); labs.forEach(b => b.classList.remove("hit")); return; }
   const p = x.personas[xpS.pers];
-  orbit.classList.add("has-persona");
-  document.querySelectorAll(".panel--xp .xp-node").forEach((b, k) => b.classList.toggle("hit", p.steps.includes(k)));
+  orb.classList.add("pers");
+  segs.forEach((b, k) => b.classList.toggle("hit", p.steps.includes(k)));
+  labs.forEach((b, k) => b.classList.toggle("hit", p.steps.includes(k)));
   card.hidden = false;
-  card.innerHTML = `<div class="xp-pq">« ${esc(p.q)} »<small>${p.e} ${esc(p.n)} · étapes ${p.steps.map(k => k + 1).sort((a,b)=>a-b).join(", ")}</small></div>
-    <div class="xp-pg">${p.g.map(g => `<div><b>${esc(g[0])}</b><span>${esc(g[1])}</span></div>`).join("")}</div>`;
-  card.classList.remove("xp-step-anim"); void card.offsetWidth; card.classList.add("xp-step-anim");
+  card.innerHTML = `<div class="xp-pq xin">« ${esc(p.q)} »<small>${p.e} ${esc(p.n)} · étapes ${p.steps.slice().sort((a,b)=>a-b).map(k => k + 1).join(", ")}</small></div>
+    <div class="xp-pg">${p.g.map((g, k) => `<div class="xin" style="animation-delay:${.08 + k*.08}s"><b>${esc(g[0])}</b><span>${esc(g[1])}</span></div>`).join("")}</div>`;
   xpTourStop(); xpStep(p.steps[0]);
 }
 
-/* ---------- visionneuse d'écrans ---------- */
+/* ---------- visionneuse ---------- */
 function xpLightbox(key){
   if(!xpS) return;
-  const x = xpS.x, keys = Object.keys(x.shots);
+  const keys = Object.keys(xpS.x.shots);
   let lb = document.getElementById("xpLb");
   if(!lb){
     lb = document.createElement("div"); lb.id = "xpLb"; lb.className = "xp-lb";
@@ -1994,23 +2112,15 @@ function xpLightbox(key){
     lb.querySelector(".lb-x").addEventListener("click", xpLbClose);
     lb.querySelector(".lb-p").addEventListener("click", () => xpLbGo(-1));
     lb.querySelector(".lb-n").addEventListener("click", () => xpLbGo(1));
-    document.addEventListener("keydown", e => {
-      if(!lb.classList.contains("on")) return;
-      if(e.key === "Escape") xpLbClose();
-      if(e.key === "ArrowLeft") xpLbGo(-1);
-      if(e.key === "ArrowRight") xpLbGo(1);
-    });
+    document.addEventListener("keydown", e => { if(!lb.classList.contains("on")) return;
+      if(e.key === "Escape") xpLbClose(); if(e.key === "ArrowLeft") xpLbGo(-1); if(e.key === "ArrowRight") xpLbGo(1); });
   }
   lb._keys = keys; lb._i = Math.max(0, keys.indexOf(key)); lb._back = document.activeElement;
-  xpLbShow();
-  lb.classList.add("on");
-  lb.querySelector(".lb-x").focus();
+  xpLbShow(); lb.classList.add("on"); lb.querySelector(".lb-x").focus();
 }
-function xpLbShow(){
-  const lb = document.getElementById("xpLb"), k = lb._keys[lb._i], s = xpS.x.shots[k];
+function xpLbShow(){ const lb = document.getElementById("xpLb"), k = lb._keys[lb._i], s = xpS.x.shots[k];
   const img = lb.querySelector("img"); img.src = XP_IMG + k + ".webp"; img.alt = s.t;
-  lb.querySelector("figcaption").innerHTML = `<b>${esc(s.t)}</b>${esc(s.d)} · ${lb._i + 1} / ${lb._keys.length}`;
-}
+  lb.querySelector("figcaption").innerHTML = `<b>${esc(s.t)}</b>${esc(s.d)} · ${lb._i + 1} / ${lb._keys.length}`; }
 function xpLbGo(d){ const lb = document.getElementById("xpLb"); lb._i = (lb._i + d + lb._keys.length) % lb._keys.length; xpLbShow(); }
 function xpLbClose(){ const lb = document.getElementById("xpLb"); if(!lb) return; lb.classList.remove("on"); if(lb._back && lb._back.focus) lb._back.focus(); }
 
