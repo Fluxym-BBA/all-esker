@@ -55,122 +55,73 @@
     }
   }, true);
 
+  document.addEventListener('click', function(e) {
+    const el=e.target && e.target.closest ? e.target.closest('a,button,[role="tab"]') : null;
+    if(!el) return;
+    const text=(el.textContent||'').replace(/\s+/g,' ').trim().toUpperCase();
+    if(text === 'ACCUEIL' || text === 'ESKER') { e.preventDefault(); e.stopImmediatePropagation(); notifyParentStep(8); }
+    else if(text === 'FACTURES FOURNISSEURS') { e.preventDefault(); e.stopImmediatePropagation(); notifyParentStep(9); }
+  }, true);
+
   /* =========================================================================
      VOLET LATÉRAL « SYNERGY AGENT » (ACTIF SUR TOUTES LES PAGES QUI ONT LE BOUTON)
      ========================================================================= */
   function setupSynergyAgentGlobal() {
     const synBtn = document.getElementById('header-synergy-agent-button');
-    const chatTd = document.getElementById('reactChatPanelRoot');
-    if (!synBtn || !chatTd) return;
+    if (!synBtn) return;
 
     synBtn.classList.add('esk-synergy-ready');
-    synBtn.title = 'Cliquez pour ouvrir ou fermer le volet Synergy Agent';
+    synBtn.title = 'Ouvrir Synergy Agent';
 
-    // Injecter le DOM officiel Synergy Agent s'il n'est pas encore présent
-    if (!chatTd.querySelector('.esk-chat-panel') && window.ESKER_INPLACE_STATES && window.ESKER_INPLACE_STATES.synergy_panel_html) {
-      chatTd.innerHTML = window.ESKER_INPLACE_STATES.synergy_panel_html;
-      chatTd.style.display = 'none';
-      chatTd.style.verticalAlign = 'top';
+    let overlay = document.getElementById('esk-synergy-overlay');
+    if (!overlay) {
+      overlay = document.createElement('aside');
+      overlay.id = 'esk-synergy-overlay';
+      overlay.className = 'esk-synergy-overlay';
+      overlay.setAttribute('aria-label', 'Synergy Agent');
+      overlay.innerHTML = `
+        <div class="esk-synergy-head">
+          <div><strong>Synergy Agent</strong><small>Assistant intelligent Esker</small></div>
+          <div class="esk-synergy-head-actions"><button type="button" data-syn-expand title="Agrandir">⤢</button><button type="button" data-syn-close title="Fermer">×</button></div>
+        </div>
+        <div class="esk-synergy-intro">Interrogez vos factures, vos échéances, vos fournisseurs, vos workflows et vos indicateurs sans quitter l'espace de travail.</div>
+        <div class="esk-synergy-quick-btns">
+          <button type="button" class="esk-synergy-qbtn" data-syn-prompt="Quelles sont les factures en retard ?">Factures en retard</button>
+          <button type="button" class="esk-synergy-qbtn" data-syn-prompt="Quelles factures sont bloquées chez Marc ?">Blocages chez Marc</button>
+          <button type="button" class="esk-synergy-qbtn" data-syn-prompt="Montre-moi les écarts de rapprochement.">Écarts de rapprochement</button>
+        </div>
+        <div class="esk-synergy-messages" data-syn-messages>
+          <div class="esk-synergy-message assistant"><strong>Synergy Agent</strong><p>Je peux vous aider à retrouver une facture, expliquer un blocage, analyser les échéances ou résumer les exceptions détectées.</p></div>
+        </div>
+        <form class="esk-synergy-form" data-syn-form><input type="text" data-syn-input placeholder="Posez une question à Synergy Agent…"><button type="submit">➤</button></form>`;
+      document.body.appendChild(overlay);
     }
 
+    const openPanel = () => {
+      overlay.classList.add('open');
+      synBtn.classList.add('header-synergy-button-open');
+      const input=overlay.querySelector('[data-syn-input]');
+      if(input) setTimeout(()=>input.focus(),80);
+    };
+    const closePanel = () => {
+      overlay.classList.remove('open');
+      synBtn.classList.remove('header-synergy-button-open');
+    };
+
     if (!synBtn.dataset.synergyBound) {
-      synBtn.dataset.synergyBound = 'true';
-
-      synBtn.addEventListener('click', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        const isOpen = chatTd.style.display !== 'none' && chatTd.querySelector('.esk-chat-panel');
-        if (isOpen) {
-          chatTd.style.display = 'none';
-          synBtn.classList.remove('header-synergy-button-open');
-        } else {
-          chatTd.style.display = 'table-cell';
-          synBtn.classList.add('header-synergy-button-open');
-          const inp = chatTd.querySelector('#message-input');
-          if (inp) setTimeout(function () { inp.focus(); }, 80);
-        }
-        setTimeout(updateAllBadges, 60);
-      });
-
-      // Boutons internes du volet Synergy Agent (Fermer, Agrandir, Envoyer un message)
-      const closeIcon = chatTd.querySelector('.chat-close');
-      if (closeIcon) {
-        const closeBtn = closeIcon.closest('.chatbot-header-button') || closeIcon;
-        closeBtn.addEventListener('click', function (e) {
-          e.preventDefault();
-          e.stopPropagation();
-          chatTd.style.display = 'none';
-          synBtn.classList.remove('header-synergy-button-open');
-          setTimeout(updateAllBadges, 60);
-        });
-      }
-
-      const expandIcon = chatTd.querySelector('.chat-expand-arrow');
-      const chatContainer = chatTd.querySelector('.esk-chat-container');
-      if (expandIcon && chatContainer) {
-        const expandBtn = expandIcon.closest('.chatbot-header-button') || expandIcon;
-        expandBtn.addEventListener('click', function (e) {
-          e.preventDefault();
-          e.stopPropagation();
-          const expanded = chatContainer.classList.toggle('expanded');
-          chatContainer.style.minWidth = expanded ? '560px' : '400px';
-          chatContainer.style.maxWidth = expanded ? '560px' : '400px';
-          setTimeout(updateAllBadges, 60);
-        });
-      }
-
-      const msgInput = chatTd.querySelector('#message-input');
-      const sendArrow = chatTd.querySelector('#message-input-arrow');
-      const msgList = chatTd.querySelector('#message-list-container');
-
-      function sendSynergyMessage() {
-        if (!msgInput || !msgList) return;
-        const text = msgInput.value.trim();
-        if (!text) return;
-
-        const userMsg = document.createElement('div');
-        userMsg.className = 'message-container';
-        userMsg.innerHTML =
-          '<div class="user-name-container"><span class="user-name" style="margin-left:0;color:#163467">Vous</span></div>' +
-          '<div class="fade-animation"><div class="message-content" style="background:#f0f6f8;border-radius:8px;padding:10px 14px"><p></p></div></div>';
-        userMsg.querySelector('p').textContent = text;
-        msgList.appendChild(userMsg);
-        msgInput.value = '';
-        if (sendArrow) sendArrow.classList.add('disable');
-        msgList.scrollTop = msgList.scrollHeight;
-
-        setTimeout(function () {
-          const botMsg = document.createElement('div');
-          botMsg.className = 'message-container';
-          botMsg.innerHTML =
-            '<div class="user-name-container"><div class="icon-assistant"></div><span class="user-name">Synergy</span></div>' +
-            '<div class="fade-animation"><div class="message-content lighter-table" role="assistant-message"><p>' +
-            'Voici la synthèse en temps réel :\n' +
-            '• 40 factures sont assignées au comptable (dont Stark Industries avec un écart de quantité de +6,32 € HT et ACME FR reçue via la Plateforme Agréée).\n' +
-            '• 20 factures sont chez les approbateurs, dont 12 chez Marc GestionnaireCC (notamment la facture ACME Supply Company n° 281270 échue entre 60 et 90 jours).' +
-            '</p></div></div>';
-          msgList.appendChild(botMsg);
-          msgList.scrollTop = msgList.scrollHeight;
-        }, 450);
-      }
-
-      if (msgInput) {
-        msgInput.addEventListener('input', function () {
-          if (sendArrow) sendArrow.classList.toggle('disable', !msgInput.value.trim());
-        });
-        msgInput.addEventListener('keydown', function (e) {
-          if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            sendSynergyMessage();
-          }
-        });
-      }
-      if (sendArrow) {
-        sendArrow.addEventListener('click', function (e) {
-          e.preventDefault();
-          sendSynergyMessage();
-        });
-      }
+      synBtn.dataset.synergyBound='true';
+      synBtn.addEventListener('click', function(e){ e.preventDefault(); e.stopImmediatePropagation(); if(overlay.classList.contains('open')) closePanel(); else openPanel(); }, true);
+      overlay.querySelector('[data-syn-close]').addEventListener('click', closePanel);
+      overlay.querySelector('[data-syn-expand]').addEventListener('click', function(){ overlay.classList.toggle('expanded'); });
+      const messages=overlay.querySelector('[data-syn-messages]');
+      const input=overlay.querySelector('[data-syn-input]');
+      const send=(text)=>{
+        text=(text||'').trim(); if(!text) return;
+        const user=document.createElement('div'); user.className='esk-synergy-message user'; user.innerHTML='<strong>Vous</strong><p></p>'; user.querySelector('p').textContent=text; messages.appendChild(user); input.value=''; messages.scrollTop=messages.scrollHeight;
+        setTimeout(()=>{ const bot=document.createElement('div'); bot.className='esk-synergy-message assistant'; bot.innerHTML='<strong>Synergy Agent</strong><p>Dans cette démo, je peux vous orienter vers les factures en retard, les factures assignées au comptable, les blocages d\'approbation et les écarts de rapprochement. Les données affichées correspondent aux écrans capturés dans Esker.</p>'; messages.appendChild(bot); messages.scrollTop=messages.scrollHeight; },350);
+      };
+      overlay.querySelector('[data-syn-form]').addEventListener('submit',e=>{e.preventDefault();send(input.value);});
+      overlay.querySelectorAll('[data-syn-prompt]').forEach(b=>b.addEventListener('click',()=>send(b.dataset.synPrompt)));
     }
   }
 
@@ -187,7 +138,8 @@
   }
 
   function bindTooltip(el, title, text) {
-    if (!el) return;
+    if (!el || el.dataset.tooltipBound) return;
+    el.dataset.tooltipBound = 'true';
     el.addEventListener('mouseenter', function () {
       const tip = ensureHoverTooltip();
       tip.innerHTML = '<strong>' + title + '</strong>' + text;
@@ -320,197 +272,71 @@
      ========================================================================= */
   function setupDashboardStep(stepId, shouldScroll) {
     const chartBox = document.getElementById('DashReport_AP_Invoices pending per approver');
-    const dashLevel = (stepId === 7) ? 3 : stepId;
-    if (chartBox && window.ESKER_INPLACE_STATES && window.ESKER_INPLACE_STATES['dash_level_' + dashLevel]) {
-      chartBox.innerHTML = window.ESKER_INPLACE_STATES['dash_level_' + dashLevel];
-    }
+    const levelMap = {1: 1, 2: 1, 3: 2, 4: 3, 8: 1};
+    const dashLevel = levelMap[stepId] || 1;
+    if (chartBox && window.ESKER_INPLACE_STATES && window.ESKER_INPLACE_STATES['dash_level_' + dashLevel]) chartBox.innerHTML = window.ESKER_INPLACE_STATES['dash_level_' + dashLevel];
 
-    // Tuile "40 Assignées au comptable"
+    const firstStep = stepId === 1;
     const counter40 = document.getElementById('DashCounter_AP_InvoicesInAccountingDepartment');
     if (counter40) {
-      counter40.onclick = function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        notifyParentStep(8);
-      };
-      if (stepId === 7) {
-        counter40.classList.add('esk-pulse-primary');
-        createFloatingBadge(counter40, '🎯 Cliquez sur « 40 Assignées au comptable » pour traiter les factures', function () {
-          notifyParentStep(8);
-        }, { pos: 'bottom' });
-      } else {
-        counter40.classList.add('esk-pulse-secondary');
-      }
+      counter40.onclick = e => { e.preventDefault(); e.stopPropagation(); notifyParentStep(9); };
+      counter40.classList.add(stepId === 8 ? 'esk-pulse-primary' : 'esk-pulse-secondary');
+      if (stepId === 1 || stepId === 8) createFloatingBadge(counter40, '🎯 40 factures assignées au comptable : cliquez ici pour ouvrir la corbeille', ()=>notifyParentStep(9), {pos:'bottom'});
     }
 
-    // Bouton Synergy Agent en haut à droite
-    const synBtn = document.getElementById('header-synergy-agent-button');
-    if (synBtn && stepId === 7) {
-      createFloatingBadge(synBtn, '✨ Cliquez ici à tout moment pour ouvrir Synergy Agent', function () {
-        synBtn.click();
-      }, { amber: true, pos: 'bottom', offsetX: -60 });
-    }
+    setupDashboardHoverExplanations();
 
     if (!chartBox) return;
-
-    // Neutraliser le lien du titre du graphique aux étapes 1 et 2 (comme demandé par Bruno)
     const reportLink = chartBox.querySelector('.dashReportLink');
     const titleCell = chartBox.querySelector('.dashReportTitleCell');
-    if (reportLink) {
-      reportLink.setAttribute('href', 'javascript:void(0)');
-    }
+    if (reportLink) { reportLink.setAttribute('href','javascript:void(0)'); reportLink.onclick=e=>{e.preventDefault();e.stopPropagation(); if(stepId===4) notifyParentStep(5);}; }
+    if (titleCell) { titleCell.style.cursor = stepId===4 ? 'pointer':'default'; titleCell.onclick=e=>{e.preventDefault();e.stopPropagation(); if(stepId===4) notifyParentStep(5);}; }
 
-    if (stepId === 1 || stepId === 2) {
-      if (reportLink) {
-        reportLink.style.pointerEvents = 'none';
-        reportLink.style.cursor = 'default';
-      }
-      if (titleCell) {
-        titleCell.style.pointerEvents = 'none';
-        titleCell.style.cursor = 'default';
-      }
-    } else {
-      // Aux étapes 3 et 7, cliquer sur le titre ouvre directement le rapport au niveau 3 (Étape 4)
-      if (reportLink) {
-        reportLink.style.pointerEvents = 'auto';
-        reportLink.style.cursor = 'pointer';
-        reportLink.onclick = function (e) {
-          e.preventDefault();
-          e.stopPropagation();
-          notifyParentStep(4);
-        };
-      }
-      if (titleCell) {
-        titleCell.style.pointerEvents = 'auto';
-        titleCell.style.cursor = 'pointer';
-        titleCell.onclick = function (e) {
-          e.preventDefault();
-          e.stopPropagation();
-          notifyParentStep(4);
-        };
-      }
-    }
+    chartBox.querySelectorAll('.highcharts-breadcrumbs-button').forEach(btn=>{ if(btn.dataset.bound) return; btn.dataset.bound='true'; btn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation(); const t=btn.textContent||''; notifyParentStep(t.includes('Marc')?2:1);}); });
 
-    // Fil d'Ariane Highcharts dans le graphique du tableau de bord
-    chartBox.querySelectorAll('.highcharts-breadcrumbs-button').forEach(function (btn) {
-      btn.style.cursor = 'pointer';
-      btn.addEventListener('click', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        const txt = btn.textContent || '';
-        if (txt.indexOf('Factures fournisseurs') !== -1) {
-          notifyParentStep(1);
-        } else if (txt.indexOf('Marc') !== -1) {
-          notifyParentStep(2);
-        }
-      });
-    });
-
-    if (stepId === 1) {
-      const slice = chartBox.querySelector('.highcharts-point.highcharts-color-0');
-      const labels = Array.from(chartBox.querySelectorAll('.highcharts-data-label')).filter(function (l) {
-        return l.textContent.indexOf('Marc') !== -1;
-      });
-      const targetLabel = labels[labels.length - 1] || slice;
-      if (slice) {
-        slice.classList.add('esk-svg-pulse');
-        slice.addEventListener('click', function (e) {
-          e.preventDefault();
-          e.stopPropagation();
-          notifyParentStep(2);
-        });
-      }
-      labels.forEach(function (lbl) {
-        lbl.style.cursor = 'pointer';
-        lbl.addEventListener('click', function (e) {
-          e.preventDefault();
-          e.stopPropagation();
-          notifyParentStep(2);
-        });
-      });
-      createFloatingBadge(targetLabel || chartBox, '🎯 Niveau 1 : Cliquez sur Marc (12 factures · 44,4 %)', function () {
-        notifyParentStep(2);
-      }, { pos: 'bottom', offsetY: 6 });
-    } else if (stepId === 2) {
-      const slice = chartBox.querySelector('.highcharts-point.highcharts-color-0');
-      const labels = Array.from(chartBox.querySelectorAll('.highcharts-data-label')).filter(function (l) {
-        return l.textContent.toUpperCase().indexOf('ACME') !== -1;
-      });
-      const targetLabel = labels[labels.length - 1] || slice;
-      if (slice) {
-        slice.classList.add('esk-svg-pulse');
-        slice.addEventListener('click', function (e) {
-          e.preventDefault();
-          e.stopPropagation();
-          notifyParentStep(3);
-        });
-      }
-      labels.forEach(function (lbl) {
-        lbl.style.cursor = 'pointer';
-        lbl.addEventListener('click', function (e) {
-          e.preventDefault();
-          e.stopPropagation();
-          notifyParentStep(3);
-        });
-      });
-      createFloatingBadge(targetLabel || chartBox, '🎯 Niveau 2 : Cliquez sur ACME SUPPLY COMPANY (4 factures)', function () {
-        notifyParentStep(3);
-      }, { pos: 'bottom', offsetY: 6 });
+    if (stepId === 2) {
+      const labels=Array.from(chartBox.querySelectorAll('.highcharts-data-label')).filter(l=>l.textContent.includes('Marc')); const slice=chartBox.querySelector('.highcharts-point.highcharts-color-0'); const target=labels.at(-1)||slice;
+      if(slice){slice.classList.add('esk-svg-pulse'); slice.onclick=e=>{e.preventDefault();e.stopPropagation();notifyParentStep(3);};}
+      labels.forEach(l=>{l.style.cursor='pointer';l.onclick=e=>{e.preventDefault();e.stopPropagation();notifyParentStep(3);}});
+      createFloatingBadge(target||chartBox,'🎯 Marc : 12 factures · 44,4 %',()=>notifyParentStep(3),{pos:'bottom'});
     } else if (stepId === 3) {
-      const targetTitle = titleCell || reportLink;
-      if (targetTitle) {
-        targetTitle.classList.add('esk-pulse-primary');
-        createFloatingBadge(targetTitle, '🎯 Niveau 3 atteint : Cliquez sur le titre « Factures en attente par approbateur »', function () {
-          notifyParentStep(4);
-        }, { pos: 'top' });
-      }
+      const labels=Array.from(chartBox.querySelectorAll('.highcharts-data-label')).filter(l=>l.textContent.toUpperCase().includes('ACME')); const slice=chartBox.querySelector('.highcharts-point.highcharts-color-0'); const target=labels.at(-1)||slice;
+      if(slice){slice.classList.add('esk-svg-pulse');slice.onclick=e=>{e.preventDefault();e.stopPropagation();notifyParentStep(4);};}
+      labels.forEach(l=>{l.style.cursor='pointer';l.onclick=e=>{e.preventDefault();e.stopPropagation();notifyParentStep(4);}});
+      createFloatingBadge(target||chartBox,'🎯 ACME Supply Company : 4 factures · 33,3 %',()=>notifyParentStep(4),{pos:'bottom'});
+    } else if (stepId === 4) {
+      const target=titleCell||reportLink;
+      if(target){target.classList.add('esk-pulse-primary');createFloatingBadge(target,'🎯 Niveau 3 : ouvrez le rapport filtré sur Acme',()=>notifyParentStep(5),{pos:'top'});}
     }
 
-    if (stepId === 7) {
-      setTimeout(function () {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        setTimeout(updateAllBadges, 350);
-      }, 60);
-    } else if (shouldScroll) {
-      setTimeout(function () {
-        chartBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        setTimeout(updateAllBadges, 400);
-      }, 80);
-    } else {
-      setTimeout(updateAllBadges, 60);
-    }
+    if (firstStep) { window.scrollTo({top:0, behavior:'auto'}); }
+    else if (stepId === 8) { window.scrollTo({top:0, behavior:'auto'}); }
+    else if (shouldScroll) setTimeout(()=>{chartBox.scrollIntoView({behavior:'smooth',block:'center'});updateAllBadges();},80);
+    setTimeout(updateAllBadges,80);
+  }
+
+  function setupDashboardHoverExplanations() {
+    const add=(el,title,text)=>{ if(!el||el.dataset.hoverExplanation) return; el.dataset.hoverExplanation='true'; el.classList.add('esk-dash-hoverable'); bindTooltip(el,title,text); };
+    const search=document.querySelector('input[placeholder*="Recherch"], input[aria-label*="Recherch"]');
+    add(search,'Recherche universelle','Recherchez une facture, un numéro de commande ou un fournisseur pour retrouver rapidement les informations utiles.');
+    document.querySelectorAll('[data-testid="counter"]').forEach(el=>add(el,el.textContent.trim().replace(/\s+/g,' '),'Ce compteur donne une vue immédiate du volume à traiter et permet d\'ouvrir la liste correspondante.'));
+    document.querySelectorAll('.dashButtonContent').forEach(el=>add(el,el.textContent.trim().replace(/\s+/g,' '),'Action rapide du poste Factures Fournisseurs : import, export ou téléchargement de documents.'));
+    document.querySelectorAll('.dashReportContent').forEach(el=>{const title=el.querySelector('.dashReportTitleCell,.dashReportTitle,.dashReportLink'); const t=title?title.textContent.trim().replace(/\s+/g,' '):''; if(t) add(el,t,'Ce rapport transforme les données du processus en indicateur exploitable pour piloter les délais, les blocages, les paiements ou les fournisseurs.');});
+    const workspace=document.querySelector('.header-menu-with-synergy, #header-contents');
+    add(workspace,'Espaces de travail','Naviguez entre les tables, les factures fournisseurs, les exportations, les fournisseurs, les propositions de paiement et les rapports.');
   }
 
   /* =========================================================================
      ÉTAPE 4 : RAPPORT DÉTAILLÉ (OUVERT DIRECTEMENT AU NIVEAU 3 FILTRÉ SUR ACME)
      ========================================================================= */
   function setupReportStep() {
-    const reportDiv = document.getElementById('reportDiv');
-    if (reportDiv && window.ESKER_INPLACE_STATES && window.ESKER_INPLACE_STATES.report_level_6) {
-      reportDiv.innerHTML = window.ESKER_INPLACE_STATES.report_level_6;
-    }
-    if (!reportDiv) return;
-
-    const links = Array.from(reportDiv.querySelectorAll('a')).filter(function (a) {
-      return a.textContent.trim() === '281270';
-    });
-    const link281270 = links[0];
-    const row = link281270 ? link281270.closest('tr') : null;
-    const target = row || link281270;
-    if (row) {
-      row.classList.add('esk-pulse-row');
-      row.addEventListener('click', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        notifyParentStep(5);
-      });
-    }
-    if (target) {
-      createFloatingBadge(link281270 || target, '🎯 Cliquez sur la facture 281270 échue entre 60 et 90 jours (6 271,20 USD)', function () {
-        notifyParentStep(5);
-      }, { pos: 'top' });
-    }
-    setTimeout(updateAllBadges, 80);
+    const reportDiv=document.getElementById('reportDiv');
+    if(reportDiv && window.ESKER_INPLACE_STATES && window.ESKER_INPLACE_STATES.report_level_6) reportDiv.innerHTML=window.ESKER_INPLACE_STATES.report_level_6;
+    if(!reportDiv) return;
+    const link=Array.from(reportDiv.querySelectorAll('a')).find(a=>a.textContent.trim()==='281270'); const row=link?link.closest('tr'):null; const target=row||link;
+    if(row){row.classList.add('esk-pulse-row');row.onclick=e=>{e.preventDefault();e.stopPropagation();notifyParentStep(6);};}
+    if(target){createFloatingBadge(link||target,'🎯 La sélection du graphique filtre la liste : ouvrez la facture 281270 (60–90 jours)',()=>notifyParentStep(6),{pos:'top'}); setTimeout(()=>{const r=target.getBoundingClientRect(); window.scrollTo({top:Math.max(0,window.scrollY+r.top-190),behavior:'smooth'}); updateAllBadges();},120);}
+    setTimeout(updateAllBadges,180);
   }
 
   /* =========================================================================
@@ -600,6 +426,33 @@
   /* =========================================================================
      ÉTAPE 8 : LISTE DES 40 FACTURES ASSIGNÉES AU COMPTABLE
      ========================================================================= */
+
+  function setupFilterDropdowns(filterPanel) {
+    if (!filterPanel || filterPanel.dataset.dropdownEnhanced) return;
+    filterPanel.dataset.dropdownEnhanced='true';
+    const labels={
+      'égal à':'égal à','commence par':'commence par','contient':'contient','différent de':'différent de','ne commence pas par':'ne commence pas par','ne contient pas':'ne contient pas',
+      'antérieur à':'antérieur à','postérieur à':'postérieur à','compris entre':'compris entre','aujourd’hui':'aujourd’hui','aujourd hui':'aujourd’hui','ce mois-ci':'ce mois-ci'
+    };
+    let menu=null;
+    const close=()=>{if(menu){menu.remove();menu=null;}};
+    document.addEventListener('click',e=>{if(menu && !menu.contains(e.target) && !e.target.closest('.esk-filter-select-enhanced')) close();},true);
+    filterPanel.querySelectorAll('select').forEach(sel=>{
+      sel.classList.add('esk-filter-select-enhanced');
+      sel.addEventListener('mousedown',e=>{e.preventDefault();},true);
+      sel.addEventListener('click',e=>{
+        e.preventDefault();e.stopPropagation();close();
+        menu=document.createElement('div');menu.className='esk-select-dropdown';
+        const r=sel.getBoundingClientRect(); menu.style.left=Math.max(8,r.left)+'px';menu.style.top=(r.bottom+4)+'px';menu.style.minWidth=Math.max(210,r.width)+'px';
+        const search=document.createElement('div');search.className='esk-select-search';search.innerHTML='<input type="search" placeholder="Rechercher une option…">';menu.appendChild(search);
+        const opts=document.createElement('div');opts.className='esk-select-options';menu.appendChild(opts);
+        const all=Array.from(sel.options).map((o,i)=>({o,i,text:(labels[o.textContent.trim().toLowerCase()]||o.textContent.trim()||o.value||'Option '+(i+1))}));
+        const render=(term='')=>{opts.innerHTML='';all.filter(x=>x.text.toLowerCase().includes(term.toLowerCase())).forEach(x=>{const b=document.createElement('button');b.type='button';b.className='esk-select-opt';b.textContent=x.text;b.onclick=ev=>{ev.preventDefault();sel.selectedIndex=x.i;sel.dispatchEvent(new Event('change',{bubbles:true}));close();};opts.appendChild(b);});};
+        render();search.querySelector('input').addEventListener('input',ev=>render(ev.target.value));document.body.appendChild(menu);search.querySelector('input').focus();
+      });
+    });
+  }
+
   function setupAdminListStep() {
     const grid = document.getElementById('tpl_ih_adminList_MainGrid');
     if (!grid) return;
@@ -648,6 +501,7 @@
     // Rendre les filtres du haut réellement fonctionnels sur les 40 lignes
     const filterPanel = document.getElementById('tpl_ih_adminList_displayed_filters_panel');
     const applyBtn = document.getElementById('tpl_ih_adminList_displayedFilters_applyBtn');
+    setupFilterDropdowns(filterPanel);
     if (filterPanel && !filterPanel.dataset.enhanced) {
       filterPanel.dataset.enhanced = 'true';
       const filterInputs = Array.from(filterPanel.querySelectorAll('input[type="text"], input:not([type])'));
@@ -810,10 +664,10 @@
       quitBtn.onclick = function (e) {
         e.preventDefault();
         e.stopPropagation();
-        notifyParentStep(10);
+        notifyParentStep(9);
       };
-      createFloatingBadge(quitBtn, '🎯 Voir le cas suivant : Facture électronique PA (BBA-261001183030)', function () {
-        notifyParentStep(10);
+      createFloatingBadge(quitBtn, '🎯 Revenir à la liste des 40 factures pour choisir le cas suivant', function () {
+        notifyParentStep(9);
       }, { pos: 'bottom', offsetX: -140 });
     }
 
@@ -1180,17 +1034,17 @@
       f.onsubmit = function (e) { e.preventDefault(); return false; };
     });
 
-    if (stepId === 1 || stepId === 2 || stepId === 3 || stepId === 7) {
+    if ([1, 2, 3, 4, 8].includes(stepId)) {
       setupDashboardStep(stepId, !isInPlaceTransition);
-    } else if (stepId === 4) {
+    } else if (stepId === 5) {
       setupReportStep();
-    } else if (stepId === 5 || stepId === 6) {
+    } else if (stepId === 6 || stepId === 7) {
       setupAcmeInvoiceStep(stepId);
-    } else if (stepId === 8) {
-      setupAdminListStep();
     } else if (stepId === 9) {
-      setupStarkInvoiceStep();
+      setupAdminListStep();
     } else if (stepId === 10) {
+      setupStarkInvoiceStep();
+    } else if (stepId === 11) {
       setupPdpInvoiceStep();
     }
   }
