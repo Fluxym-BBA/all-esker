@@ -1,205 +1,106 @@
 /* =========================================================================
-   SCÉNARIO DE DÉMONSTRATION GUIDÉE ESKER - FACTURES FOURNISSEURS (11 ÉTAPES)
-   Conçu pour Fluxym - Démo commerciale & avant-vente interactive
+   SCÉNARIO DE DÉMONSTRATION INTERACTIVE ESKER - FACTURES FOURNISSEURS
+   11 étapes réelles sans voile gris, avec pulsations DOM et navigation libre
    ========================================================================= */
 
 const DEMO_STEPS = [
   {
     id: 1,
+    pageGroup: "dashboard",
     file: "steps/step1.html",
-    kicker: "01 · TABLEAU DE BORD",
-    title: "Tableau de bord dynamique & Drill-down 3 niveaux",
-    narrative: "Esker offre une visibilité temps réel sur l'ensemble du cycle fournisseur. Ce rapport central « Factures en attente par approbateur » permet de descendre jusqu'au niveau de détail le plus fin en 3 clics.",
-    action: "Cliquez sur le segment de Marc (44,4 %) dans le graphique pour analyser son portefeuille.",
-    hotspot: {
-      top: "43%",
-      left: "47%",
-      width: "120px",
-      height: "70px",
-      shape: "rect"
-    },
-    tooltip: {
-      position: "bottom-left"
-    }
+    kicker: "01 · TABLEAU DE BORD (NIVEAU 1)",
+    title: "Tableau de bord & Graphique à 3 niveaux de détail",
+    narrative: "Parcourez librement le tableau de bord. Au centre, le rapport « Factures en attente par approbateur » est mis en exergue : Marc concentre 12 factures (44,4 %). En haut, la tuile « 40 Assignées au comptable » permet aussi d'accéder directement à la corbeille comptable.",
+    action: "Cliquez sur le secteur de Marc (44,4 %) dans le graphique central."
   },
   {
     id: 2,
-    file: "steps/step2.html",
-    kicker: "02 · DRILL-DOWN NIVEAU 1",
-    title: "Filtrage par approbateur : Focus sur Marc",
-    narrative: "Le graphique s'est recalculé instantanément : on visualise maintenant tous les fournisseurs en attente d'approbation chez Marc. Acme Supply Company représente le volume le plus critique.",
-    action: "Cliquez sur la barre ACME SUPPLY COMPANY pour inspecter l'ancienneté de sa dette.",
-    hotspot: {
-      top: "46%",
-      left: "37%",
-      width: "220px",
-      height: "50px",
-      shape: "rect"
-    },
-    tooltip: {
-      position: "bottom-right"
-    }
+    pageGroup: "dashboard",
+    file: "steps/step1.html",
+    kicker: "02 · TABLEAU DE BORD (NIVEAU 2)",
+    title: "Drill-down sur Marc : Répartition par fournisseur",
+    narrative: "Sans quitter le tableau de bord, le graphique affiche désormais les fournisseurs dont les factures sont en attente d'approbation chez Marc. ACME Supply Company représente 4 factures (33,3 %).",
+    action: "Cliquez sur ACME SUPPLY COMPANY (4 factures) dans le graphique."
   },
   {
     id: 3,
-    file: "steps/step3.html",
-    kicker: "03 · DRILL-DOWN NIVEAU 2",
-    title: "Balance âgée d'un fournisseur sous forme de camaïeu",
-    narrative: "Troisième niveau de détail : la répartition par tranche de retard (balance âgée). On identifie immédiatement des factures échues à plus de 60 jours chez ce fournisseur.",
-    action: "Cliquez sur le titre du rapport « Factures en attente par approbateur » pour ouvrir la vue détaillée.",
-    hotspot: {
-      top: "27.5%",
-      left: "40%",
-      width: "260px",
-      height: "36px",
-      shape: "rect"
-    },
-    tooltip: {
-      position: "bottom"
-    }
+    pageGroup: "dashboard",
+    file: "steps/step1.html",
+    kicker: "03 · TABLEAU DE BORD (NIVEAU 3)",
+    title: "Drill-down sur Acme : Camaïeu de dates d'échéance",
+    narrative: "Troisième niveau de détail directement dans le graphique : la balance âgée d'Acme sous forme de camaïeu d'échéances (Non échue, 0j - 30j, 60j - 90j).",
+    action: "Cliquez sur le titre « Factures en attente par approbateur » au-dessus du graphique."
   },
   {
     id: 4,
+    pageGroup: "report",
     file: "steps/step4.html",
-    kicker: "04 · RAPPORT DÉTAILLÉ",
-    title: "Vue rapport avec synchronisation graphique / tableau",
-    narrative: "La vue détaillée Esker combine la représentation graphique et la table de données sous-jacente. Toutes les factures de l'entreprise sont répertoriées avec leurs statuts.",
-    action: "Cliquez à nouveau sur le segment Marc pour synchroniser le tableau inférieur.",
-    hotspot: {
-      top: "32%",
-      left: "48%",
-      width: "140px",
-      height: "80px",
-      shape: "rect"
-    },
-    tooltip: {
-      position: "bottom-left"
-    }
+    kicker: "04 · RAPPORT DÉTAILLÉ (NIVEAU 1)",
+    title: "Ouverture du rapport complet avec table des factures",
+    narrative: "Le rapport complet affiche le graphique en haut et la liste détaillée de toutes les factures en attente en dessous. Les 3 niveaux de sélection vont filtrer dynamiquement le tableau inférieur.",
+    action: "Cliquez sur le secteur de Marc (12 factures · 44,4 %) dans le graphique."
   },
   {
     id: 5,
-    file: "steps/step5.html",
-    kicker: "05 · FILTRAGE DYNAMIQUE",
-    title: "Tableau filtré en direct sur le portefeuille de Marc",
-    narrative: "Le tableau inférieur s'est immédiatement restreint aux 12 factures assignées à Marc. Aucun export Excel n'est nécessaire : l'analyse est interactive et sécurisée.",
-    action: "Cliquez sur le fournisseur ACME Supply Company pour isoler ses factures.",
-    hotspot: {
-      top: "35%",
-      left: "37%",
-      width: "210px",
-      height: "45px",
-      shape: "rect"
-    },
-    tooltip: {
-      position: "bottom-right"
-    }
+    pageGroup: "report",
+    file: "steps/step4.html",
+    kicker: "05 · RAPPORT DÉTAILLÉ (NIVEAU 2)",
+    title: "Synchronisation du rapport sur le portefeuille de Marc",
+    narrative: "En cliquant sur Marc, le tableau inférieur s'est automatiquement filtré sur les 12 enregistrements dont Marc est propriétaire.",
+    action: "Cliquez sur ACME Supply Company (4 factures) dans le graphique."
   },
   {
     id: 6,
-    file: "steps/step6.html",
-    kicker: "06 · CIBLAGE CRITIQUE",
-    title: "Identification de la facture en retard (60j - 90j)",
-    narrative: "Dans le tableau, la facture n° 281270 d'Acme Supply (6 271,20 USD) est échue depuis plus de 60 jours avec le motif « En attente de l'entrée de biens et services ».",
-    action: "Cliquez sur la ligne de la facture 281270 pour ouvrir sa fiche complète.",
-    hotspot: {
-      top: "62%",
-      left: "22%",
-      width: "480px",
-      height: "34px",
-      shape: "rect"
-    },
-    tooltip: {
-      position: "top"
-    }
+    pageGroup: "report",
+    file: "steps/step4.html",
+    kicker: "06 · RAPPORT DÉTAILLÉ (NIVEAU 3)",
+    title: "Focalisation sur la facture échue entre 60 et 90 jours",
+    narrative: "Le tableau inférieur affiche maintenant les 4 factures d'Acme classées par tranche d'échéance. La facture n° 281270 (6 271,20 USD) est bloquée entre 60 et 90 jours.",
+    action: "Cliquez sur la ligne de la facture 281270 (tranche 60j - 90j) dans le tableau."
   },
   {
     id: 7,
+    pageGroup: "invoice_acme",
     file: "steps/step7.html",
-    kicker: "07 · FICHE DE FACTURE",
-    title: "Fiche facture complète & Visualisation du document PDF",
-    narrative: "À gauche, les données extraites automatiquement et rapprochées de l'ERP. À droite, le document original. Le statut est « En attente de réception ».",
-    action: "Cliquez sur l'icône de conversation interne pour interpeller Marc sans quitter Esker.",
-    hotspot: {
-      top: "14.5%",
-      left: "91.8%",
-      width: "42px",
-      height: "42px",
-      shape: "circle"
-    },
-    tooltip: {
-      position: "left"
-    }
+    kicker: "07 · FACTURE BLOQUÉE (ACME 281270)",
+    title: "Consultation de la facture 281270 en attente chez Marc",
+    narrative: "Vous pouvez défiler librement dans le volet de gauche (statut « En attente de l'entrée de biens et services », commande 4500012171, workflow bloqué chez Marc) et zoomer sur le PDF à droite.",
+    action: "Cliquez sur l'icône de Conversation interne (en haut à droite) pour écrire à Marc."
   },
   {
     id: 8,
-    file: "steps/step8.html",
-    kicker: "08 · COLLABORATION INTÉGRÉE",
-    title: "Résolution collaborative des litiges dans l'outil",
-    narrative: "Fini les e-mails perdus : le fil de discussion est directement rattaché à la facture avec mention `@Marc`. Tous les échanges sont tracés et auditables.",
-    action: "Cliquez sur « Factures fournisseurs » pour basculer sur la vue globale du comptable.",
-    hotspot: {
-      top: "4.8%",
-      left: "14.5%",
-      width: "160px",
-      height: "36px",
-      shape: "rect"
-    },
-    tooltip: {
-      position: "bottom"
-    }
+    pageGroup: "invoice_acme",
+    file: "steps/step7.html",
+    kicker: "08 · CONVERSATION INTERNE",
+    title: "Échange collaboratif avec Marc directement sur la facture",
+    narrative: "Le panneau de conversation interne s'ouvre à droite : Marc GestionnaireCC a été ajouté à la discussion avec un message lui demandant ce qui bloque la réception.",
+    action: "Cliquez sur « Quitter » (en haut à droite) pour passer aux 40 factures du comptable."
   },
   {
     id: 9,
+    pageGroup: "admin_list",
     file: "steps/step9.html",
-    kicker: "09 · ESPACE COMPTABLE",
-    title: "Espace de travail du comptable : 40 factures à traiter",
-    narrative: "La vue comptable regroupe les arrivées du jour. Chaque utilisateur peut personnaliser ses colonnes, filtres, tris et affichages selon ses priorités.",
-    action: "Cliquez sur la ligne Stark Industries (ST2610131135-01) pour examiner son cas.",
-    hotspot: {
-      top: "39%",
-      left: "15%",
-      width: "700px",
-      height: "36px",
-      shape: "rect"
-    },
-    tooltip: {
-      position: "top"
-    }
+    kicker: "09 · CORBEILLE COMPTABLE (40 FACTURES)",
+    title: "Les 40 factures assignées au comptable : Filtres & Colonnes",
+    narrative: "Testez librement les filtres en haut (saisissez un nom ou un montant), cliquez sur l'icône crayon à droite pour masquer/afficher des colonnes, ou cliquez sur l'une des deux factures mises en évidence.",
+    action: "Cliquez sur la ligne Stark Industries (Cas 1) ou sur la ligne ACME FR (Cas 2 : Facture PA)."
   },
   {
     id: 10,
+    pageGroup: "invoice_stark",
     file: "steps/step10.html",
-    kicker: "10 · RAPPROCHEMENT 3 VOIES",
-    title: "Rapprochement avec commande & Gestion d'un écart de montant",
-    narrative: "Facture avec commande n° 4500000007. Esker a rapproché les lignes de postes et détecté une exception sur le montant hors taxes, avec workflow d'escalade automatique.",
-    action: "Cliquez pour découvrir le traitement d'une facture électronique certifiée PDP.",
-    hotspot: {
-      top: "18%",
-      left: "48%",
-      width: "280px",
-      height: "45px",
-      shape: "rect"
-    },
-    tooltip: {
-      position: "bottom"
-    }
+    kicker: "10 · FACTURE AVEC COMMANDE (STARK INDUSTRIES)",
+    title: "Rapprochement commande 4500000007, écart HT et exception",
+    narrative: "Survolez les champs entourés en orange : écart sur le Montant HT (3 032,82 €), écart de quantité (186 vs 185) et de montant (+6,32 €) sur la 3e ligne de poste (CNT50922), exception « Quantity mismatch » levée et workflow mis à jour.",
+    action: "Explorez la fiche puis cliquez sur « Quitter » pour voir la facture électronique PA."
   },
   {
     id: 11,
+    pageGroup: "invoice_pdp",
     file: "steps/step11.html",
-    kicker: "11 · FACTURE ÉLECTRONIQUE (PDP)",
-    title: "Facturation Électronique conforme PDP : Alertes et sécurité",
-    narrative: "Reçue via la Plateforme Agréée avec pièces jointes multiples. Esker applique des contrôles stricts : alerte rouge sur un IBAN non reconnu et détection d'une référence contrat inexistante.",
-    action: "Vous avez terminé la visite ! Vous pouvez revoir une étape ou contacter Fluxym.",
-    hotspot: {
-      top: "33%",
-      left: "14%",
-      width: "360px",
-      height: "45px",
-      shape: "rect"
-    },
-    tooltip: {
-      position: "bottom-right"
-    }
+    kicker: "11 · FACTURE ÉLECTRONIQUE (PLATEFORME AGRÉÉE)",
+    title: "Multi-documents (PDF, XML, BC, BL), contrat inconnu & alerte IBAN",
+    narrative: "Cliquez sur les 4 vignettes du panneau « Documents » pour afficher la facture PDF, le flux XML Factur-X, le bon de commande et le bon de livraison. Survolez le contrat « CONTRAT-2025-KRE-0147 » (inexistant dans Esker) et l'alerte IBAN (aucune coordonnée bancaire connue pour ce fournisseur).",
+    action: "Cliquez sur les 4 documents joints et survolez les alertes contrat et IBAN."
   }
 ];

@@ -1,6 +1,6 @@
 /* =========================================================================
-   LECTEUR DE DÉMO INTERACTIVE FLUXMYM × ESKER (STYLE GUIDEFLOW)
-   Design System : #163467 (Bleu nuit), #13b4e2 (Cyan), #6b51ed (Violet)
+   LECTEUR INTERACTIF FLUXYM × ESKER (SANS VOILE GRIS NI MODALE BLOQUANTE)
+   Barre supérieure compacte + Dock de guidage escamotable en bas d'écran
    ========================================================================= */
 
 :root {
@@ -9,13 +9,12 @@
   --cyan: #13b4e2;
   --cyan-glow: rgba(19, 180, 226, 0.4);
   --purple: #6b51ed;
-  --purple-glow: rgba(107, 81, 237, 0.4);
-  --sun: #ffcf63;
+  --amber: #f5a623;
   --bg-dark: #0b1526;
   --text-main: #ffffff;
-  --text-muted: #9fb3ce;
-  --card-bg: rgba(15, 36, 72, 0.94);
-  --card-border: rgba(19, 180, 226, 0.35);
+  --text-muted: #b0c4de;
+  --card-bg: rgba(15, 36, 72, 0.96);
+  --card-border: rgba(19, 180, 226, 0.45);
   --font-family: 'Barlow', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
@@ -35,26 +34,23 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ====== CONTENEUR PRINCIPAL ====== */
 .player-root {
   display: flex;
   flex-direction: column;
   width: 100vw;
   height: 100vh;
   position: relative;
-  background: radial-gradient(circle at 50% 0%, #1a3a70 0%, #0b1526 80%);
 }
 
-/* ====== BANDEAU SUPÉRIEUR ====== */
+/* ====== BANDEAU SUPÉRIEUR COMPACT (50px) ====== */
 .player-header {
-  height: 64px;
-  background: rgba(11, 21, 38, 0.92);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  height: 50px;
+  background: #0b1526;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
+  padding: 0 16px;
   z-index: 50;
   flex-shrink: 0;
 }
@@ -62,31 +58,24 @@ html, body {
 .player-brand {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
 }
 
 .brand-logos {
   display: flex;
   align-items: center;
-  gap: 10px;
-}
-
-.brand-logos svg {
-  height: 24px;
-  fill: currentColor;
+  gap: 8px;
 }
 
 .brand-sep {
   color: var(--cyan);
-  font-weight: 300;
-  font-size: 18px;
-  opacity: 0.6;
+  font-size: 16px;
+  opacity: 0.7;
 }
 
 .brand-title {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
-  letter-spacing: 0.3px;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -95,100 +84,94 @@ html, body {
 .brand-badge {
   background: linear-gradient(135deg, var(--cyan), var(--purple));
   color: #fff;
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 700;
   text-transform: uppercase;
   padding: 2px 8px;
-  border-radius: 12px;
-  letter-spacing: 0.5px;
+  border-radius: 10px;
+  letter-spacing: 0.4px;
 }
 
-/* ====== BARRE DE PROGRESSION & INDICATEUR ====== */
-.player-progress-center {
+/* PILLS D'ACCÈS DIRECT AUX 11 ÉTAPES DANS LE HEADER */
+.header-step-pills {
   display: flex;
   align-items: center;
-  gap: 16px;
-  flex: 1;
-  max-width: 480px;
-  margin: 0 20px;
+  gap: 4px;
 }
 
-.step-indicator {
-  font-size: 13px;
-  font-weight: 600;
+.step-pill {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.06);
   color: var(--text-muted);
-  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  font-family: inherit;
 }
 
-.step-indicator strong {
+.step-pill:hover {
+  border-color: var(--cyan);
   color: #fff;
-  font-size: 14px;
+  background: rgba(19, 180, 226, 0.2);
 }
 
-.progress-track {
-  flex: 1;
-  height: 6px;
-  background: rgba(255, 255, 255, 0.12);
-  border-radius: 3px;
-  overflow: hidden;
-  position: relative;
-}
-
-.progress-bar {
-  height: 100%;
-  width: 9%;
-  background: linear-gradient(90deg, var(--cyan), var(--purple));
-  border-radius: 3px;
-  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+.step-pill.active {
+  background: var(--cyan);
+  border-color: var(--cyan);
+  color: #fff;
   box-shadow: 0 0 10px var(--cyan-glow);
 }
 
-/* ====== COMMANDES DU HEADER ====== */
+.step-pill.visited:not(.active) {
+  border-color: rgba(46, 189, 133, 0.5);
+  color: #6ee7b7;
+}
+
 .player-actions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .btn-ctrl {
   background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   color: var(--text-main);
-  padding: 7px 13px;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 500;
+  padding: 5px 11px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  transition: all 0.2s ease;
+  gap: 5px;
+  transition: all 0.15s ease;
   font-family: inherit;
 }
 
 .btn-ctrl:hover {
   background: rgba(255, 255, 255, 0.16);
   border-color: var(--cyan);
-  transform: translateY(-1px);
 }
 
 .btn-ctrl.btn-primary {
   background: linear-gradient(135deg, var(--cyan), #0d8cae);
   border: none;
-  font-weight: 600;
-  box-shadow: 0 2px 8px var(--cyan-glow);
 }
 
-.btn-ctrl.btn-primary:hover {
-  filter: brightness(1.1);
-}
-
-/* ====== VIEWPORT (ZONE DE VISUALISATION SAAS) ====== */
+/* ====== ZONE DE VISUALISATION 100 % CLAIRE ET LIBRE ====== */
 .player-stage {
   flex: 1;
   position: relative;
   overflow: hidden;
-  background: #f4f6f9;
+  background: #ffffff;
 }
 
 .stage-iframe {
@@ -199,131 +182,65 @@ html, body {
   background: #ffffff;
 }
 
-/* ====== CALQUE INTERACTIF (OVERLAY GUIDEFLOW) ====== */
-.player-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 20;
-}
-
-/* SPOTLIGHT SUR L'ÉCRAN */
-.spotlight-dimmer {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(11, 21, 38, 0.35);
-  pointer-events: none;
-  opacity: 1;
-  transition: opacity 0.3s ease;
-}
-
-/* HOTSPOT PULSANT */
-.hotspot-target {
-  position: absolute;
-  pointer-events: auto;
-  cursor: pointer;
-  z-index: 30;
-  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-.hotspot-target.shape-rect {
-  border-radius: 8px;
-}
-
-.hotspot-target.shape-circle {
-  border-radius: 50%;
-}
-
-.hotspot-glow-box {
-  width: 100%;
-  height: 100%;
-  border: 2.5px solid var(--cyan);
-  border-radius: inherit;
-  box-shadow: 0 0 0 3px rgba(19, 180, 226, 0.3), 0 0 24px var(--cyan-glow);
-  position: relative;
-  background: rgba(19, 180, 226, 0.12);
-  transition: all 0.2s ease;
-}
-
-.hotspot-target:hover .hotspot-glow-box {
-  border-color: #fff;
-  background: rgba(19, 180, 226, 0.24);
-  box-shadow: 0 0 0 5px rgba(19, 180, 226, 0.45), 0 0 32px var(--cyan-glow);
-}
-
-/* BALISE DE CLIC PULSANTE (BEACON) */
-.hotspot-beacon {
-  position: absolute;
-  top: 50%;
+/* ====== BARRE DE GUIDAGE FLOTTANTE COMPACTE EN BAS D'ÉCRAN ====== */
+.guide-dock {
+  position: fixed;
+  bottom: 14px;
   left: 50%;
-  transform: translate(-50%, -50%);
-  width: 32px;
-  height: 32px;
-  pointer-events: none;
-}
-
-.beacon-core {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 14px;
-  height: 14px;
-  background: #ffffff;
-  border: 2px solid var(--cyan);
-  border-radius: 50%;
-  box-shadow: 0 0 8px var(--cyan);
-}
-
-.beacon-ripple {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border: 2.5px solid var(--cyan);
-  border-radius: 50%;
-  animation: beaconPulse 1.8s infinite ease-out;
-}
-
-@keyframes beaconPulse {
-  0% {
-    transform: scale(0.4);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(2.2);
-    opacity: 0;
-  }
-}
-
-/* ====== INFOBULLE GUIDÉE FLOTTANTE (TOOLTIP) ====== */
-.guide-card {
-  position: absolute;
-  width: 380px;
-  max-width: calc(100vw - 32px);
+  transform: translateX(-50%);
+  width: min(980px, calc(100vw - 28px));
   background: var(--card-bg);
-  backdrop-filter: blur(16px);
-  border: 1px solid var(--card-border);
+  backdrop-filter: blur(14px);
+  border: 1.5px solid var(--card-border);
   border-radius: 14px;
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4), 0 0 20px rgba(19, 180, 226, 0.15);
-  padding: 20px;
-  pointer-events: auto;
-  z-index: 40;
-  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-.guide-card-header {
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.45), 0 0 18px rgba(19, 180, 226, 0.2);
+  padding: 12px 18px;
+  z-index: 60;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 10px;
+  gap: 16px;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.guide-dock.collapsed {
+  transform: translateX(-50%) translateY(130%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.guide-dock-expand-pill {
+  position: fixed;
+  bottom: 16px;
+  right: 20px;
+  background: linear-gradient(135deg, var(--navy), var(--navy-dark));
+  border: 1.5px solid var(--cyan);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 30px;
+  font: 700 13px var(--font-family);
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  z-index: 61;
+  display: none;
+  align-items: center;
+  gap: 8px;
+}
+
+.guide-dock-expand-pill.visible {
+  display: inline-flex;
+}
+
+.guide-dock-left {
+  flex: 1;
+  min-width: 0;
+}
+
+.guide-dock-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
 }
 
 .guide-kicker {
@@ -331,95 +248,72 @@ html, body {
   font-weight: 700;
   text-transform: uppercase;
   color: var(--cyan);
-  letter-spacing: 0.8px;
-}
-
-.guide-chip {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 3px 8px;
-  border-radius: 10px;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text-muted);
+  letter-spacing: 0.7px;
 }
 
 .guide-title {
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 700;
-  line-height: 1.35;
-  color: #fff;
-  margin-bottom: 10px;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .guide-narrative {
-  font-size: 13.5px;
-  line-height: 1.55;
+  font-size: 12.8px;
+  line-height: 1.42;
   color: var(--text-muted);
-  margin-bottom: 14px;
+  margin-bottom: 5px;
 }
 
-.guide-action-box {
-  background: rgba(19, 180, 226, 0.12);
-  border-left: 3px solid var(--cyan);
-  padding: 9px 12px;
-  border-radius: 6px;
-  font-size: 12.5px;
-  font-weight: 600;
-  color: #e2f4fb;
-  margin-bottom: 16px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.guide-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  padding-top: 14px;
-}
-
-.guide-keys {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.4);
-  display: flex;
+.guide-action-inline {
+  display: inline-flex;
   align-items: center;
   gap: 6px;
+  font-size: 12.2px;
+  font-weight: 700;
+  color: #ffcf63;
 }
 
-.guide-keys kbd {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 1px 5px;
-  border-radius: 4px;
-  font-family: inherit;
-  font-size: 10px;
-}
-
-.guide-nav-buttons {
+.guide-dock-right {
   display: flex;
+  align-items: center;
   gap: 8px;
+  flex-shrink: 0;
+}
+
+.btn-focus-target {
+  background: rgba(19, 180, 226, 0.16);
+  border: 1px solid var(--cyan);
+  color: #e2f4fb;
+  padding: 7px 11px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.btn-focus-target:hover {
+  background: rgba(19, 180, 226, 0.28);
 }
 
 .btn-nav-prev, .btn-nav-next {
-  padding: 7px 14px;
-  border-radius: 7px;
-  font-size: 13px;
-  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 12.5px;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s ease;
   font-family: inherit;
+  white-space: nowrap;
 }
 
 .btn-nav-prev {
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.22);
   color: #fff;
-}
-
-.btn-nav-prev:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.1);
 }
 
 .btn-nav-prev:disabled {
@@ -434,24 +328,34 @@ html, body {
   box-shadow: 0 2px 10px var(--cyan-glow);
 }
 
-.btn-nav-next:hover {
-  filter: brightness(1.15);
-  transform: translateY(-1px);
+.btn-collapse-dock {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: var(--text-muted);
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
 }
 
-/* ====== TIROIR LATÉRAL : SOMMAIRE DES ÉTAPES ====== */
+.btn-collapse-dock:hover {
+  color: #fff;
+  border-color: #fff;
+}
+
+/* ====== TIROIR SOMMAIRE ====== */
 .drawer-backdrop {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
   z-index: 90;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.25s ease;
 }
 
 .drawer-backdrop.open {
@@ -463,17 +367,15 @@ html, body {
   position: fixed;
   top: 0;
   right: -420px;
-  width: 400px;
+  width: 390px;
   max-width: 90vw;
   height: 100vh;
   background: var(--card-bg);
-  backdrop-filter: blur(20px);
   border-left: 1px solid var(--card-border);
-  box-shadow: -8px 0 30px rgba(0, 0, 0, 0.5);
   z-index: 100;
   display: flex;
   flex-direction: column;
-  transition: right 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: right 0.3s ease;
 }
 
 .drawer-panel.open {
@@ -481,79 +383,50 @@ html, body {
 }
 
 .drawer-header {
-  padding: 22px 24px;
+  padding: 18px 20px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.drawer-header h3 {
-  font-size: 18px;
-  font-weight: 700;
-  color: #fff;
-}
-
-.btn-close-drawer {
-  background: transparent;
-  border: none;
-  color: var(--text-muted);
-  cursor: pointer;
-  padding: 4px;
-  border-radius: 6px;
-  display: flex;
-}
-
-.btn-close-drawer:hover {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.1);
-}
-
 .drawer-list {
   flex: 1;
   overflow-y: auto;
-  padding: 16px 20px;
+  padding: 14px 18px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .drawer-item {
   display: flex;
   align-items: flex-start;
-  gap: 14px;
-  padding: 12px 14px;
+  gap: 12px;
+  padding: 10px 12px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 10px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s ease;
   text-align: left;
   font-family: inherit;
   color: inherit;
 }
 
-.drawer-item:hover {
-  background: rgba(19, 180, 226, 0.12);
-  border-color: var(--cyan);
-  transform: translateX(-3px);
-}
-
-.drawer-item.active {
+.drawer-item:hover, .drawer-item.active {
   background: rgba(19, 180, 226, 0.18);
   border-color: var(--cyan);
-  box-shadow: 0 0 12px var(--cyan-glow);
 }
 
 .drawer-item-num {
-  width: 28px;
-  height: 28px;
-  background: rgba(255, 255, 255, 0.1);
+  width: 24px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.12);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   flex-shrink: 0;
 }
@@ -568,43 +441,33 @@ html, body {
   color: #fff;
 }
 
-.drawer-item-content {
-  flex: 1;
-}
-
 .drawer-item-kicker {
-  font-size: 10.5px;
+  font-size: 10px;
   font-weight: 700;
-  text-transform: uppercase;
   color: var(--cyan);
-  letter-spacing: 0.5px;
-  margin-bottom: 2px;
 }
 
 .drawer-item-title {
-  font-size: 13.5px;
+  font-size: 13px;
   font-weight: 600;
   color: #fff;
-  line-height: 1.35;
 }
 
-/* ====== TOAST NOTIFICATION ====== */
 .player-toast {
   position: fixed;
-  bottom: 24px;
+  top: 62px;
   left: 50%;
-  transform: translateX(-50%) translateY(100px);
+  transform: translateX(-50%) translateY(-20px);
   background: var(--card-bg);
   border: 1px solid var(--cyan);
   color: #fff;
-  padding: 10px 20px;
-  border-radius: 30px;
-  font-size: 13px;
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-size: 12.5px;
   font-weight: 600;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-  pointer-events: none;
   opacity: 0;
-  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  pointer-events: none;
+  transition: all 0.25s ease;
   z-index: 120;
 }
 
