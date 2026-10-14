@@ -30,6 +30,13 @@
 
     const href = a.getAttribute('href') || '';
     const origHref = a.getAttribute('data-esk-href') || '';
+    const isLogo = /logo/i.test(a.id || '') || /logo/i.test(a.className || '');
+    if (isLogo || a.id === 'header-logo-left') {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      notifyParentStep(8);
+      return;
+    }
 
     // Bloquer systématiquement toute tentative de navigation vers un serveur Esker externe
     if (href.indexOf('esker.com') !== -1 || href.indexOf('.aspx') !== -1 || origHref) {
@@ -281,7 +288,7 @@
     if (counter40) {
       counter40.onclick = e => { e.preventDefault(); e.stopPropagation(); notifyParentStep(9); };
       counter40.classList.add(stepId === 8 ? 'esk-pulse-primary' : 'esk-pulse-secondary');
-      if (stepId === 1 || stepId === 8) createFloatingBadge(counter40, '🎯 40 factures assignées au comptable : cliquez ici pour ouvrir la corbeille', ()=>notifyParentStep(9), {pos:'bottom'});
+      if (stepId === 1 || stepId === 8) createFloatingBadge(counter40, '🎯 40 factures assignées au comptable : ouvrir la vue filtrée des factures fournisseurs', ()=>notifyParentStep(9), {pos:'bottom'});
     }
 
     setupDashboardHoverExplanations();
@@ -294,7 +301,7 @@
 
     chartBox.querySelectorAll('.highcharts-breadcrumbs-button').forEach(btn=>{ if(btn.dataset.bound) return; btn.dataset.bound='true'; btn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation(); const t=btn.textContent||''; notifyParentStep(t.includes('Marc')?2:1);}); });
 
-    if (stepId === 2) {
+    if (stepId === 2 || stepId === 8) {
       const labels=Array.from(chartBox.querySelectorAll('.highcharts-data-label')).filter(l=>l.textContent.includes('Marc')); const slice=chartBox.querySelector('.highcharts-point.highcharts-color-0'); const target=labels.at(-1)||slice;
       if(slice){slice.classList.add('esk-svg-pulse'); slice.onclick=e=>{e.preventDefault();e.stopPropagation();notifyParentStep(3);};}
       labels.forEach(l=>{l.style.cursor='pointer';l.onclick=e=>{e.preventDefault();e.stopPropagation();notifyParentStep(3);}});
@@ -309,23 +316,29 @@
       if(target){target.classList.add('esk-pulse-primary');createFloatingBadge(target,'🎯 Niveau 3 : ouvrez le rapport filtré sur Acme',()=>notifyParentStep(5),{pos:'top'});}
     }
 
-    if (firstStep) { window.scrollTo({top:0, behavior:'auto'}); }
-    else if (stepId === 8) { window.scrollTo({top:0, behavior:'auto'}); }
-    else if (shouldScroll) setTimeout(()=>{chartBox.scrollIntoView({behavior:'smooth',block:'center'});updateAllBadges();},80);
+    if (firstStep || stepId === 8) { window.scrollTo({top:0, behavior:'auto'}); }
+    else if ([2,3,4].includes(stepId)) setTimeout(()=>{chartBox.scrollIntoView({behavior:'smooth',block:'center'});updateAllBadges();},80);
     setTimeout(updateAllBadges,80);
+  }
+
+  function cleanVisibleText(el) {
+    if (!el) return '';
+    const clone=el.cloneNode(true);
+    clone.querySelectorAll('svg, path, style, script').forEach(x=>x.remove());
+    let text=(clone.textContent||'').replace(/\s+/g,' ').trim();
+    text=text.replace(/\.?B\{[^}]+\}/gi,'').replace(/\{FILL:[^}]+\}/gi,'').replace(/\s+/g,' ').trim();
+    text=text.replace(/(\d)(?=[A-Za-zÀ-ÿ])/g,'$1 ');
+    return text;
   }
 
   function setupDashboardHoverExplanations() {
     const add=(el,title,text)=>{ if(!el||el.dataset.hoverExplanation) return; el.dataset.hoverExplanation='true'; el.classList.add('esk-dash-hoverable'); bindTooltip(el,title,text); };
-    const search=document.querySelector('input[placeholder*="Recherch"], input[aria-label*="Recherch"]');
-    add(search,'Recherche universelle','Recherchez une facture, un numéro de commande ou un fournisseur pour retrouver rapidement les informations utiles.');
-    document.querySelectorAll('[data-testid="counter"]').forEach(el=>add(el,el.textContent.trim().replace(/\s+/g,' '),'Ce compteur donne une vue immédiate du volume à traiter et permet d\'ouvrir la liste correspondante.'));
-    document.querySelectorAll('.dashButtonContent').forEach(el=>add(el,el.textContent.trim().replace(/\s+/g,' '),'Action rapide du poste Factures Fournisseurs : import, export ou téléchargement de documents.'));
-    document.querySelectorAll('.dashReportContent').forEach(el=>{const title=el.querySelector('.dashReportTitleCell,.dashReportTitle,.dashReportLink'); const t=title?title.textContent.trim().replace(/\s+/g,' '):''; if(t) add(el,t,'Ce rapport transforme les données du processus en indicateur exploitable pour piloter les délais, les blocages, les paiements ou les fournisseurs.');});
-    const workspace=document.querySelector('.header-menu-with-synergy, #header-contents');
-    add(workspace,'Espaces de travail','Naviguez entre les tables, les factures fournisseurs, les exportations, les fournisseurs, les propositions de paiement et les rapports.');
+    add(document.querySelector('input[placeholder*="Recherch"], input[aria-label*="Recherch"]'),'Recherche universelle','Recherchez un numéro de facture, un numéro de commande ou un fournisseur pour retrouver rapidement les informations utiles.');
+    document.querySelectorAll('[data-testid="counter"]').forEach(el=>add(el,cleanVisibleText(el),'Ce compteur donne une vue immédiate du volume à traiter et permet d’ouvrir la vue filtrée correspondante.'));
+    document.querySelectorAll('.dashButtonContent').forEach(el=>{const label=cleanVisibleText(el);if(label.length>3)add(el,label,'Action rapide du poste Factures Fournisseurs : import, export ou téléchargement de documents.');});
+    document.querySelectorAll('.dashReportContent').forEach(el=>{const t=el.querySelector('.dashReportTitleCell,.dashReportTitle,.dashReportLink');const label=cleanVisibleText(t);if(label&&!/factures en attente par approbateur/i.test(label))add(el,label,'Ce rapport transforme les données du processus en indicateur exploitable pour piloter les délais, les blocages, les paiements ou les fournisseurs.');});
+    add(document.querySelector('#header-contents'),'Espaces de travail','Naviguez entre les tables, les factures fournisseurs, les exportations, les fournisseurs, les propositions de paiement et les rapports.');
   }
-
   /* =========================================================================
      ÉTAPE 4 : RAPPORT DÉTAILLÉ (OUVERT DIRECTEMENT AU NIVEAU 3 FILTRÉ SUR ACME)
      ========================================================================= */
@@ -362,38 +375,38 @@
       'La facture est en attente chez Marc GestionnaireCC (« waiting for GR »).'
     );
 
-    if (stepId === 5) {
-      if (leftPane) leftPane.style.cssText = 'top:0%;bottom:0%;left:0%;width:54%;display:block';
-      if (rightPane) rightPane.style.cssText = 'top:0%;bottom:0%;left:54%;width:46%;display:block';
-      if (chatPane) {
-        chatPane.style.cssText = 'top:0%;bottom:0%;left:100%;width:25%;display:none';
-        chatPane.classList.add('sf-hidden');
-      }
+    function setConversationPane(open) {
+      if (leftPane) leftPane.style.cssText = open ? 'top:0%;bottom:0%;left:0%;width:41%;display:block' : 'top:0%;bottom:0%;left:0%;width:54%;display:block';
+      if (rightPane) rightPane.style.cssText = open ? 'top:0%;bottom:0%;left:41%;width:35%;display:block' : 'top:0%;bottom:0%;left:54%;width:46%;display:block';
+      if (chatPane) { chatPane.classList.toggle('sf-hidden', !open); chatPane.style.cssText = open ? 'top:0%;bottom:0%;left:75%;width:25%;display:block' : 'top:0%;bottom:0%;left:100%;width:25%;display:none'; }
+      if (chatBtn) chatBtn.classList.toggle('isActivated', open);
+      setTimeout(updateAllBadges,60);
+    }
+
+    if (stepId === 6) {
+      setConversationPane(false);
       if (chatBtn) {
         chatBtn.classList.remove('isActivated');
         chatBtn.classList.add('esk-pulse-primary');
         chatBtn.onclick = function (e) {
           e.preventDefault();
           e.stopPropagation();
-          notifyParentStep(6);
+          setConversationPane(true);
+          notifyParentStep(7);
         };
         createFloatingBadge(chatBtn, '🎯 Cliquez sur Conversation interne pour interpeller Marc', function () {
-          notifyParentStep(6);
+          setConversationPane(true);
+          notifyParentStep(7);
         }, { pos: 'bottom', offsetX: -90 });
       }
-    } else if (stepId === 6) {
-      if (leftPane) leftPane.style.cssText = 'top:0%;bottom:0%;left:0%;width:41%;display:block';
-      if (rightPane) rightPane.style.cssText = 'top:0%;bottom:0%;left:41%;width:35%;display:block';
-      if (chatPane) {
-        chatPane.classList.remove('sf-hidden');
-        chatPane.style.cssText = 'top:0%;bottom:0%;left:75%;width:25%;display:block';
-      }
+    } else if (stepId === 7) {
+      setConversationPane(true);
       if (chatBtn) {
         chatBtn.classList.add('isActivated');
         chatBtn.onclick = function (e) {
           e.preventDefault();
           e.stopPropagation();
-          notifyParentStep(5);
+          setConversationPane(false);
         };
       }
 
@@ -411,10 +424,10 @@
         quitBtn.onclick = function (e) {
           e.preventDefault();
           e.stopPropagation();
-          notifyParentStep(7);
+          notifyParentStep(8);
         };
         createFloatingBadge(quitBtn, '🎯 Cliquez sur Quitter pour revenir au Tableau de bord', function () {
-          notifyParentStep(7);
+          notifyParentStep(8);
         }, { pos: 'bottom', offsetX: -110 });
       }
     }
@@ -458,10 +471,12 @@
     if (!grid) return;
 
     // Mettre en évidence que l'onglet ACCUEIL en haut à gauche permet de revenir au tableau de bord
-    const homeTab = document.getElementById(':r0:-tab-home');
+    const homeTab = document.getElementById(':r0:-tab-home') || Array.from(document.querySelectorAll('a,button,[role=tab]')).find(x => cleanVisibleText(x).toUpperCase() === 'ACCUEIL');
     if (homeTab) {
       homeTab.style.cursor = 'pointer';
+      homeTab.classList.add('esk-pulse-primary');
       homeTab.title = 'Revenir au tableau de bord Accueil';
+      createFloatingBadge(homeTab,'⌂ Revenir au tableau de bord',()=>notifyParentStep(8),{pos:'bottom'});
     }
 
     // Ligne 1 : Stark Industries (ST2610131135-01) -> Étape 9
@@ -497,6 +512,14 @@
         notifyParentStep(10);
       }, { amber: true, pos: 'bottom' });
     }
+
+    grid.addEventListener('click', function(e) {
+      const tr=e.target && e.target.closest ? e.target.closest('tr') : null;
+      if(!tr) return;
+      const text=cleanVisibleText(tr).toUpperCase();
+      if(text.includes('STARK INDUSTRIES') || text.includes('ST2610131135-01')) { e.preventDefault(); e.stopImmediatePropagation(); notifyParentStep(10); }
+      else if(text.includes('BBA-261001183030') || text.includes('ACME FR')) { e.preventDefault(); e.stopImmediatePropagation(); notifyParentStep(11); }
+    }, true);
 
     // Rendre les filtres du haut réellement fonctionnels sur les 40 lignes
     const filterPanel = document.getElementById('tpl_ih_adminList_displayed_filters_panel');
