@@ -1,11 +1,10 @@
 /* =========================================================================
-   MOTEUR D'INTERACTIVITÉ IN-PAGE (DOM RÉEL ESKER)
-   - Zéro voile gris : navigation et défilement 100 % libres
-   - Zones pulsantes attachées aux vrais éléments du DOM Esker
-   - Transitions in-place 0 ms pour les graphiques (1-3), rapports (4-6) et chat (7-8)
-   - Infobulles métier Esker sur les champs en avertissement (.fieldWarning)
-   - Filtres, tris et colonnes interactifs sur la liste des 40 factures (étape 9)
-   - Visualiseur multi-documents (PDF, Factur-X XML, BC, BL) sur l'étape 11
+   MOTEUR D'INTERACTIVITÉ IN-PAGE (DOM RÉEL ESKER) — VERSION L12
+   1. Zéro lien sortant vers Esker (interception totale + href neutralisés)
+   2. Drill-down 3 niveaux sur le tableau de bord puis accès direct au niveau 3 du rapport
+   3. Encadrements internes nets (inset box-shadow) et pastilles ⓘ dans les titres
+   4. Retour par le tableau de bord avant les 40 factures + onglet Accueil actif partout
+   5. Volet « Synergy Agent » fonctionnel partout où le bouton existe en haut à droite
    ========================================================================= */
 
 (function () {
@@ -19,11 +18,165 @@
   function notifyParentStep(targetStep) {
     if (window.parent && window.parent !== window) {
       window.parent.postMessage({ type: 'ESKER_GOTO_STEP', step: targetStep }, '*');
-    } else {
-      window.location.href = 'step' + targetStep + '.html';
     }
   }
 
+  /* =========================================================================
+     INTERCEPTION GLOBALE DES LIENS & NAVIGATION PAR ONGLETS ESKER (ACCUEIL / FACTURES)
+     ========================================================================= */
+  document.addEventListener('click', function (e) {
+    const a = e.target && e.target.closest ? e.target.closest('a') : null;
+    if (!a) return;
+
+    const href = a.getAttribute('href') || '';
+    const origHref = a.getAttribute('data-esk-href') || '';
+
+    // Bloquer systématiquement toute tentative de navigation vers un serveur Esker externe
+    if (href.indexOf('esker.com') !== -1 || href.indexOf('.aspx') !== -1 || origHref) {
+      e.preventDefault();
+    }
+
+    // Navigation libre via les onglets de la barre de menu Esker
+    const tabText = (a.textContent || '').trim().toUpperCase();
+    if (a.classList.contains('tabs-tab') || a.id === 'header-logo-left') {
+      if (tabText === 'ACCUEIL' || a.id === 'header-logo-left') {
+        e.preventDefault();
+        e.stopPropagation();
+        notifyParentStep(7);
+      } else if (tabText === 'FACTURES FOURNISSEURS') {
+        e.preventDefault();
+        e.stopPropagation();
+        notifyParentStep(8);
+      } else if (tabText === 'RAPPORTS') {
+        e.preventDefault();
+        e.stopPropagation();
+        notifyParentStep(4);
+      }
+    }
+  }, true);
+
+  /* =========================================================================
+     VOLET LATÉRAL « SYNERGY AGENT » (ACTIF SUR TOUTES LES PAGES QUI ONT LE BOUTON)
+     ========================================================================= */
+  function setupSynergyAgentGlobal() {
+    const synBtn = document.getElementById('header-synergy-agent-button');
+    const chatTd = document.getElementById('reactChatPanelRoot');
+    if (!synBtn || !chatTd) return;
+
+    synBtn.classList.add('esk-synergy-ready');
+    synBtn.title = 'Cliquez pour ouvrir ou fermer le volet Synergy Agent';
+
+    // Injecter le DOM officiel Synergy Agent s'il n'est pas encore présent
+    if (!chatTd.querySelector('.esk-chat-panel') && window.ESKER_INPLACE_STATES && window.ESKER_INPLACE_STATES.synergy_panel_html) {
+      chatTd.innerHTML = window.ESKER_INPLACE_STATES.synergy_panel_html;
+      chatTd.style.display = 'none';
+      chatTd.style.verticalAlign = 'top';
+    }
+
+    if (!synBtn.dataset.synergyBound) {
+      synBtn.dataset.synergyBound = 'true';
+
+      synBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const isOpen = chatTd.style.display !== 'none' && chatTd.querySelector('.esk-chat-panel');
+        if (isOpen) {
+          chatTd.style.display = 'none';
+          synBtn.classList.remove('header-synergy-button-open');
+        } else {
+          chatTd.style.display = 'table-cell';
+          synBtn.classList.add('header-synergy-button-open');
+          const inp = chatTd.querySelector('#message-input');
+          if (inp) setTimeout(function () { inp.focus(); }, 80);
+        }
+        setTimeout(updateAllBadges, 60);
+      });
+
+      // Boutons internes du volet Synergy Agent (Fermer, Agrandir, Envoyer un message)
+      const closeIcon = chatTd.querySelector('.chat-close');
+      if (closeIcon) {
+        const closeBtn = closeIcon.closest('.chatbot-header-button') || closeIcon;
+        closeBtn.addEventListener('click', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          chatTd.style.display = 'none';
+          synBtn.classList.remove('header-synergy-button-open');
+          setTimeout(updateAllBadges, 60);
+        });
+      }
+
+      const expandIcon = chatTd.querySelector('.chat-expand-arrow');
+      const chatContainer = chatTd.querySelector('.esk-chat-container');
+      if (expandIcon && chatContainer) {
+        const expandBtn = expandIcon.closest('.chatbot-header-button') || expandIcon;
+        expandBtn.addEventListener('click', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          const expanded = chatContainer.classList.toggle('expanded');
+          chatContainer.style.minWidth = expanded ? '560px' : '400px';
+          chatContainer.style.maxWidth = expanded ? '560px' : '400px';
+          setTimeout(updateAllBadges, 60);
+        });
+      }
+
+      const msgInput = chatTd.querySelector('#message-input');
+      const sendArrow = chatTd.querySelector('#message-input-arrow');
+      const msgList = chatTd.querySelector('#message-list-container');
+
+      function sendSynergyMessage() {
+        if (!msgInput || !msgList) return;
+        const text = msgInput.value.trim();
+        if (!text) return;
+
+        const userMsg = document.createElement('div');
+        userMsg.className = 'message-container';
+        userMsg.innerHTML =
+          '<div class="user-name-container"><span class="user-name" style="margin-left:0;color:#163467">Vous</span></div>' +
+          '<div class="fade-animation"><div class="message-content" style="background:#f0f6f8;border-radius:8px;padding:10px 14px"><p></p></div></div>';
+        userMsg.querySelector('p').textContent = text;
+        msgList.appendChild(userMsg);
+        msgInput.value = '';
+        if (sendArrow) sendArrow.classList.add('disable');
+        msgList.scrollTop = msgList.scrollHeight;
+
+        setTimeout(function () {
+          const botMsg = document.createElement('div');
+          botMsg.className = 'message-container';
+          botMsg.innerHTML =
+            '<div class="user-name-container"><div class="icon-assistant"></div><span class="user-name">Synergy</span></div>' +
+            '<div class="fade-animation"><div class="message-content lighter-table" role="assistant-message"><p>' +
+            'Voici la synthèse en temps réel :\n' +
+            '• 40 factures sont assignées au comptable (dont Stark Industries avec un écart de quantité de +6,32 € HT et ACME FR reçue via la Plateforme Agréée).\n' +
+            '• 20 factures sont chez les approbateurs, dont 12 chez Marc GestionnaireCC (notamment la facture ACME Supply Company n° 281270 échue entre 60 et 90 jours).' +
+            '</p></div></div>';
+          msgList.appendChild(botMsg);
+          msgList.scrollTop = msgList.scrollHeight;
+        }, 450);
+      }
+
+      if (msgInput) {
+        msgInput.addEventListener('input', function () {
+          if (sendArrow) sendArrow.classList.toggle('disable', !msgInput.value.trim());
+        });
+        msgInput.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendSynergyMessage();
+          }
+        });
+      }
+      if (sendArrow) {
+        sendArrow.addEventListener('click', function (e) {
+          e.preventDefault();
+          sendSynergyMessage();
+        });
+      }
+    }
+  }
+
+  /* =========================================================================
+     INFOBULLES PROPRES (UNICITÉ SUR LES CHAMPS EN ANOMALIE & PASTILLES ⓘ)
+     ========================================================================= */
   function ensureHoverTooltip() {
     if (!hoverTooltip) {
       hoverTooltip = document.createElement('div');
@@ -35,38 +188,64 @@
 
   function bindTooltip(el, title, text) {
     if (!el) return;
-    el.addEventListener('mouseenter', function (e) {
+    el.addEventListener('mouseenter', function () {
       const tip = ensureHoverTooltip();
       tip.innerHTML = '<strong>' + title + '</strong>' + text;
       tip.classList.add('visible');
-      positionTooltip(e);
+      positionTooltipNearElement(el);
     });
-    el.addEventListener('mousemove', positionTooltip);
     el.addEventListener('mouseleave', function () {
       if (hoverTooltip) hoverTooltip.classList.remove('visible');
     });
   }
 
-  function positionTooltip(e) {
-    if (!hoverTooltip) return;
-    const w = hoverTooltip.offsetWidth || 320;
-    const h = hoverTooltip.offsetHeight || 90;
-    let left = e.clientX + 16;
-    let top = e.clientY + 16;
-    if (left + w > window.innerWidth - 16) left = e.clientX - w - 16;
-    if (top + h > window.innerHeight - 16) top = e.clientY - h - 16;
-    hoverTooltip.style.left = Math.max(10, left) + 'px';
-    hoverTooltip.style.top = Math.max(10, top) + 'px';
+  function positionTooltipNearElement(targetEl) {
+    if (!hoverTooltip || !targetEl) return;
+    const rect = targetEl.getBoundingClientRect();
+    const w = hoverTooltip.offsetWidth || 330;
+    const h = hoverTooltip.offsetHeight || 85;
+
+    let top = rect.top - h - 10;
+    let left = rect.left;
+
+    if (top < 12) {
+      top = rect.bottom + 10;
+    }
+    if (left + w > window.innerWidth - 16) {
+      left = window.innerWidth - w - 16;
+    }
+    left = Math.max(12, left);
+
+    hoverTooltip.style.top = Math.round(top) + 'px';
+    hoverTooltip.style.left = Math.round(left) + 'px';
+  }
+
+  function addPanelInfoPill(panelId, pillLabel, tooltipTitle, tooltipText) {
+    const panel = document.getElementById(panelId);
+    if (!panel) return;
+    panel.classList.add('esk-pulse-secondary');
+    const titleEl = panel.querySelector('.border-title') || panel.querySelector('.modtitle');
+    if (!titleEl) return;
+
+    const pill = document.createElement('span');
+    pill.className = 'esk-panel-info-pill';
+    pill.textContent = 'ⓘ ' + pillLabel;
+    titleEl.appendChild(pill);
+    bindTooltip(pill, tooltipTitle, tooltipText);
   }
 
   function clearStepDecorations() {
     document.querySelectorAll('.esk-pulse-primary, .esk-pulse-secondary, .esk-svg-pulse, .esk-pulse-row, .esk-pulse-row-amber').forEach(function (el) {
       el.classList.remove('esk-pulse-primary', 'esk-pulse-secondary', 'esk-svg-pulse', 'esk-pulse-row', 'esk-pulse-row-amber');
     });
+    document.querySelectorAll('.esk-panel-info-pill').forEach(function (p) {
+      if (p.parentNode) p.parentNode.removeChild(p);
+    });
     activeBadges.forEach(function (b) {
       if (b.el && b.el.parentNode) b.el.parentNode.removeChild(b.el);
     });
     activeBadges = [];
+    if (hoverTooltip) hoverTooltip.classList.remove('visible');
   }
 
   function createFloatingBadge(targetEl, label, onClick, options) {
@@ -137,31 +316,82 @@
   }
 
   /* =========================================================================
-     ÉTAPES 1, 2, 3 : TABLEAU DE BORD (AVEC DRILL-DOWN 3 NIVEAUX IN-PLACE)
+     ÉTAPES 1, 2, 3 & 7 : TABLEAU DE BORD (DRILL-DOWN 3 NIVEAUX & FOCUS 40 FACTURES)
      ========================================================================= */
   function setupDashboardStep(stepId, shouldScroll) {
     const chartBox = document.getElementById('DashReport_AP_Invoices pending per approver');
-    if (chartBox && window.ESKER_INPLACE_STATES && window.ESKER_INPLACE_STATES['dash_level_' + stepId]) {
-      chartBox.innerHTML = window.ESKER_INPLACE_STATES['dash_level_' + stepId];
+    const dashLevel = (stepId === 7) ? 3 : stepId;
+    if (chartBox && window.ESKER_INPLACE_STATES && window.ESKER_INPLACE_STATES['dash_level_' + dashLevel]) {
+      chartBox.innerHTML = window.ESKER_INPLACE_STATES['dash_level_' + dashLevel];
     }
 
-    // Tuile "40 Assignées au comptable" toujours interactive pour aller à l'étape 9
+    // Tuile "40 Assignées au comptable"
     const counter40 = document.getElementById('DashCounter_AP_InvoicesInAccountingDepartment');
     if (counter40) {
-      counter40.classList.add('esk-pulse-secondary');
       counter40.onclick = function (e) {
         e.preventDefault();
         e.stopPropagation();
-        notifyParentStep(9);
+        notifyParentStep(8);
       };
-      createFloatingBadge(counter40, '⚡ Accès direct : 40 factures à traiter (Comptable)', function () {
-        notifyParentStep(9);
-      }, { amber: true, pos: 'bottom' });
+      if (stepId === 7) {
+        counter40.classList.add('esk-pulse-primary');
+        createFloatingBadge(counter40, '🎯 Cliquez sur « 40 Assignées au comptable » pour traiter les factures', function () {
+          notifyParentStep(8);
+        }, { pos: 'bottom' });
+      } else {
+        counter40.classList.add('esk-pulse-secondary');
+      }
+    }
+
+    // Bouton Synergy Agent en haut à droite
+    const synBtn = document.getElementById('header-synergy-agent-button');
+    if (synBtn && stepId === 7) {
+      createFloatingBadge(synBtn, '✨ Cliquez ici à tout moment pour ouvrir Synergy Agent', function () {
+        synBtn.click();
+      }, { amber: true, pos: 'bottom', offsetX: -60 });
     }
 
     if (!chartBox) return;
 
-    // Fil d'Ariane Highcharts (retour niveaux précédents)
+    // Neutraliser le lien du titre du graphique aux étapes 1 et 2 (comme demandé par Bruno)
+    const reportLink = chartBox.querySelector('.dashReportLink');
+    const titleCell = chartBox.querySelector('.dashReportTitleCell');
+    if (reportLink) {
+      reportLink.setAttribute('href', 'javascript:void(0)');
+    }
+
+    if (stepId === 1 || stepId === 2) {
+      if (reportLink) {
+        reportLink.style.pointerEvents = 'none';
+        reportLink.style.cursor = 'default';
+      }
+      if (titleCell) {
+        titleCell.style.pointerEvents = 'none';
+        titleCell.style.cursor = 'default';
+      }
+    } else {
+      // Aux étapes 3 et 7, cliquer sur le titre ouvre directement le rapport au niveau 3 (Étape 4)
+      if (reportLink) {
+        reportLink.style.pointerEvents = 'auto';
+        reportLink.style.cursor = 'pointer';
+        reportLink.onclick = function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          notifyParentStep(4);
+        };
+      }
+      if (titleCell) {
+        titleCell.style.pointerEvents = 'auto';
+        titleCell.style.cursor = 'pointer';
+        titleCell.onclick = function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          notifyParentStep(4);
+        };
+      }
+    }
+
+    // Fil d'Ariane Highcharts dans le graphique du tableau de bord
     chartBox.querySelectorAll('.highcharts-breadcrumbs-button').forEach(function (btn) {
       btn.style.cursor = 'pointer';
       btn.addEventListener('click', function (e) {
@@ -227,21 +457,21 @@
         notifyParentStep(3);
       }, { pos: 'bottom', offsetY: 6 });
     } else if (stepId === 3) {
-      const titleCell = chartBox.querySelector('.dashReportTitleCell') || chartBox.querySelector('.dashReportLink');
-      if (titleCell) {
-        titleCell.classList.add('esk-pulse-primary');
-        titleCell.addEventListener('click', function (e) {
-          e.preventDefault();
-          e.stopPropagation();
-          notifyParentStep(4);
-        });
-        createFloatingBadge(titleCell, '🎯 Niveau 3 (Balance âgée) : Cliquez sur le titre du rapport', function () {
+      const targetTitle = titleCell || reportLink;
+      if (targetTitle) {
+        targetTitle.classList.add('esk-pulse-primary');
+        createFloatingBadge(targetTitle, '🎯 Niveau 3 atteint : Cliquez sur le titre « Factures en attente par approbateur »', function () {
           notifyParentStep(4);
         }, { pos: 'top' });
       }
     }
 
-    if (shouldScroll) {
+    if (stepId === 7) {
+      setTimeout(function () {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setTimeout(updateAllBadges, 350);
+      }, 60);
+    } else if (shouldScroll) {
       setTimeout(function () {
         chartBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
         setTimeout(updateAllBadges, 400);
@@ -252,111 +482,39 @@
   }
 
   /* =========================================================================
-     ÉTAPES 4, 5, 6 : RAPPORT DÉTAILLÉ (SYNCHRONISATION GRAPHIQUE + TABLEAU)
+     ÉTAPE 4 : RAPPORT DÉTAILLÉ (OUVERT DIRECTEMENT AU NIVEAU 3 FILTRÉ SUR ACME)
      ========================================================================= */
-  function setupReportStep(stepId) {
+  function setupReportStep() {
     const reportDiv = document.getElementById('reportDiv');
-    if (reportDiv && window.ESKER_INPLACE_STATES && window.ESKER_INPLACE_STATES['report_level_' + stepId]) {
-      reportDiv.innerHTML = window.ESKER_INPLACE_STATES['report_level_' + stepId];
+    if (reportDiv && window.ESKER_INPLACE_STATES && window.ESKER_INPLACE_STATES.report_level_6) {
+      reportDiv.innerHTML = window.ESKER_INPLACE_STATES.report_level_6;
     }
     if (!reportDiv) return;
 
-    // Fil d'Ariane Highcharts dans le rapport
-    reportDiv.querySelectorAll('.highcharts-breadcrumbs-button').forEach(function (btn) {
-      btn.style.cursor = 'pointer';
-      btn.addEventListener('click', function (e) {
+    const links = Array.from(reportDiv.querySelectorAll('a')).filter(function (a) {
+      return a.textContent.trim() === '281270';
+    });
+    const link281270 = links[0];
+    const row = link281270 ? link281270.closest('tr') : null;
+    const target = row || link281270;
+    if (row) {
+      row.classList.add('esk-pulse-row');
+      row.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
-        const txt = btn.textContent || '';
-        if (txt.indexOf('Factures fournisseurs') !== -1) {
-          notifyParentStep(4);
-        } else if (txt.indexOf('Marc') !== -1) {
-          notifyParentStep(5);
-        }
-      });
-    });
-
-    if (stepId === 4) {
-      const slice = reportDiv.querySelector('.highcharts-point.highcharts-color-0');
-      const labels = Array.from(reportDiv.querySelectorAll('.highcharts-data-label')).filter(function (l) {
-        return l.textContent.indexOf('Marc') !== -1;
-      });
-      const targetLabel = labels[labels.length - 1] || slice;
-      if (slice) {
-        slice.classList.add('esk-svg-pulse');
-        slice.addEventListener('click', function (e) {
-          e.preventDefault();
-          e.stopPropagation();
-          notifyParentStep(5);
-        });
-      }
-      labels.forEach(function (lbl) {
-        lbl.style.cursor = 'pointer';
-        lbl.addEventListener('click', function (e) {
-          e.preventDefault();
-          e.stopPropagation();
-          notifyParentStep(5);
-        });
-      });
-      createFloatingBadge(targetLabel || slice, '🎯 Cliquez sur Marc pour filtrer le tableau des factures en bas', function () {
         notifyParentStep(5);
-      }, { pos: 'right' });
-    } else if (stepId === 5) {
-      const slice = reportDiv.querySelector('.highcharts-point.highcharts-color-0');
-      const labels = Array.from(reportDiv.querySelectorAll('.highcharts-data-label')).filter(function (l) {
-        return l.textContent.toUpperCase().indexOf('ACME') !== -1;
       });
-      const targetLabel = labels[labels.length - 1] || slice;
-      if (slice) {
-        slice.classList.add('esk-svg-pulse');
-        slice.addEventListener('click', function (e) {
-          e.preventDefault();
-          e.stopPropagation();
-          notifyParentStep(6);
-        });
-      }
-      labels.forEach(function (lbl) {
-        lbl.style.cursor = 'pointer';
-        lbl.addEventListener('click', function (e) {
-          e.preventDefault();
-          e.stopPropagation();
-          notifyParentStep(6);
-        });
-      });
-      createFloatingBadge(targetLabel || slice, '🎯 Cliquez sur ACME Supply Company (4 factures filtrées en bas)', function () {
-        notifyParentStep(6);
-      }, { pos: 'right' });
-    } else if (stepId === 6) {
-      // Cibler la ligne de la facture 281270 (tranche 60j - 90j) dans le tableau sous le graphique
-      const links = Array.from(reportDiv.querySelectorAll('a')).filter(function (a) {
-        return a.textContent.trim() === '281270';
-      });
-      const link281270 = links[0];
-      const row = link281270 ? link281270.closest('tr') : null;
-      const target = row || link281270;
-      if (row) {
-        row.classList.add('esk-pulse-row');
-        row.addEventListener('click', function (e) {
-          e.preventDefault();
-          e.stopPropagation();
-          notifyParentStep(7);
-        });
-      }
-      if (target) {
-        createFloatingBadge(link281270 || target, '🎯 Ouvrir la facture 281270 échue entre 60 et 90 jours (6 271,20 USD)', function () {
-          notifyParentStep(7);
-        }, { pos: 'top' });
-        setTimeout(function () {
-          target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          setTimeout(updateAllBadges, 350);
-        }, 120);
-      }
     }
-    setTimeout(updateAllBadges, 60);
+    if (target) {
+      createFloatingBadge(link281270 || target, '🎯 Cliquez sur la facture 281270 échue entre 60 et 90 jours (6 271,20 USD)', function () {
+        notifyParentStep(5);
+      }, { pos: 'top' });
+    }
+    setTimeout(updateAllBadges, 80);
   }
 
   /* =========================================================================
-     ÉTAPES 7 & 8 : FACTURE BLOQUÉE ACME (281270) & CONVERSATION INTERNE MARC
+     ÉTAPES 5 & 6 : FACTURE BLOQUÉE ACME (281270) & CONVERSATION INTERNE MARC
      ========================================================================= */
   function setupAcmeInvoiceStep(stepId) {
     const leftPane = document.getElementById('form-content-left');
@@ -364,28 +522,21 @@
     const chatPane = document.getElementById('form-content-internalconversation');
     const chatBtn = document.getElementById('header-internalconversation-button');
 
-    // Infobulles sur les zones clés de la facture 281270
-    const invoiceProc = document.getElementById('Invoice_Processing');
-    if (invoiceProc) {
-      invoiceProc.classList.add('esk-pulse-secondary');
-      bindTooltip(
-        invoiceProc,
-        'Statut : Facture mise en attente',
-        'Cette facture avec commande est bloquée avec le motif « En attente de l’entrée de biens et services ».'
-      );
-    }
+    // Pastilles ⓘ propres dans les barres de titre des panneaux (sans tirets coupés ni survol intrusif)
+    addPanelInfoPill(
+      'Invoice_Processing',
+      'En attente de réception',
+      'Statut : Facture mise en attente',
+      'Facture avec commande n° 4500012171 bloquée avec le motif « En attente de l’entrée de biens et services ».'
+    );
+    addPanelInfoPill(
+      'WorkflowDataPanel',
+      'Bloquée chez Marc',
+      'Workflow d’approbation',
+      'La facture est en attente chez Marc GestionnaireCC (« waiting for GR »).'
+    );
 
-    const wfPanel = document.getElementById('WorkflowDataPanel');
-    if (wfPanel) {
-      wfPanel.classList.add('esk-pulse-secondary');
-      bindTooltip(
-        wfPanel,
-        'Workflow d’approbation',
-        'La facture est actuellement entre les mains de Marc GestionnaireCC (« waiting for GR »).'
-      );
-    }
-
-    if (stepId === 7) {
+    if (stepId === 5) {
       if (leftPane) leftPane.style.cssText = 'top:0%;bottom:0%;left:0%;width:54%;display:block';
       if (rightPane) rightPane.style.cssText = 'top:0%;bottom:0%;left:54%;width:46%;display:block';
       if (chatPane) {
@@ -398,13 +549,13 @@
         chatBtn.onclick = function (e) {
           e.preventDefault();
           e.stopPropagation();
-          notifyParentStep(8);
+          notifyParentStep(6);
         };
         createFloatingBadge(chatBtn, '🎯 Cliquez sur Conversation interne pour interpeller Marc', function () {
-          notifyParentStep(8);
+          notifyParentStep(6);
         }, { pos: 'bottom', offsetX: -90 });
       }
-    } else if (stepId === 8) {
+    } else if (stepId === 6) {
       if (leftPane) leftPane.style.cssText = 'top:0%;bottom:0%;left:0%;width:41%;display:block';
       if (rightPane) rightPane.style.cssText = 'top:0%;bottom:0%;left:41%;width:35%;display:block';
       if (chatPane) {
@@ -416,31 +567,28 @@
         chatBtn.onclick = function (e) {
           e.preventDefault();
           e.stopPropagation();
-          notifyParentStep(7);
+          notifyParentStep(5);
         };
       }
 
-      const internalConv = document.getElementById('InternalConversationPanel');
-      if (internalConv) {
-        internalConv.classList.add('esk-pulse-secondary');
-        bindTooltip(
-          internalConv,
-          'Collaboration interne traçable',
-          'Jean Comptable a ajouté @Marc GestionnaireCC à la conversation directement sur la facture pour débloquer la réception.'
-        );
-      }
+      addPanelInfoPill(
+        'InternalConversationPanel',
+        'Chat avec @Marc',
+        'Collaboration interne traçable',
+        'Marc GestionnaireCC a été ajouté à la conversation directement sur la facture.'
+      );
 
-      // Bouton Quitter pour aller traiter les 40 factures assignées au comptable (étape 9)
+      // Bouton Quitter ramenant au Tableau de bord (Étape 7) pour cliquer sur les 40 factures
       const quitBtn = document.getElementById('header-quit-button') || document.querySelector('.Quit-button');
       if (quitBtn) {
         quitBtn.classList.add('esk-pulse-primary');
         quitBtn.onclick = function (e) {
           e.preventDefault();
           e.stopPropagation();
-          notifyParentStep(9);
+          notifyParentStep(7);
         };
-        createFloatingBadge(quitBtn, '🎯 Passer aux 40 factures assignées au comptable', function () {
-          notifyParentStep(9);
+        createFloatingBadge(quitBtn, '🎯 Cliquez sur Quitter pour revenir au Tableau de bord', function () {
+          notifyParentStep(7);
         }, { pos: 'bottom', offsetX: -110 });
       }
     }
@@ -450,13 +598,20 @@
   }
 
   /* =========================================================================
-     ÉTAPE 9 : LISTE DES 40 FACTURES ASSIGNÉES AU COMPTABLE (FILTRES & TRIS LIVE)
+     ÉTAPE 8 : LISTE DES 40 FACTURES ASSIGNÉES AU COMPTABLE
      ========================================================================= */
   function setupAdminListStep() {
     const grid = document.getElementById('tpl_ih_adminList_MainGrid');
     if (!grid) return;
 
-    // Ligne 1 : Stark Industries (ST2610131135-01) -> Étape 10
+    // Mettre en évidence que l'onglet ACCUEIL en haut à gauche permet de revenir au tableau de bord
+    const homeTab = document.getElementById(':r0:-tab-home');
+    if (homeTab) {
+      homeTab.style.cursor = 'pointer';
+      homeTab.title = 'Revenir au tableau de bord Accueil';
+    }
+
+    // Ligne 1 : Stark Industries (ST2610131135-01) -> Étape 9
     const linkStark = Array.from(grid.querySelectorAll('a')).find(function (a) {
       return a.textContent.trim() === 'ST2610131135-01';
     });
@@ -466,14 +621,14 @@
       rowStark.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
-        notifyParentStep(10);
+        notifyParentStep(9);
       });
       createFloatingBadge(linkStark || rowStark, '🎯 Cas 1 : Cliquez sur la ligne Stark Industries (Facture avec commande & écart)', function () {
-        notifyParentStep(10);
+        notifyParentStep(9);
       }, { pos: 'top' });
     }
 
-    // Ligne 2 : ACME FR (BBA-261001183030) -> Étape 11 (Facture électronique PA)
+    // Ligne 2 : ACME FR (BBA-261001183030) -> Étape 10 (Facture électronique PA)
     const linkPdp = Array.from(grid.querySelectorAll('a')).find(function (a) {
       return a.textContent.trim() === 'BBA-261001183030';
     });
@@ -483,35 +638,27 @@
       rowPdp.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
-        notifyParentStep(11);
+        notifyParentStep(10);
       });
       createFloatingBadge(linkPdp || rowPdp, '⚡ Cas 2 : Cliquez sur ACME FR / BBA-261001183030 (Facture électronique PA)', function () {
-        notifyParentStep(11);
+        notifyParentStep(10);
       }, { amber: true, pos: 'bottom' });
     }
 
-    // Rendre les filtres du haut réellement fonctionnels sur les 40 lignes !
+    // Rendre les filtres du haut réellement fonctionnels sur les 40 lignes
     const filterPanel = document.getElementById('tpl_ih_adminList_displayed_filters_panel');
     const applyBtn = document.getElementById('tpl_ih_adminList_displayedFilters_applyBtn');
     if (filterPanel && !filterPanel.dataset.enhanced) {
       filterPanel.dataset.enhanced = 'true';
-      filterPanel.classList.add('esk-pulse-secondary');
-      bindTooltip(
-        filterPanel,
-        'Filtres multi-critères personnalisables',
-        'Saisissez par exemple « Stark », « ACME » ou « USD » dans les champs de filtre puis cliquez sur Appliquer pour filtrer la table en direct.'
-      );
-
       const filterInputs = Array.from(filterPanel.querySelectorAll('input[type="text"], input:not([type])'));
       filterInputs.forEach(function (inp) {
         inp.removeAttribute('readonly');
         inp.removeAttribute('disabled');
         inp.style.pointerEvents = 'auto';
         inp.style.backgroundColor = '#ffffff';
-        inp.placeholder = 'Filtrer...';
+        inp.placeholder = 'Filtrer en direct...';
         inp.addEventListener('input', runLiveTableFilter);
       });
-
       if (applyBtn) {
         applyBtn.addEventListener('click', function (e) {
           e.preventDefault();
@@ -535,10 +682,8 @@
         if (match) visibleCount++;
       });
       const counterVal = document.querySelector('#tpl_ih_adminList_ctl04_counterDisplay span, .ViewCounter span');
-      if (counterVal && terms.length > 0) {
-        counterVal.textContent = String(visibleCount);
-      } else if (counterVal) {
-        counterVal.textContent = '40';
+      if (counterVal) {
+        counterVal.textContent = terms.length > 0 ? String(visibleCount) : '40';
       }
       setTimeout(updateAllBadges, 50);
     }
@@ -547,13 +692,8 @@
     const viewBtns = document.getElementById('tpl_ih_adminList_frontViewButtons');
     if (viewBtns && !viewBtns.dataset.enhanced) {
       viewBtns.dataset.enhanced = 'true';
-      viewBtns.classList.add('esk-pulse-secondary');
       viewBtns.style.cursor = 'pointer';
-      bindTooltip(
-        viewBtns,
-        'Personnalisation des colonnes et des vues',
-        'Cliquez ici pour choisir les colonnes affichées, leur ordre et enregistrer vos vues métier.'
-      );
+      viewBtns.title = 'Personnaliser les colonnes affichées';
       viewBtns.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
@@ -604,17 +744,16 @@
   }
 
   /* =========================================================================
-     ÉTAPE 10 : FACTURE AVEC COMMANDE STARK INDUSTRIES (ST2610131135-01)
+     ÉTAPE 9 : FACTURE AVEC COMMANDE STARK INDUSTRIES (ST2610131135-01)
      ========================================================================= */
   function setupStarkInvoiceStep() {
-    // 1. Champ Montant HT en avertissement (3 032,82) et numéro de commande (4500000007)
     const poInput = document.querySelector('input[value="4500000007"]');
     if (poInput) {
       poInput.classList.add('esk-pulse-secondary');
       bindTooltip(
         poInput,
         'Facture avec commande n° 4500000007',
-        'Esker a automatiquement identifié la commande 4500000007 et remonté les 5 lignes commandées et réceptionnées pour effectuer le rapprochement 3 voies.'
+        'Rapprochement automatique avec les 5 postes commandés et réceptionnés sur la commande 4500000007.'
       );
     }
 
@@ -624,15 +763,14 @@
       bindTooltip(
         htWarn,
         '⚠️ Écart sur le Montant HT (3 032,82 EUR)',
-        'Le montant HT facturé par Stark Industries (3 032,82 EUR) ne correspond pas au montant total attendu sur la commande (3 026,50 EUR), soit un écart de +6,32 EUR.'
+        'Le montant HT facturé par Stark Industries (3 032,82 EUR) ne correspond pas au total commandé/réceptionné (3 026,50 EUR), soit un écart de +6,32 EUR.'
       );
-      createFloatingBadge(htWarn, '⚠️ Écart Montant HT détecté (+6,32 €) · Survolez le champ', function () {
+      createFloatingBadge(htWarn, '⚠️ Écart Montant HT (+6,32 €) · Survolez le champ', function () {
         const lineItems = document.getElementById('Line_items');
         if (lineItems) lineItems.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }, { amber: true, pos: 'right' });
     }
 
-    // 2. Lignes de postes : Quantité (186,00 vs 185,00) et Montant (1 175,52 vs 1 169,20) sur CNT50922
     const lineWarns = document.querySelectorAll('#Line_items input.fieldWarning');
     lineWarns.forEach(function (inp) {
       inp.classList.add('esk-pulse-secondary');
@@ -640,51 +778,42 @@
       if (val.indexOf('186') !== -1) {
         bindTooltip(
           inp,
-          '⚠️ Écart de quantité sur la ligne CNT50922',
-          'Quantité facturée : 186,00 unités contre 185,00 unités commandées / réceptionnées à facturer (+1 unité à 6,32 EUR).'
+          '⚠️ Écart de quantité sur le poste CNT50922',
+          '186,00 unités facturées par Stark Industries contre 185,00 unités commandées / réceptionnées à facturer (+1 unité).'
         );
       } else {
         bindTooltip(
           inp,
-          '⚠️ Écart de montant sur la ligne CNT50922',
-          'Montant facturé : 1 175,52 EUR contre 1 169,20 EUR attendus sur la commande, soit un écart de +6,32 EUR (+0,54 %).'
+          '⚠️ Écart de montant sur le poste CNT50922',
+          '1 175,52 EUR facturés contre 1 169,20 EUR attendus sur la commande, soit un écart de +6,32 EUR (+0,54 %).'
         );
       }
     });
 
-    // 3. Exception levée automatiquement (Quantity mismatch)
-    const excPanel = document.getElementById('ExceptionsType');
-    if (excPanel) {
-      excPanel.classList.add('esk-pulse-secondary');
-      bindTooltip(
-        excPanel,
-        'Exception levée : Quantity mismatch (Écart de quantité)',
-        'L’écart sur le poste CNT50922 déclenche automatiquement une exception métier et adapte le workflow d’approbation.'
-      );
-    }
+    addPanelInfoPill(
+      'ExceptionsType',
+      'Exception levée : Quantity mismatch',
+      'Exception de facture levée automatiquement',
+      'L’écart de quantité sur le poste 3 déclenche automatiquement l’exception « Quantity mismatch ».'
+    );
 
-    // 4. Workflow mis en place
-    const wfPanel = document.getElementById('WorkflowDataPanel');
-    if (wfPanel) {
-      wfPanel.classList.add('esk-pulse-secondary');
-      bindTooltip(
-        wfPanel,
-        'Workflow de résolution d’écart',
-        'Le circuit de validation route automatiquement la facture vers Éric Demandeur (Contrôleur) pour arbitrer l’écart de quantité.'
-      );
-    }
+    addPanelInfoPill(
+      'WorkflowDataPanel',
+      'Escalade vers Éric Demandeur',
+      'Workflow de résolution d’écart',
+      'Le circuit de validation route automatiquement la facture vers Éric Demandeur (Contrôleur) pour arbitrer l’écart.'
+    );
 
-    // 5. Bouton pour passer à la Facture électronique PA (Étape 11)
     const quitBtn = document.getElementById('header-quit-button') || document.querySelector('.Quit-button');
     if (quitBtn) {
       quitBtn.classList.add('esk-pulse-primary');
       quitBtn.onclick = function (e) {
         e.preventDefault();
         e.stopPropagation();
-        notifyParentStep(11);
+        notifyParentStep(10);
       };
-      createFloatingBadge(quitBtn, '🎯 Découvrir le cas suivant : Facture électronique PA (BBA-261001183030)', function () {
-        notifyParentStep(11);
+      createFloatingBadge(quitBtn, '🎯 Voir le cas suivant : Facture électronique PA (BBA-261001183030)', function () {
+        notifyParentStep(10);
       }, { pos: 'bottom', offsetX: -140 });
     }
 
@@ -693,66 +822,65 @@
   }
 
   /* =========================================================================
-     ÉTAPE 11 : FACTURE ÉLECTRONIQUE PA (BBA-261001183030) & MULTI-DOCUMENTS
+     ÉTAPE 10 : FACTURE ÉLECTRONIQUE PA (BBA-261001183030) & MULTI-DOCUMENTS
      ========================================================================= */
   function setupPdpInvoiceStep() {
-    // 1. Bandeau d'alerte IBAN en haut de la fiche
     const topWarn = document.getElementById('TopPaneWarning');
     if (topWarn) {
-      topWarn.classList.add('esk-pulse-primary');
+      topWarn.classList.add('esk-pulse-secondary');
       bindTooltip(
         topWarn,
         '🚨 Alerte sécurité : IBAN non reconnu',
-        'Esker vérifie systématiquement l’IBAN extrait de la facture par rapport au référentiel fournisseur. Ici, aucune coordonnée bancaire n’est enregistrée pour ACME FR.'
+        'L’IBAN extrait sur la facture ne correspond pas aux coordonnées bancaires connues car aucun RIB n’est enregistré pour ACME FR dans Esker.'
       );
     }
 
-    // 2. Référence du contrat qui n'existe pas dans la base Esker (CONTRAT-2025-KRE-0147)
     const contractInput = document.querySelector('input[value="CONTRAT-2025-KRE-0147"]');
     if (contractInput) {
       contractInput.classList.add('esk-pulse-primary');
       bindTooltip(
         contractInput,
         '⚠️ Référence du contrat inexistante (CONTRAT-2025-KRE-0147)',
-        'La facture électronique mentionne le contrat « CONTRAT-2025-KRE-0147 », mais ce contrat n’existe pas dans la base Esker. Le champ est immédiatement signalé en anomalie.'
+        'La référence « CONTRAT-2025-KRE-0147 » présente sur la facture électronique n’existe pas dans la base des contrats Esker.'
       );
       createFloatingBadge(contractInput, '⚠️ Contrat inexistant dans Esker · Survolez', function () {
         contractInput.focus();
       }, { amber: true, pos: 'right' });
     }
 
-    // 3. Champ IBAN sur la facture & Table Coordonnées bancaires vide
     const ibanInput = document.querySelector('input[value="FR7630004170100001234567805"]');
-    const bankPane = document.getElementById('BankDetailsPane');
     if (ibanInput) {
       ibanInput.classList.add('esk-pulse-secondary');
       bindTooltip(
         ibanInput,
         '⚠️ IBAN sur la facture : FR76 3000 4170 1000 0123 4567 805',
-        'Cet IBAN ne correspond à aucune coordonnée bancaire connue dans Esker pour le fournisseur ACME FR.'
-      );
-    }
-    if (bankPane) {
-      bankPane.classList.add('esk-pulse-secondary');
-      bindTooltip(
-        bankPane,
-        'Table Coordonnées bancaires de ACME FR : Vide',
-        '« Aucun élément à afficher » : le fournisseur n’ayant aucun RIB enregistré dans la base Esker, l’alerte de conformité bancaire bloque le paiement.'
+        'Cet IBAN extrait de la facture ne correspond à aucune coordonnée bancaire enregistrée pour ce fournisseur.'
       );
     }
 
-    // 4. Panneau Conformité B2B France (Plateforme Agréée - PA)
-    const b2bPane = document.getElementById('French_B2B_compliance_pane');
-    if (b2bPane) {
-      b2bPane.classList.add('esk-pulse-secondary');
-      bindTooltip(
-        b2bPane,
-        'Facture électronique reçue via la Plateforme Agréée (PA)',
-        'Cadre de facturation : Facture de service (S1) · Statut : Mise à disposition · Réception directe par la Plateforme Agréée Esker.'
-      );
+    addPanelInfoPill(
+      'BankDetailsPane',
+      'Aucune coordonnée bancaire connue',
+      'Table Coordonnées bancaires de ACME FR : Vide',
+      '« Aucun élément à afficher » : aucune coordonnée bancaire n’étant enregistrée pour ACME FR, Esker lève immédiatement l’alerte IBAN.'
+    );
+
+    addPanelInfoPill(
+      'French_B2B_compliance_pane',
+      'Reçue via Plateforme Agréée (PA)',
+      'Conformité Facturation Électronique',
+      'Facture de service (S1) reçue et contrôlée via la Plateforme Agréée (PA) avec statut « Mise à disposition ».'
+    );
+
+    const quitBtn = document.getElementById('header-quit-button') || document.querySelector('.Quit-button');
+    if (quitBtn) {
+      quitBtn.onclick = function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        notifyParentStep(8);
+      };
     }
 
-    // 5. Carrousel Multi-Documents interactif (4 documents consultables à droite !)
     setupMultiDocumentsCarousel();
     setupPreviewControls();
     setTimeout(updateAllBadges, 80);
@@ -772,7 +900,6 @@
       originalInvoiceImgSrc = previewImg.getAttribute('src');
     }
 
-    // Réparer la miniature du document 1 avec l'image de la facture
     const doc1Thumb = docsPanel.querySelector('.document[title="8bf27b52G0a36000.pdf"] img');
     if (doc1Thumb && originalInvoiceImgSrc) {
       doc1Thumb.setAttribute('src', originalInvoiceImgSrc);
@@ -812,13 +939,11 @@
     if (!previewImg || !htmlContainer) return;
 
     if (docIndex === 0) {
-      // Document 1 : Facture PDF originale (ACME FRANCE -> KREAMOB)
       previewImg.style.display = '';
       htmlContainer.style.display = 'none';
       return;
     }
 
-    // Documents 2, 3, 4 : Rendu haute définition dans le visualiseur de droite
     previewImg.style.display = 'none';
     htmlContainer.style.display = 'block';
     htmlContainer.style.position = 'absolute';
@@ -830,7 +955,6 @@
     htmlContainer.style.boxSizing = 'border-box';
 
     if (docIndex === 1) {
-      // Document 2 : Flux XML structuré Factur-X (factur-x.xml)
       htmlContainer.innerHTML = `
         <div style="background:#0f2448;color:#fff;padding:12px 18px;border-radius:8px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center">
           <div>
@@ -883,7 +1007,6 @@
   &lt;/rsm:SupplyChainTradeTransaction&gt;
 &lt;/rsm:CrossIndustryInvoice&gt;</pre>`;
     } else if (docIndex === 2) {
-      // Document 3 : Bon de commande joint (BBA-261001183030_bon-commande.pdf)
       htmlContainer.innerHTML = `
         <div style="border:1px solid #d5dde8;padding:32px;border-radius:6px;background:#fff;color:#1e293b">
           <div style="display:flex;justify-content:space-between;border-bottom:3px solid #163467;padding-bottom:18px;margin-bottom:24px">
@@ -938,7 +1061,6 @@
           </div>
         </div>`;
     } else if (docIndex === 3) {
-      // Document 4 : Bon de livraison joint (BBA-261001183030_bon-livraison.pdf)
       htmlContainer.innerHTML = `
         <div style="border:1px solid #d5dde8;padding:32px;border-radius:6px;background:#fff;color:#1e293b">
           <div style="display:flex;justify-content:space-between;border-bottom:3px solid #008995;padding-bottom:18px;margin-bottom:24px">
@@ -985,9 +1107,6 @@
     }
   }
 
-  /* =========================================================================
-     CONTRÔLES DE ZOOM ET ROTATION DU VISUALISEUR DE FACTURE (#PreviewPanel)
-     ========================================================================= */
   function setupPreviewControls() {
     const previewPanel = document.getElementById('PreviewPanel');
     if (!previewPanel || previewPanel.dataset.zoomEnhanced) return;
@@ -1055,26 +1174,23 @@
     currentStep = stepId;
     window.ESKER_STEP_ID = stepId;
     clearStepDecorations();
+    setupSynergyAgentGlobal();
 
-    // Neutraliser les soumissions de formulaires et liens externes vers ondemand.esker.com
     document.querySelectorAll('form').forEach(function (f) {
       f.onsubmit = function (e) { e.preventDefault(); return false; };
     });
-    document.querySelectorAll('a[href*="ondemand.esker.com"], a[href*="report.aspx"], a[href*="documents.aspx"]').forEach(function (a) {
-      a.addEventListener('click', function (e) { e.preventDefault(); });
-    });
 
-    if (stepId >= 1 && stepId <= 3) {
+    if (stepId === 1 || stepId === 2 || stepId === 3 || stepId === 7) {
       setupDashboardStep(stepId, !isInPlaceTransition);
-    } else if (stepId >= 4 && stepId <= 6) {
-      setupReportStep(stepId);
-    } else if (stepId === 7 || stepId === 8) {
+    } else if (stepId === 4) {
+      setupReportStep();
+    } else if (stepId === 5 || stepId === 6) {
       setupAcmeInvoiceStep(stepId);
-    } else if (stepId === 9) {
+    } else if (stepId === 8) {
       setupAdminListStep();
-    } else if (stepId === 10) {
+    } else if (stepId === 9) {
       setupStarkInvoiceStep();
-    } else if (stepId === 11) {
+    } else if (stepId === 10) {
       setupPdpInvoiceStep();
     }
   }
