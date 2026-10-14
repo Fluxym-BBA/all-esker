@@ -41,7 +41,20 @@ function renderPanel(id, vidIdx, autoplay){
       const s = byId(x);
       return `<button class="vid-end-card" type="button" data-go="${x}"><span>${s.icon}</span>${esc(s.label)}</button>`;
     }).join("");
+    const demoCard = (id === "ap") ? `
+      <div class="panel-demo-cta">
+        <div class="panel-demo-cta-text">
+          <span class="panel-demo-cta-badge"><i>✨</i> Nouveau · Style Guideflow</span>
+          <h4>Découvrez le module en immersion interactive (11 étapes)</h4>
+          <p>Naviguez pas à pas : drill-down 3 niveaux, analyse du litige Acme, collaboration interne, vue comptable 40 factures, rapprochement 3 voies et conformité PDP.</p>
+        </div>
+        <a class="panel-demo-cta-btn" href="demo/index.html" target="_blank">
+          <span>Explorer la démo interactive (11 étapes)</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>` : "";
     media = `
+      ${demoCard}
       <div class="vidframe" id="vidFrame">
         <video id="player" controls playsinline controlsList="nodownload" preload="metadata">
           <source src="${v.u}" type="video/mp4">

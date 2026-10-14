@@ -477,3 +477,76 @@
   .xp-pt,.xp-gain,.xp-lens,.pw-seg,.pw-ind,.xp-ex-cam{transition-duration:.01s!important}
   .gv *,.pw-flow .cm,.pw-flow .fl,.xp-ghost{animation:none!important;opacity:1!important}
 }
+
+
+/* ---------- Bannière Démo Interactive Guideflow (Module AP) ---------- */
+.panel-demo-cta {
+  background: linear-gradient(135deg, rgba(22, 52, 103, 0.95), rgba(15, 36, 72, 0.98));
+  border: 1px solid rgba(19, 180, 226, 0.35);
+  border-radius: 1rem;
+  padding: 1.25rem 1.5rem;
+  margin: 1rem 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.2rem;
+  box-shadow: 0 12px 30px rgba(22, 52, 103, 0.12), 0 0 20px rgba(19, 180, 226, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+.panel-demo-cta::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, rgba(19, 180, 226, 0.25), transparent 70%);
+  pointer-events: none;
+}
+.panel-demo-cta-text {
+  flex: 1;
+  min-width: 260px;
+}
+.panel-demo-cta-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #13b4e2, #6b51ed);
+  color: #fff;
+  font: 700 0.68rem Barlow, sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 50px;
+  margin-bottom: 0.4rem;
+}
+.panel-demo-cta h4 {
+  font: 700 1.15rem/1.3 "Miriam Libre", Barlow, sans-serif;
+  color: #ffffff;
+  margin-bottom: 0.3rem;
+}
+.panel-demo-cta p {
+  font: 500 0.88rem/1.45 Barlow, sans-serif;
+  color: #9fb3ce;
+}
+.panel-demo-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #13b4e2, #0d8cae);
+  color: #ffffff !important;
+  font: 700 0.92rem Barlow, sans-serif;
+  text-decoration: none;
+  padding: 10px 18px;
+  border-radius: 50px;
+  box-shadow: 0 4px 14px rgba(19, 180, 226, 0.4);
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+.panel-demo-cta-btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.15);
+  box-shadow: 0 6px 20px rgba(19, 180, 226, 0.6);
+}
