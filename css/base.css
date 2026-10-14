@@ -1,0 +1,516 @@
+:root{
+  /* Charte Fluxym */
+  --dark-blue:#163467; --blue:#13b4e2; --purple-rain:#6b51ed; --light-blue:#f0f6f8;
+  --sunlight:#ffcf63; --green:#7eefa0; --red:#ef7e7e; --white:#fff;
+  /* Charte Esker */
+  --esker-red:#db001b; --esker-cyan:#1dc0d5; --esker-grey:#f1f3f4;
+  --radius:.5rem;
+  --hdr-h:76px;
+  --z:1;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+html{scroll-behavior:smooth;scroll-padding-top:var(--hdr-h)}
+body{font-family:Barlow,-apple-system,BlinkMacSystemFont,sans-serif;color:var(--dark-blue);background:var(--white);overflow-x:hidden;line-height:1.55}
+h1,h2,h3,h4,.ff-title,button,.btn{font-family:'Miriam Libre',Barlow,sans-serif}
+a{color:inherit;text-decoration:none}
+img,svg{max-width:100%}
+::selection{background:rgba(19,180,226,.38)}
+.wrap{max-width:1240px;margin:0 auto;padding:0 1.5rem}
+@media(min-width:768px){.wrap{padding:0 3rem}}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ============ BOUTONS ============ */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;font-size:1rem;font-weight:700;line-height:1;padding:14px 22px 12px;border-radius:var(--radius);border:2px solid transparent;cursor:pointer;transition:box-shadow .45s cubic-bezier(.23,1,.32,1),background-color .3s,color .3s,transform .3s;text-align:center}
+.btn-blue{background:var(--blue);color:#fff;border-color:var(--blue)}
+.btn-blue:hover{box-shadow:0 10px 24px rgba(19,180,226,.4);transform:translateY(-1px)}
+.btn-navy{background:var(--dark-blue);color:#fff;border-color:var(--dark-blue)}
+.btn-navy:hover{box-shadow:0 10px 24px rgba(22,52,103,.35);transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:var(--dark-blue);border-color:rgba(22,52,103,.25)}
+.btn-ghost:hover{background:var(--dark-blue);color:#fff;border-color:var(--dark-blue)}
+.btn-sm{font-size:.88rem;padding:10px 16px 8px}
+
+/* ============ HEADER ============ */
+.header{position:fixed;top:0;left:0;right:0;z-index:400;background:rgba(255,255,255,.93);backdrop-filter:blur(16px);border-bottom:1px solid rgba(22,52,103,.08);transition:box-shadow .3s}
+.header.scrolled{box-shadow:0 6px 28px rgba(22,52,103,.09)}
+.header-in{max-width:1240px;margin:0 auto;padding:0 1.5rem;height:var(--hdr-h);display:flex;align-items:center;justify-content:space-between;gap:1.5rem}
+@media(min-width:768px){.header-in{padding:0 3rem}}
+.hlogo{display:flex;align-items:center;gap:.9rem;color:var(--dark-blue);flex:none}
+.hlogo .f-mark{width:112px;height:37px}
+.hlogo-x{display:none;font-size:1rem;color:#c3cdda;font-weight:300}
+.hlogo .e-mark{display:none;width:62px;height:16px;color:var(--esker-red)}
+@media(min-width:560px){.hlogo-x,.hlogo .e-mark{display:block}}
+.hnav{display:none;align-items:center;gap:2rem;margin-left:auto}
+@media(min-width:1024px){.hnav{display:flex}}
+.hnav a{font-size:.95rem;font-weight:600;position:relative;padding:4px 0;transition:color .25s}
+.hnav a::after{content:'';position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--blue);transform:scaleX(0);transform-origin:right;transition:transform .35s cubic-bezier(.23,1,.32,1)}
+.hnav a:hover{color:var(--blue)}
+.hnav a:hover::after{transform:scaleX(1);transform-origin:left}
+.header .btn{padding:11px 20px 9px;font-size:.92rem}
+
+/* ============ SCENE ROUE (plein écran) ============ */
+/* Trois cellules strictement indépendantes : le titre, LA ROUE SEULE, le bandeau.
+   Quand on agrandit la roue, c'est sa cellule qui grandit : elle pousse le titre
+   vers le haut et le bandeau vers le bas. Le dessin ne vient jamais manger le texte. */
+.stage{position:relative;min-height:100vh;min-height:100svh;padding-top:var(--hdr-h);display:flex;flex-direction:column;overflow-x:clip;background:
+   radial-gradient(1100px 620px at 50% 42%,#ffffff 0%,#f7fbfd 45%,var(--light-blue) 100%)}
+/* les halos de fond sont enfermés dans leur propre calque : la scène peut donc
+   déborder verticalement sans qu'ils bavent sur les sections voisines */
+.stage-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.stage-bg i{position:absolute;display:block;border-radius:50%}
+.stage-bg .b1{top:-10%;right:-10%;width:52vmax;height:52vmax;background:radial-gradient(circle,rgba(19,180,226,.13),transparent 62%);animation:drift 22s ease-in-out infinite alternate}
+.stage-bg .b2{bottom:-12%;left:-12%;width:48vmax;height:48vmax;background:radial-gradient(circle,rgba(107,81,237,.11),transparent 62%);animation:drift 26s ease-in-out infinite alternate-reverse}
+@keyframes drift{0%{transform:translate(0,0) scale(1)}100%{transform:translate(3%,4%) scale(1.09)}}
+
+.stage-bot>*{pointer-events:auto;background:rgba(255,255,255,.72);backdrop-filter:blur(10px);border:1px solid rgba(22,52,103,.09);border-radius:50px;padding:8px 17px;box-shadow:0 4px 18px rgba(22,52,103,.06)}
+.stage-bot h1{font-size:clamp(.82rem,1.15vw,1.02rem);line-height:1.2;letter-spacing:-.01em;font-weight:700;color:var(--dark-blue);margin:0;max-width:40vw}
+.stage-bot h1 em{font-style:normal;color:var(--blue)}
+.kicker{display:inline-flex;align-items:center;gap:.55rem;font-size:.68rem;font-weight:700;letter-spacing:.17em;text-transform:uppercase;color:var(--blue);background:rgba(19,180,226,.09);border:1px solid rgba(19,180,226,.25);padding:6px 15px;border-radius:50px}
+.kicker i{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(126,239,160,.7);animation:ping 2.4s infinite}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(126,239,160,.65)}70%{box-shadow:0 0 0 9px rgba(126,239,160,0)}100%{box-shadow:0 0 0 0 rgba(126,239,160,0)}}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-14px)}to{transform:none}}
+
+/* LA CELLULE DE LA ROUE. flex:1 0 auto : elle occupe tout l'espace restant,
+   et ne rétrécit jamais en dessous de la taille du dessin. */
+.wheel-cell{position:relative;z-index:2;flex:1 0 auto;display:flex;align-items:center;justify-content:center;padding:8px 0}
+/* .wheel-box fait EXACTEMENT la taille du dessin visible, anneaux en orbite compris.
+   Le SVG est plus grand et déborde symétriquement : cette marge interne est vide,
+   elle n'occupe donc aucune place dans la mise en page et ne pousse rien. */
+.wheel-box{position:relative;flex:none;aspect-ratio:1;transition:width .3s cubic-bezier(.23,1,.32,1),height .3s cubic-bezier(.23,1,.32,1)}
+.wheel-svg{width:100%;height:100%;display:block;overflow:visible}
+
+.stage-bot{position:absolute;left:0;right:0;bottom:11px;z-index:3;display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;padding:0 clamp(16px,2.2vw,34px);pointer-events:none;animation:fadeUp .8s .2s both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{transform:none}}
+.hint{display:inline-flex;align-items:center;gap:.5rem;font-size:.85rem;color:#64779a;font-weight:500}
+.hint b{color:var(--blue);font-weight:700}
+.hint svg{animation:nudge 1.9s ease-in-out infinite}
+@keyframes nudge{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+
+.stage-stats{display:flex;align-items:center;gap:0;background:rgba(255,255,255,.75);backdrop-filter:blur(10px);border:1px solid rgba(22,52,103,.1);border-radius:50px;overflow:hidden}
+.sstat{padding:7px 16px;text-align:center;position:relative;font-size:.76rem;color:#64779a;font-weight:600;white-space:nowrap}
+.sstat b{color:var(--dark-blue);font-family:'Miriam Libre';font-size:.9rem}
+.sstat+.sstat::before{content:'';position:absolute;left:0;top:25%;height:50%;width:1px;background:rgba(22,52,103,.12)}
+
+/* ---- zoom intégré au noyau de la roue ---- */
+.hubzoom{cursor:default}
+.hubzoom .hz-btn{cursor:pointer}
+.hubzoom .hz-bg{transition:fill .25s,stroke .25s}
+.hubzoom .hz-btn:hover .hz-bg{fill:#13b4e2;stroke:#13b4e2}
+.hubzoom .hz-btn:hover .hz-ico{stroke:#fff}
+.hubzoom .hz-btn.off{opacity:.3;pointer-events:none}
+.hubzoom .hz-ico{transition:stroke .25s}
+.hubzoom .hz-btn:focus{outline:none}
+.hubzoom .hz-btn:focus-visible .hz-bg{stroke:#163467;stroke-width:2.4}
+/* champ de saisie directe du pourcentage, posé dans le noyau via foreignObject */
+.hz-input{width:100%;height:100%;box-sizing:border-box;border:none;outline:none;background:transparent;border-radius:16px;text-align:center;font-family:'Miriam Libre',sans-serif;font-weight:700;font-size:14px;color:#163467;padding:0;cursor:text;transition:background .22s,box-shadow .22s,color .22s}
+.hz-input:hover{background:rgba(19,180,226,.09)}
+.hz-input:focus{background:#fff;box-shadow:0 0 0 2px rgba(19,180,226,.6);color:#13b4e2}
+.hz-cap{pointer-events:none}
+
+/* ---- bouton retour en haut ---- */
+.totop{position:fixed;right:max(16px,1.6vw);bottom:max(16px,1.6vw);z-index:370;width:48px;height:48px;border-radius:50%;background:var(--dark-blue);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transform:translateY(14px) scale(.9);transition:opacity .4s cubic-bezier(.23,1,.32,1),transform .4s cubic-bezier(.23,1,.32,1),background .3s,box-shadow .3s;box-shadow:0 10px 30px rgba(22,52,103,.3)}
+.totop.on{opacity:1;pointer-events:auto;transform:none}
+.totop:hover{background:var(--blue);box-shadow:0 14px 36px rgba(19,180,226,.45);transform:translateY(-3px)}
+.totop svg{transition:transform .3s}
+.totop:hover svg{transform:translateY(-2px)}
+
+/* ============ ANIMATIONS DE LA ROUE ============ */
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+@keyframes spinrev{from{transform:rotate(0)}to{transform:rotate(-360deg)}}
+@keyframes breathe{0%,100%{opacity:.22}50%{opacity:.68}}
+@keyframes pulseR{0%{r:var(--r0);opacity:.55}100%{r:var(--r1);opacity:0}}
+@keyframes dashflow{to{stroke-dashoffset:-1000}}
+@keyframes cometS2P{0%{stroke-dashoffset:0}100%{stroke-dashoffset:-620}}
+@keyframes popIn{from{opacity:0;transform:scale(.82)}to{opacity:1;transform:scale(1)}}
+@keyframes segIn{from{opacity:0;transform:translate(var(--ix),var(--iy)) scale(.9)}to{opacity:1;transform:none}}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes shimmer{0%{opacity:.25}50%{opacity:.9}100%{opacity:.25}}
+
+.rot-slow{animation:spin 90s linear infinite}
+.rot-rev{animation:spinrev 140s linear infinite}
+.rot-fast{animation:spin 42s linear infinite}
+.rot-med{animation:spinrev 64s linear infinite}
+.breathe{animation:breathe 5s ease-in-out infinite}
+
+/* --- segments --- */
+.seg{cursor:pointer;transition:transform .42s cubic-bezier(.34,1.46,.64,1),filter .32s,opacity .32s;animation:segIn .7s cubic-bezier(.23,1,.32,1) both;animation-delay:var(--d,0s)}
+.seg .sfill{transition:fill .32s ease,stroke .32s,stroke-width .32s}
+.seg .srim{transition:opacity .32s,fill .32s}
+.seg .slab{pointer-events:none;transition:fill .3s ease}
+.seg .scnt{transition:opacity .3s,fill .3s;opacity:.78}
+.seg .sglow{opacity:0;transition:opacity .35s}
+.seg:hover,.seg.active{transform:translate(var(--tx),var(--ty))}
+.seg:hover .sfill,.seg.active .sfill{fill:var(--c);stroke:#fff;stroke-width:2.6}
+.seg:hover .slab,.seg.active .slab{fill:#fff}
+.seg:hover .scnt,.seg.active .scnt{opacity:1;fill:#fff}
+.seg:hover .srim,.seg.active .srim{opacity:1;fill:#fff}
+.seg:hover .sglow,.seg.active .sglow{opacity:1}
+.seg:focus{outline:none}
+.seg:focus-visible .sfill{stroke:var(--dark-blue);stroke-width:4}
+.seg.soon .sfill{stroke-dasharray:7 5}
+.wheel-svg.dimmed .seg:not(:hover):not(.active){opacity:.42;filter:saturate(.45)}
+
+/* --- arcs de suite dynamiques --- */
+.suitearc-base{transition:stroke-width .4s,opacity .4s}
+.suitearc-flow{stroke-dasharray:14 22;animation:dashflow 9s linear infinite;transition:opacity .4s,stroke-width .4s}
+.suitearc-comet{stroke-dasharray:46 580;animation:cometS2P 5.2s cubic-bezier(.5,0,.5,1) infinite;opacity:.95;transition:animation-duration .4s}
+.suitegrp.lit .suitearc-base{stroke-width:5.2;opacity:1}
+.suitegrp.lit .suitearc-flow{opacity:.95;stroke-width:3.4;animation-duration:3.4s}
+.suitegrp.lit .suitearc-comet{animation-duration:2.1s}
+.suitegrp.dim{opacity:.34}
+.suitegrp{transition:opacity .4s}
+.suitelab{transition:fill .35s,opacity .35s}
+.suitegrp.lit .suitelab{fill:var(--blue)}
+.suite-node{transition:r .4s cubic-bezier(.34,1.5,.64,1),fill .35s}
+.suitegrp.lit .suite-node{r:9.5}
+
+/* --- noyau central --- */
+.hub-default,.hub-hover{transition:opacity .34s ease,transform .34s cubic-bezier(.23,1,.32,1);transform-origin:center}
+.hub-hover{opacity:0;transform:scale(.94)}
+.wheel-svg.hovering .hub-default{opacity:0;transform:scale(1.05)}
+.wheel-svg.hovering .hub-hover{opacity:1;transform:scale(1)}
+.hub-sweep{animation:spin 11s linear infinite;transform-origin:center;opacity:.5}
+.hub-ring-a{animation:spinrev 52s linear infinite;transform-origin:center}
+.hub-ring-b{animation:spin 78s linear infinite;transform-origin:center}
+
+/* --- pastille Synergy AI --- */
+.aihub{cursor:help}
+.aihub .aiorb{animation:floaty 4.5s ease-in-out infinite}
+.aihub .airing{animation:spin 26s linear infinite}
+.aihub:hover .aicore{fill:var(--sunlight)}
+.ainode{animation:shimmer 3s ease-in-out infinite}
+
+/* --- bandeau socle --- */
+.bandg{cursor:default}
+.bandg .bandsheen{opacity:.0;animation:shimmer 6s ease-in-out infinite}
+
+/* ============ PANNEAU VIDEO ============ */
+.panelsec{padding:0 0 60px;background:#fff;scroll-margin-top:calc(var(--hdr-h) + 12px)}
+.panel{max-width:1060px;margin:0 auto;background:#fff;border:1px solid rgba(22,52,103,.1);border-radius:1.25rem;box-shadow:0 20px 64px rgba(22,52,103,.12);overflow:hidden;animation:popIn .5s cubic-bezier(.23,1,.32,1) both}
+.panel-head{display:flex;align-items:flex-start;gap:1.1rem;padding:24px 30px 18px;border-bottom:1px solid rgba(22,52,103,.08)}
+.panel-chip{width:52px;height:52px;flex:none;border-radius:.85rem;display:flex;align-items:center;justify-content:center;font-size:1.5rem;background:color-mix(in srgb,var(--c) 14%,#fff);border:1px solid color-mix(in srgb,var(--c) 32%,#fff)}
+.panel-ttl{flex:1;min-width:0}
+.panel-suite{font-size:.67rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--c);margin-bottom:3px}
+.panel-ttl h2{font-size:1.45rem;line-height:1.2;font-weight:700}
+.panel-ttl p{font-size:.95rem;color:#52637f;margin-top:.5rem;max-width:74ch}
+.panel-nav{display:flex;gap:.4rem;flex:none;align-items:center}
+.pnav{width:34px;height:34px;border-radius:50%;border:1px solid rgba(22,52,103,.14);background:#fff;color:#64779a;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .25s;padding:0}
+.pnav:hover{background:var(--dark-blue);color:#fff;border-color:var(--dark-blue);transform:translateY(-1px)}
+.panel-body{padding:22px 30px 28px}
+
+.vidframe{position:relative;aspect-ratio:16/9;border-radius:1.15rem;overflow:hidden;background:#0d1f3e;box-shadow:0 18px 50px rgba(22,52,103,.18)}
+.vidframe video{width:100%;height:100%;display:block;object-fit:contain;background:#0d1f3e}
+.vid-cover{position:absolute;inset:0;z-index:5;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between;padding:26px 32px;color:#fff;user-select:none;transition:opacity .35s ease,visibility .35s;overflow:hidden}
+.vid-cover.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.cover-bg{position:absolute;inset:0;background:linear-gradient(145deg,#0e2347 0%,#163467 55%,#12284d 100%);z-index:0}
+.cover-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--c) 30%,transparent) 0%,rgba(19,180,226,.14) 45%,transparent 70%);pointer-events:none}
+.cover-mesh{position:absolute;inset:0;opacity:.14;background-image:radial-gradient(#fff 1.2px,transparent 1.2px);background-size:24px 24px;pointer-events:none}
+.cover-circles{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:320px;height:320px;border-radius:50%;border:1px dashed rgba(255,255,255,.14);pointer-events:none}
+.cover-circles::before{content:'';position:absolute;inset:-36px;border-radius:50%;border:1px solid color-mix(in srgb,var(--c) 25%,transparent)}
+.cover-top{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.cover-suite{font-size:.74rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);background:rgba(19,180,226,.14);border:1px solid rgba(19,180,226,.32);padding:6px 14px;border-radius:50px;backdrop-filter:blur(8px)}
+.cover-tag{font-size:.74rem;font-weight:600;color:rgba(255,255,255,.8);background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);padding:6px 14px;border-radius:50px;backdrop-filter:blur(8px)}
+.cover-center{position:relative;z-index:2;display:flex;align-items:center;justify-content:center}
+.cover-play{width:86px;height:86px;border-radius:50%;background:#fff;color:var(--dark-blue);display:flex;align-items:center;justify-content:center;box-shadow:0 16px 40px rgba(0,0,0,.4),0 0 0 10px rgba(255,255,255,.16);transition:transform .35s cubic-bezier(.34,1.4,.64,1),background .3s,color .3s,box-shadow .3s}
+.cover-play svg{width:38px;height:38px;margin-left:5px}
+.vid-cover:hover .cover-play,.vid-cover:focus-visible .cover-play{transform:scale(1.12);background:var(--blue);color:#fff;box-shadow:0 20px 50px rgba(19,180,226,.5),0 0 0 14px rgba(19,180,226,.25)}
+.vid-cover:focus-visible{outline:3px solid var(--blue);outline-offset:-3px}
+.cover-bottom{position:relative;z-index:2}
+.cover-title{font-family:'Miriam Libre',Barlow,sans-serif;font-size:clamp(1.2rem,2.8vw,1.85rem);font-weight:700;line-height:1.2;color:#fff;text-shadow:0 2px 14px rgba(0,0,0,.45)}
+.cover-sub{font-size:.88rem;color:rgba(255,255,255,.8);margin-top:6px;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.cover-sub-dot{width:4px;height:4px;border-radius:50%;background:var(--blue)}
+.cover-sub-cta{color:var(--blue);font-weight:700;display:inline-flex;align-items:center;gap:4px}
+
+/* écran de fin : suggestions */
+.vid-end{position:absolute;inset:0;z-index:6;background:linear-gradient(145deg,rgba(14,35,71,.97),rgba(22,52,103,.97));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;opacity:0;visibility:hidden;transition:opacity .4s,visibility .4s}
+.vid-end.on{opacity:1;visibility:visible}
+.vid-end h4{color:#fff;font-size:1rem;font-weight:700;letter-spacing:.04em}
+.vid-end-row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:660px}
+.vid-end-card{display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);color:#fff;border-radius:50px;padding:9px 16px;font-size:.84rem;font-weight:600;cursor:pointer;font-family:Barlow;transition:all .28s}
+.vid-end-card:hover{background:var(--blue);border-color:var(--blue);transform:translateY(-2px)}
+.vid-end-replay{background:none;border:1px solid rgba(255,255,255,.3);color:rgba(255,255,255,.85);border-radius:50px;padding:8px 18px;font-size:.8rem;font-weight:600;cursor:pointer;font-family:Barlow;transition:all .25s}
+.vid-end-replay:hover{background:rgba(255,255,255,.14);color:#fff}
+
+.vidmeta{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.8rem;margin-top:14px}
+.vidmeta-t{font-size:.98rem;font-weight:700}
+.vidmeta-s{font-size:.8rem;color:#8192ad;font-weight:600}
+.vidswitch{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:16px}
+.vidswitch button{font-family:Barlow;font-size:.85rem;font-weight:600;padding:9px 16px;border-radius:50px;border:1px solid rgba(22,52,103,.16);background:#fff;color:#44577a;cursor:pointer;transition:all .25s}
+.vidswitch button:hover{border-color:var(--c);color:var(--c)}
+.vidswitch button.on{background:var(--c);border-color:var(--c);color:#fff}
+.warn{display:flex;gap:.6rem;align-items:flex-start;margin-top:14px;font-size:.82rem;color:#8192ad}
+.warn svg{flex:none;margin-top:2px}
+
+.soonbox{position:relative;aspect-ratio:16/9;border-radius:1.15rem;overflow:hidden;background:linear-gradient(145deg,#0e2347,#1d4a8f 55%,var(--c));display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;color:#fff}
+.soonbox .sb-ico{font-size:2.6rem;margin-bottom:.9rem;opacity:.95;animation:floaty 4s ease-in-out infinite}
+.soonbox h3{font-size:1.3rem;font-weight:700}
+.soonbox p{font-size:.95rem;opacity:.86;max-width:46ch;margin-top:.6rem}
+.soon-badge{display:inline-flex;align-items:center;gap:.5rem;margin-top:1.2rem;font-size:.74rem;font-weight:700;letter-spacing:.11em;text-transform:uppercase;background:var(--sunlight);color:#5c4100;padding:8px 18px;border-radius:50px}
+.soon-badge i{width:7px;height:7px;border-radius:50%;background:#5c4100;animation:breathe 1.8s ease-in-out infinite;font-style:normal}
+.soonbox .sb-mesh{position:absolute;inset:0;opacity:.16;background-image:radial-gradient(#fff 1.1px,transparent 1.1px);background-size:22px 22px;pointer-events:none}
+.soon-cta{margin-top:18px;display:flex;flex-wrap:wrap;gap:.7rem;align-items:center}
+.soon-cta .ph{font-size:.88rem;color:#52637f}
+
+/* ============ WIDGET ROUE FLOTTANT (dock) ============ */
+/* En bas à gauche. Aucune fenêtre, aucun cadre : la bulle Esker se métamorphose
+   en roue complète, qui naît exactement du centre de la bulle. */
+.dock{position:fixed;z-index:380;left:max(18px,1.6vw);bottom:max(18px,1.6vw);width:74px;height:74px;opacity:0;visibility:hidden;transform:translateY(16px) scale(.9);transition:opacity .45s cubic-bezier(.23,1,.32,1),transform .45s cubic-bezier(.23,1,.32,1),visibility .45s}
+.dock.on{opacity:1;visibility:visible;transform:none}
+
+.dock-btn{position:absolute;left:0;bottom:0;width:74px;height:74px;border-radius:50%;border:none;cursor:pointer;background:#fff;box-shadow:0 10px 32px rgba(22,52,103,.22),0 0 0 1px rgba(22,52,103,.07);display:flex;align-items:center;justify-content:center;padding:0;transition:transform .45s cubic-bezier(.34,1.45,.64,1),box-shadow .42s,opacity .3s}
+.dock:hover .dock-btn{transform:scale(1.08);box-shadow:0 16px 42px rgba(29,192,213,.4),0 0 0 1px rgba(29,192,213,.3)}
+.dock-btn .emark{width:42px;height:42px;margin-bottom:5px}
+.dock-btn .emark .espin{animation:spin 16s linear infinite;transform-origin:center}
+.dock:hover .dock-btn .emark .espin{animation-duration:4s}
+.dock-btn .ewordmark{position:absolute;bottom:11px;left:50%;transform:translateX(-50%);width:32px;height:8px;color:var(--esker-red)}
+/* halo : deux anneaux contrarotatifs, parfaitement centrés sur la bulle.
+   Sorti du bouton pour pouvoir exploser indépendamment de lui à l'ouverture.
+   Dimensions explicites : un SVG en position absolue sans width/height reprendrait
+   sa taille intrinsèque (300x150) et se retrouverait décentré. */
+.dock-halo{position:absolute;left:37px;bottom:37px;width:94px;height:94px;transform:translate(-50%,50%);pointer-events:none;overflow:visible;z-index:2}
+.dock-halo .hring-a{animation:spin 11s linear infinite;transform-origin:center}
+.dock-halo .hring-b{animation:spinrev 17s linear infinite;transform-origin:center}
+.dock:hover .dock-halo .hring-a{animation-duration:3.4s}
+.dock:hover .dock-halo .hring-b{animation-duration:5.2s}
+.dock-badge{position:absolute;top:-2px;right:-2px;min-width:22px;height:22px;border-radius:50px;background:var(--blue);color:#fff;font-size:.68rem;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 6px;border:2px solid #fff;font-family:'Miriam Libre'}
+
+/* ============ LA METAMORPHOSE GALACTIQUE ============ */
+/* La bulle ne grossit pas : elle s'effondre et libère une galaxie qui se
+   déroule en tournant. Rien n'est un simple zoom. */
+
+/* 1. le vortex : une singularité lumineuse qui s'ouvre et balaie la zone */
+.dock-vortex{position:absolute;left:37px;bottom:37px;width:12px;height:12px;border-radius:50%;pointer-events:none;z-index:1;opacity:0;
+  background:radial-gradient(circle,rgba(255,255,255,.9) 0%,rgba(29,192,213,.55) 22%,rgba(107,81,237,.3) 48%,rgba(19,180,226,0) 72%)}
+.dock.open .dock-vortex{animation:vortex 1s cubic-bezier(.12,.82,.3,1) forwards}
+@keyframes vortex{
+  0%{opacity:0;transform:translate(-50%,50%) scale(1) rotate(0deg)}
+  14%{opacity:.95}
+  55%{opacity:.4}
+  100%{opacity:0;transform:translate(-50%,50%) scale(74) rotate(250deg)}}
+
+/* 2. la bulle s'effondre dans la singularité, le halo part en onde */
+.dock.open .dock-btn{opacity:0;transform:scale(.22) rotate(-140deg);pointer-events:none;transition:opacity .3s ease,transform .52s cubic-bezier(.55,-.3,.85,.4)}
+.dock.open .dock-halo{animation:haloBurst .8s cubic-bezier(.1,.78,.28,1) forwards}
+@keyframes haloBurst{
+  0%{opacity:.95;transform:translate(-50%,50%) scale(1) rotate(0deg)}
+  100%{opacity:0;transform:translate(-50%,50%) scale(5.6) rotate(200deg)}}
+
+/* 3. la galaxie se déroule : elle naît du centre de la bulle, en rotation.
+   Ouverture ample et élastique, fermeture en aspiration rapide. */
+.dock-wheel{--dw:min(80vw,440px);position:absolute;left:0;bottom:0;width:var(--dw);height:var(--dw);z-index:3;
+  transform-origin:37px calc(100% - 37px);
+  transform:rotate(-232deg) scale(.035);opacity:0;visibility:hidden;will-change:transform;
+  filter:drop-shadow(0 22px 50px rgba(22,52,103,.22));
+  transition:transform .52s cubic-bezier(.62,-.04,.9,.36),opacity .3s ease .12s,visibility .52s}
+.dock.open .dock-wheel{transform:rotate(0deg) scale(1);opacity:1;visibility:visible;
+  transition:transform .88s cubic-bezier(.15,1.03,.25,1),opacity .34s ease,visibility .88s}
+.dock-wheel .wheel-svg{width:100%;height:100%;display:block}
+
+/* 4. chaque module est éjecté du noyau vers son orbite, en cascade */
+.dock.open .mini-seg{animation:galaxyIn .82s cubic-bezier(.17,.96,.27,1) backwards;animation-delay:var(--sd)}
+@keyframes galaxyIn{
+  0%{opacity:0;transform:translate(calc(var(--tx) * -12),calc(var(--ty) * -12))}
+  42%{opacity:1}
+  100%{opacity:1;transform:translate(0,0)}}
+
+/* 5. onde de choc au moment de l'effondrement */
+.mini-wheel-host .shock>g,.dock-wheel .shock>g{transform-origin:410px 410px;opacity:0}
+.dock.open .dock-wheel .shock>g{animation:shockOut 1.15s cubic-bezier(.08,.72,.3,1) backwards;animation-delay:var(--sd)}
+@keyframes shockOut{
+  0%{transform:scale(.04);opacity:.8}
+  62%{opacity:.22}
+  100%{transform:scale(1.12);opacity:0}}
+
+/* 6. le champ gravitationnel : nébuleuse, bras spiraux, ceintures d'astéroïdes */
+.galaxy .neb{animation:nebPulse 9s ease-in-out infinite;transform-origin:410px 410px}
+@keyframes nebPulse{0%,100%{opacity:.85;transform:scale(1)}50%{opacity:1;transform:scale(1.045)}}
+.galaxy .arm{animation:spin 64s linear infinite;transform-origin:410px 410px;transform-box:view-box}
+.dock:hover .galaxy .arm{animation-duration:26s}
+.galaxy .orbit{animation:orbitFade 7s ease-in-out infinite alternate}
+@keyframes orbitFade{from{opacity:.1}to{opacity:.28}}
+.dock.open .galaxy{animation:galaxyFade .9s ease .2s backwards}
+@keyframes galaxyFade{from{opacity:0}to{opacity:1}}
+
+/* 7. le reste du dessin rejoint la danse, juste après les modules */
+.dock.open .bandg{animation:galaxyFade .55s ease .40s backwards}
+.dock.open .aihub{animation:aiPop .7s cubic-bezier(.2,1.5,.4,1) .48s backwards;transform-origin:410px 664px}
+@keyframes aiPop{from{opacity:0;transform:scale(.2) rotate(-90deg)}to{opacity:1;transform:scale(1) rotate(0)}}
+.dock.open .mini-hub-default{animation:hubRise .6s cubic-bezier(.2,1.1,.3,1) .46s backwards}
+@keyframes hubRise{from{opacity:0;transform:scale(.72)}to{opacity:1;transform:scale(1)}}
+.mini-hub-default{transform-origin:410px 410px}
+
+/* ============ L'EFFONDREMENT : ASPIRATION DANS LE TROU NOIR ============ */
+/* La fermeture n'est plus une transition inverse. Un horizon des événements
+   s'ouvre au centre, le disque d'accrétion s'emballe, la galaxie est étirée
+   puis avalée en spirale, et un dernier éclat de lumière reforme la bulle. */
+.hole{opacity:0;transform-origin:410px 410px}
+.hole .accretion{transform-origin:410px 410px}
+.hole .photon,.hole .photon2{transform-origin:410px 410px}
+
+.dock.closing .dock-wheel{visibility:visible;transition:none;animation:galaxyCollapse .66s cubic-bezier(.5,.02,.78,.24) forwards}
+@keyframes galaxyCollapse{
+  0%{opacity:1;transform:rotate(0deg) scale(1);filter:drop-shadow(0 22px 50px rgba(22,52,103,.22))}
+  22%{transform:rotate(26deg) scale(1.055);filter:drop-shadow(0 0 30px rgba(29,192,213,.55)) brightness(1.12)}
+  100%{opacity:0;transform:rotate(-318deg) scale(.02);filter:drop-shadow(0 0 60px rgba(107,81,237,.9)) brightness(2.6) blur(2.5px)}}
+
+.dock.closing .hole{animation:holeOpen .66s cubic-bezier(.42,0,.8,.3) forwards}
+@keyframes holeOpen{
+  0%{opacity:0;transform:scale(1.3)}
+  26%{opacity:.6}
+  70%{opacity:1;transform:scale(.52)}
+  100%{opacity:1;transform:scale(.05)}}
+.dock.closing .hole .accretion{animation:spin .5s linear infinite}
+.dock.closing .hole .photon{animation:photonRing .66s cubic-bezier(.4,0,.8,.3) forwards}
+.dock.closing .hole .photon2{animation:photonRing .66s cubic-bezier(.4,0,.8,.3) .06s forwards}
+@keyframes photonRing{0%{transform:scale(2.2) rotate(0);opacity:0}30%{opacity:1}100%{transform:scale(.3) rotate(240deg);opacity:0}}
+
+/* les modules sont étirés puis happés, les plus éloignés en premier */
+.dock.closing .mini-seg{animation:galaxyOut .5s cubic-bezier(.55,0,.82,.22) forwards;animation-delay:var(--sdo)}
+@keyframes galaxyOut{
+  0%{opacity:1;transform:translate(0,0)}
+  18%{transform:translate(calc(var(--tx) * 2.6),calc(var(--ty) * 2.6))}
+  100%{opacity:0;transform:translate(calc(var(--tx) * -15),calc(var(--ty) * -15))}}
+.dock.closing .bandg,.dock.closing .aihub{animation:suckFade .34s ease-in forwards}
+@keyframes suckFade{to{opacity:0;transform:scale(.4)}}
+.dock.closing .aihub{transform-origin:410px 664px}
+.dock.closing .bandg{transform-origin:410px 410px}
+.dock.closing .galaxy{animation:suckSpin .6s cubic-bezier(.5,0,.8,.3) forwards;transform-origin:410px 410px}
+@keyframes suckSpin{0%{opacity:1;transform:scale(1) rotate(0)}100%{opacity:0;transform:scale(.18) rotate(190deg)}}
+
+/* le vortex se rétracte vers la singularité */
+.dock.closing .dock-vortex{animation:vortexIn .62s cubic-bezier(.42,0,.78,.28) forwards}
+@keyframes vortexIn{
+  0%{opacity:0;transform:translate(-50%,50%) scale(58) rotate(0deg)}
+  22%{opacity:.85}
+  100%{opacity:0;transform:translate(-50%,50%) scale(1.5) rotate(-330deg)}}
+
+/* l'éclat final : la matière recomprimée rallume la bulle */
+.dock-flash{position:absolute;left:37px;bottom:37px;width:18px;height:18px;border-radius:50%;pointer-events:none;z-index:4;opacity:0;
+  transform:translate(-50%,50%) scale(.2);
+  background:radial-gradient(circle,#fff 0%,#c9f6ff 24%,rgba(29,192,213,.75) 46%,rgba(107,81,237,.3) 64%,transparent 78%)}
+.dock.closing .dock-flash{animation:dockFlash .5s .3s cubic-bezier(.16,.92,.3,1) forwards}
+@keyframes dockFlash{
+  0%{opacity:0;transform:translate(-50%,50%) scale(.2)}
+  26%{opacity:1;transform:translate(-50%,50%) scale(4.4)}
+  60%{opacity:.75;transform:translate(-50%,50%) scale(1.5)}
+  100%{opacity:0;transform:translate(-50%,50%) scale(.9)}}
+
+/* le halo se reforme en se rétractant, la bulle rebondit à l'arrivée */
+.dock.closing .dock-halo{animation:haloReform .5s .26s cubic-bezier(.2,1.3,.35,1) backwards}
+@keyframes haloReform{0%{opacity:0;transform:translate(-50%,50%) scale(3.4) rotate(150deg)}100%{opacity:1;transform:translate(-50%,50%) scale(1) rotate(0deg)}}
+.dock.closing .dock-btn{animation:btnReform .46s .3s cubic-bezier(.24,1.5,.4,1) backwards}
+@keyframes btnReform{0%{opacity:0;transform:scale(.18) rotate(100deg)}60%{opacity:1}100%{opacity:1;transform:scale(1) rotate(0deg)}}
+
+@media(prefers-reduced-motion:reduce){
+  .dock-vortex,.dock-flash,.dock.open .dock-halo,.dock.closing *{animation:none!important}
+  .dock-wheel,.dock.open .dock-wheel{transition:opacity .25s ease,visibility .25s;transform:none!important}
+  .dock.open .mini-seg,.dock.open .shock>g,.dock.open .bandg,.dock.open .aihub,.dock.open .mini-hub-default,.dock.open .galaxy{animation:none!important}
+  .galaxy .arm,.galaxy .neb{animation:none!important}
+}
+
+/* segments de la mini roue : strictement la même mécanique que la grande */
+.mini-seg{cursor:pointer;transition:transform .4s cubic-bezier(.34,1.46,.64,1),opacity .3s,filter .3s}
+.mini-seg .msf{transition:fill .3s,stroke .3s,stroke-width .3s}
+.mini-seg .mrim{transition:opacity .3s,fill .3s}
+.mini-seg .mlab,.mini-seg .mico{pointer-events:none;transition:fill .3s}
+.mini-seg:hover,.mini-seg.active{transform:translate(var(--tx),var(--ty))}
+.mini-seg:hover .msf,.mini-seg.active .msf{fill:var(--c);stroke:#fff;stroke-width:3.4}
+.mini-seg:hover .mlab,.mini-seg.active .mlab{fill:#fff}
+.mini-seg:hover .mrim,.mini-seg.active .mrim{opacity:1;fill:#fff}
+.mini-seg.soon .msf{stroke-dasharray:6 5}
+.mini-seg:focus{outline:none}
+.mini-seg:focus-visible .msf{stroke:var(--dark-blue);stroke-width:4}
+#miniWheel.dimmed .mini-seg:not(:hover):not(.active){opacity:.4;filter:saturate(.4)}
+.mini-hub-label{font-family:'Miriam Libre';font-weight:700;fill:var(--dark-blue)}
+.mini-hub-default,.mini-hub-hover{transition:opacity .3s ease}
+.mini-hub-hover{opacity:0}
+#miniWheel.hovering .mini-hub-default{opacity:0}
+#miniWheel.hovering .mini-hub-hover{opacity:1}
+
+@media(max-width:620px){
+  .dock{left:14px;bottom:14px;width:60px;height:60px}
+  .dock-btn{width:60px;height:60px}
+  .dock-btn .emark{width:34px;height:34px}
+  .dock-btn .ewordmark{bottom:9px;width:27px}
+  .dock-wheel{--dw:min(92vw,372px);transform-origin:30px calc(100% - 30px)}
+  .dock-halo{left:30px;bottom:30px;width:78px;height:78px}
+  .dock-vortex{left:30px;bottom:30px}
+}
+
+/* ============ LISTE DES MODULES ============ */
+.listsec{background:var(--light-blue);padding:72px 0;scroll-margin-top:var(--hdr-h)}
+.sec-head{text-align:center;max-width:720px;margin:0 auto 2.4rem}
+.sec-head h2{font-size:clamp(1.6rem,3vw,2.3rem);font-weight:700;line-height:1.18}
+.sec-head h2 em{font-style:normal;color:var(--blue)}
+.sec-head p{margin-top:.9rem;color:#52637f;font-size:1.03rem}
+.suite-ttl{display:flex;align-items:center;gap:1rem;font-size:.74rem;font-weight:700;letter-spacing:.17em;text-transform:uppercase;color:#8192ad;margin:2.2rem 0 1.1rem;scroll-margin-top:calc(var(--hdr-h) + 20px)}
+.suite-ttl::after{content:'';flex:1;height:1px;background:rgba(22,52,103,.12)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(258px,1fr));gap:1.1rem}
+.card{position:relative;background:#fff;border:1px solid rgba(22,52,103,.1);border-radius:1rem;padding:20px;cursor:pointer;overflow:hidden;transition:transform .32s cubic-bezier(.34,1.4,.64,1),box-shadow .32s,border-color .32s}
+.card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--c);transform:scaleY(0);transform-origin:bottom;transition:transform .35s}
+.card:hover{transform:translateY(-5px);box-shadow:0 18px 40px rgba(22,52,103,.13);border-color:transparent}
+.card:hover::before{transform:scaleY(1)}
+.card.active{border-color:var(--c);box-shadow:0 18px 40px rgba(22,52,103,.15)}
+.card.active::before{transform:scaleY(1)}
+.card-top{display:flex;align-items:center;gap:.8rem;margin-bottom:.8rem}
+.card-ico{width:40px;height:40px;flex:none;border-radius:.7rem;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:color-mix(in srgb,var(--c) 13%,#fff)}
+.card h3{font-size:1rem;font-weight:700;line-height:1.25}
+.card p{font-size:.87rem;color:#5e7090;line-height:1.5}
+.card-foot{display:flex;align-items:center;justify-content:space-between;margin-top:.95rem;font-size:.77rem;font-weight:700}
+.tag{display:inline-flex;align-items:center;gap:.4rem;padding:4px 11px;border-radius:50px;font-size:.7rem;font-weight:700;letter-spacing:.04em}
+.tag.ok{background:rgba(19,180,226,.12);color:#0b7fa5}
+.tag.soon{background:rgba(255,207,99,.3);color:#7a5600}
+.card-go{color:var(--c);opacity:0;transform:translateX(-6px);transition:all .3s}
+.card:hover .card-go,.card.active .card-go{opacity:1;transform:translateX(0)}
+
+/* ============ CONTACT ============ */
+.contactsec{position:relative;padding:82px 0;background:#fff;overflow:hidden;scroll-margin-top:var(--hdr-h)}
+.contactsec::before{content:'';position:absolute;top:-140px;left:-170px;width:480px;height:480px;border-radius:50%;background:radial-gradient(circle,rgba(107,81,237,.08),transparent 62%)}
+.contact-grid{position:relative;z-index:2;display:grid;gap:3rem;align-items:start}
+@media(min-width:900px){.contact-grid{grid-template-columns:.85fr 1.15fr;gap:4rem}}
+.contact-left h2{font-size:clamp(1.7rem,3.2vw,2.5rem);font-weight:700;line-height:1.15}
+.contact-left h2 em{font-style:normal;color:var(--purple-rain)}
+.contact-left p{margin-top:1.1rem;color:#52637f;font-size:1.03rem}
+.contact-left p a{color:var(--blue);font-weight:600;border-bottom:1px solid currentColor}
+.offices{margin-top:2rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1rem}
+.office{background:var(--light-blue);border-radius:.75rem;padding:14px 16px}
+.office b{display:block;font-family:'Miriam Libre';font-size:.95rem;margin-bottom:.25rem}
+.office span{font-size:.78rem;color:#67789a;line-height:1.45;display:block}
+.formcard{background:#fff;border:1px solid rgba(22,52,103,.1);border-radius:1.25rem;padding:30px;box-shadow:0 18px 60px rgba(22,52,103,.1)}
+@media(min-width:768px){.formcard{padding:36px}}
+.formcard h3{font-size:1.15rem;margin-bottom:1.4rem;font-weight:700}
+.hs-form-frame .hs-form-field{margin-bottom:1rem}
+.hs-form-frame label{font-family:Barlow;font-size:.85rem;font-weight:600;color:var(--dark-blue);display:block;margin-bottom:.35rem}
+.hs-form-frame input[type=text],.hs-form-frame input[type=email],.hs-form-frame input[type=tel],
+.hs-form-frame select,.hs-form-frame textarea{width:100%!important;font-family:Barlow;font-size:.95rem;color:var(--dark-blue);background:var(--light-blue);border:1px solid transparent;border-radius:var(--radius);padding:11px 14px;transition:border-color .25s,box-shadow .25s;box-sizing:border-box}
+.hs-form-frame input:focus,.hs-form-frame select:focus,.hs-form-frame textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(19,180,226,.18);background:#fff}
+.hs-form-frame textarea{min-height:110px;resize:vertical}
+.hs-form-frame .hs-error-msg,.hs-form-frame .hs-error-msgs label{color:var(--red);font-size:.8rem;font-weight:600}
+.hs-form-frame .hs-button,.hs-form-frame input[type=submit]{font-family:'Miriam Libre';font-size:1rem;font-weight:700;background:var(--dark-blue);color:#fff;border:2px solid var(--dark-blue);border-radius:var(--radius);padding:14px 24px 12px;cursor:pointer;transition:box-shadow .45s cubic-bezier(.23,1,.32,1);width:auto}
+.hs-form-frame .hs-button:hover,.hs-form-frame input[type=submit]:hover{box-shadow:0 10px 24px rgba(22,52,103,.35)}
+.hs-form-frame .legal-consent-container,.hs-form-frame .hs-richtext{font-size:.78rem;color:#67789a;line-height:1.5;margin:.6rem 0 1rem}
+.hs-form-frame .legal-consent-container a,.hs-form-frame .hs-richtext a{color:var(--blue);text-decoration:underline}
+.hs-form-frame ul.inputs-list{list-style:none;padding:0}
+.formfallback{display:none;font-size:.9rem;color:#52637f;line-height:1.6}
+.formfallback.on{display:block}
+
+/* ============ FOOTER ============ */
+.footer{background:var(--dark-blue);color:#fff;padding:58px 0 26px;position:relative;overflow:hidden}
+.footer::after{content:'';position:absolute;right:-140px;bottom:-180px;width:460px;height:460px;border-radius:50%;background:radial-gradient(circle,rgba(19,180,226,.2),transparent 62%)}
+.foot-grid{position:relative;z-index:2;display:grid;gap:2.4rem}
+@media(min-width:768px){.foot-grid{grid-template-columns:1.3fr 1fr 1fr}}
+.foot-logo{color:#fff}
+.foot-logo svg{width:132px;height:44px}
+.foot-grid p{font-size:.9rem;color:rgba(255,255,255,.72);margin-top:1rem;max-width:40ch}
+.foot-col b{display:block;font-family:'Miriam Libre';font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin-bottom:1rem}
+.foot-col a{display:block;font-size:.92rem;color:rgba(255,255,255,.78);padding:5px 0;transition:color .25s}
+.foot-col a:hover{color:var(--blue)}
+.foot-bot{position:relative;z-index:2;margin-top:2.4rem;padding-top:1.4rem;border-top:1px solid rgba(255,255,255,.14);display:flex;flex-wrap:wrap;gap:.8rem;justify-content:space-between;font-size:.8rem;color:rgba(255,255,255,.55)}
+
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01ms!important}html{scroll-behavior:auto}}
+@media(max-width:600px){.panel-head{flex-wrap:wrap;padding:18px 20px}.panel-body{padding:16px 18px 22px}.vid-cover{padding:16px 18px}.cover-play{width:66px;height:66px}.cover-play svg{width:28px;height:28px}.cover-sub{font-size:.76rem}}
+
+/* =====================================================================
+   UNIVERS MODULE (XP) : thème clair Fluxym, même langage que la roue
+   (halos qui dérivent, anneaux en rotation lente, segments, courbes
+   cubic-bezier(.23,1,.32,1)). Activé pour les modules déclarés dans XP.
+   ===================================================================== */

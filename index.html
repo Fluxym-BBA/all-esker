@@ -12,9 +12,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Miriam+Libre:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/main.css">
-<link rel="stylesheet" href="css/s2p.css">
-<link rel="stylesheet" href="css/xp.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/module.css">
+<link rel="stylesheet" href="css/suites.css">
 </head>
 <body>
 
@@ -87,8 +87,9 @@
 </section>
 
 <!-- ====== PANNEAU VIDEO ====== -->
-<section class="panelsec" id="playersec"><div class="wrap"><section class="s2p-stage" id="s2pHost" style="display:none"></section>
-<div id="panelHost"></div></div></section>
+<section class="suitesec" id="suitesec" aria-live="polite"></section>
+
+<section class="panelsec" id="playersec"><div class="wrap"><div id="panelHost"></div></div></section>
 
 <!-- ====== LISTE DES MODULES ====== -->
 <section class="listsec" id="modules">
@@ -186,10 +187,14 @@
   </button>
 </div>
 
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
 <script src="js/data.js"></script>
 <script src="js/wheel.js"></script>
-<script src="js/s2p.js"></script>
-<script src="js/xp.js"></script>
-<script src="js/main.js"></script>
+<script src="js/panel.js"></script>
+<script src="js/module-data.js"></script>
+<script src="js/module.js"></script>
+<script src="js/app.js"></script>
+<script src="js/suites-data.js"></script>
+<script src="js/suites.js"></script>
 </body>
 </html>
