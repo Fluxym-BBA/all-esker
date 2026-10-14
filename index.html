@@ -55,10 +55,14 @@
       <span class="hlogo-x" aria-hidden="true">×</span>
       <svg class="e-mark" role="img" aria-label="Logo Esker" focusable="false"><use href="#eskerword"/></svg>
     </a>
-    <nav class="hnav" aria-label="Navigation principale">
-      <a href="#roue">La roue Esker</a>
-      <a href="#s2p">Source-to-Pay</a>
-      <a href="#o2c">Order-to-Cash</a>
+    <nav class="hnav" id="hnav" aria-label="Navigation par niveau de granularité">
+      <a href="#roue" data-hnav="home" class="is-here">La roue Esker</a>
+      <a href="#suite=s2p" data-hnav="S2P">Suite Source-to-Pay</a>
+      <a href="#suite=o2c" data-hnav="O2C">Suite Order-to-Cash</a>
+      <div class="hnav-dd" id="hnavDd">
+        <button type="button" class="hnav-dd-btn" id="hnavDdBtn" aria-expanded="false">Accès direct module ▾</button>
+        <div class="hnav-dd-menu" id="hnavDdMenu" hidden></div>
+      </div>
       <a href="https://www.fluxym.com/expertise/" target="_blank" rel="noopener">Notre expertise</a>
     </nav>
     <a class="btn btn-blue" href="#contact">Contact</a>
@@ -91,19 +95,6 @@
 
 <section class="panelsec" id="playersec"><div class="wrap"><div id="panelHost"></div></div></section>
 
-<!-- ====== LISTE DES MODULES ====== -->
-<section class="listsec" id="modules">
-  <div class="wrap">
-    <div class="sec-head">
-      <h2>Tous les modules, <em>en un coup d'œil</em></h2>
-      <p>La suite Esker couvre l'intégralité des processus Source-to-Pay et Order-to-Cash. Chaque module est présenté en vidéo par les experts Fluxym.</p>
-    </div>
-    <h3 class="suite-ttl" id="s2p">Source-to-Pay</h3>
-    <div class="grid" id="gridS2P"></div>
-    <h3 class="suite-ttl" id="o2c">Order-to-Cash</h3>
-    <div class="grid" id="gridO2C"></div>
-  </div>
-</section>
 
 <!-- ====== CONTACT ====== -->
 <section class="contactsec" id="contact">

@@ -1,6 +1,6 @@
 /* =========================================================================
    SUITES : données des niveaux 1 (suite), des synergies inter-modules
-   (formalisme SOURCE-CIBLE) et de l'argumentaire Standalone vs En synergie.
+   (formalisme SOURCE-CIBLE) et du Studio Standalone vs En synergie.
    Sources documentaires : spécifications fonctionnelles Esker S2P & O2C
    (SharePoint Fluxym, interrogées via l'agent Esker le 14/10/2026).
    statut : "ok" disponible nativement, "cfg" selon configuration / option,
@@ -19,7 +19,7 @@ const SUITES = {
   S2P: {
     key:"S2P", slug:"s2p", name:"Source-to-Pay", short:"Achats et dépenses",
     title:"Source-to-Pay : un seul flux, <em>de l'appel d'offres à la facture</em>",
-    lead:"Six modules sur une même plateforme. Chaque code indique le module source et le module cible (ex. SM-AP-1 : de Fournisseurs vers Factures). Filtrez par module ou par enjeu métier pour isoler les synergies et comparer la valeur de chaque module seul (Standalone) ou combiné à la suite.",
+    lead:"Six modules sur une même plateforme. Chaque code indique le module émetteur et le module récepteur (ex. SM-AP-1 : de Fournisseurs vers Factures). Sélectionnez un ou plusieurs modules pour isoler leurs synergies, cliquez sur le + d'un flux pour l'inspecter, ou comparez la valeur d'un module seul (Standalone) face à la suite.",
     order:["so","sm","ctm","pr","ap","em"],
     acr:{so:"SO", sm:"SM", ctm:"CTM", pr:"PR", ap:"AP", em:"EM"},
     role:{so:"Mettre en concurrence", sm:"Référencer et homologuer", ctm:"Cadrer engagements et échéances",
@@ -29,80 +29,92 @@ const SUITES = {
       so:{
         full:"Esker Sourcing (Market Dojo)",
         solo:[
-          "Digitalisation rapide des appels d'offres (RFI, RFP, RFQ) et enchères électroniques inversées, à la demande ou par abonnement.",
-          "Gains achats directs sur les familles négociées (en moyenne 16 % sur les enchères) et réduction de 50 % du temps de consultation.",
-          "Grilles d'évaluation multicritères automatisées et comparatif structuré des offres fournisseurs."
+          {k:"Consultations rapides", d:"Digitalisation des appels d'offres (RFI, RFP, RFQ) et enchères électroniques inversées, à la demande ou par abonnement."},
+          {k:"Gains achats directs", d:"En moyenne 16 % d'économies sur les enchères et réduction de 50 % du temps de préparation des consultations."},
+          {k:"Comparatif multicritères", d:"Pondération automatisée des réponses techniques, commerciales et RSE des soumissionnaires."}
         ],
+        limit:"Déployé seul : le fournisseur retenu doit être ressaisi manuellement dans le référentiel tiers, et les tarifs négociés doivent être recopiés dans le contrat et les catalogues.",
         syn:[
-          "Amont (SM-SO) : constitution instantanée des panels à consulter à partir des fournisseurs déjà qualifiés et scorés dans SM.",
-          "Aval (SO-SM) : l'attribution d'un appel d'offres déclenche sans ressaisie l'homologation administrative du fournisseur lauréat.",
-          "Aval (SO-CTM & SO-PR) : génération du contrat brouillon dans CTM et alimentation des catalogues d'articles négociés dans PR."
-        ]
+          {k:"Panel sécurisé en amont (SM-SO)", d:"Constitution instantanée des listes de soumissionnaires à partir des fournisseurs déjà qualifiés et scorés dans SM."},
+          {k:"Homologation sans ressaisie (SO-SM)", d:"L'attribution d'un appel d'offres déclenche automatiquement l'onboarding administratif du fournisseur lauréat."},
+          {k:"Gains verrouillés en aval (SO-CTM & SO-PR)", d:"Création du contrat brouillon dans CTM et alimentation des catalogues d'articles négociés dans PR."}
+        ],
+        upsell:"Rebond commercial : proposer Fournisseurs (SM) et Contrats (CTM) pour qu'aucun gain négocié sur appel d'offres ne se perde avant la première commande."
       },
       sm:{
         full:"Supplier Management (Gestion des fournisseurs)",
         solo:[
-          "Portail fournisseur en libre-service : collecte et relance automatique des pièces légales (Kbis, vigilance URSSAF, RIB, assurances) avec contrôle IA.",
-          "Maîtrise des risques et conformité réglementaire (Sapin II, devoir de vigilance, connecteurs Dun & Bradstreet, EcoVadis, Sis ID).",
-          "Synchronisation propre et gouvernée du référentiel tiers avec l'ERP."
+          {k:"Onboarding self-service", d:"Portail de collecte et relance automatique des pièces légales (Kbis, vigilance URSSAF, RIB, assurances) avec contrôle IA."},
+          {k:"Conformité & risques tiers", d:"Mise en conformité Loi Sapin II, devoir de vigilance et connecteurs natifs Dun & Bradstreet, EcoVadis et Sis ID."},
+          {k:"Référentiel ERP propre", d:"Workflow d'approbation des créations et modifications de fiches tiers synchronisé avec l'ERP."}
         ],
+        limit:"Déployé seul : l'homologation reste déconnectée de la prise de commande quotidienne et du contrôle automatique des factures entrantes.",
         syn:[
-          "Garde-fou opérationnel (SM-PR & SM-CTM) : blocage ou alerte si un opérationnel tente de commander ou contracter avec un tiers non conforme.",
-          "Rempart anti-fraude (SM-AP-1) : contrôle automatique de l'IBAN lu sur chaque facture face au RIB homologué dans SM.",
-          "Tour de contrôle 360° (CTM-SM, PR-SM, AP-SM) : la fiche fournisseur consolide contrats, commandes, score OTIF et statuts de paiement."
-        ]
+          {k:"Garde-fou sur les engagements (SM-PR & SM-CTM)", d:"Blocage ou alerte immédiate si un opérationnel tente de commander ou contracter avec un tiers non conforme."},
+          {k:"Bouclier anti-fraude au RIB (SM-AP-1)", d:"Comparaison automatique de l'IBAN lu sur chaque facture avec le RIB certifié dans SM avant tout paiement."},
+          {k:"Fiche fournisseur 360° (CTM-SM, PR-SM, AP-SM)", d:"Un seul écran réunit les contrats actifs, le score logistique OTIF et les statuts de factures/paiements."}
+        ],
+        upsell:"Rebond commercial : ajouter Achats (PR) et Factures (AP) pour transformer le référentiel fournisseur en verrou opérationnel contre les achats sauvages et la fraude au virement."
       },
       ctm:{
         full:"Contract Management (Gestion des contrats)",
         solo:[
-          "Contrathèque centralisée et sécurisée avec recherche plein texte, extraction IA des clauses/dates et gestion des avenants.",
-          "Circuits d'approbation juridique et financier avec signature électronique native (DocuSign, Adobe Sign).",
-          "Alertes automatiques d'échéance et de préavis pour éliminer les reconductions tacites subies."
+          {k:"Contrathèque intelligente", d:"Centralisation sécurisée avec recherche plein texte, extraction IA des clauses/dates et suivi des avenants."},
+          {k:"Signature électronique", d:"Workflows d'approbation juridique et financier avec signature native DocuSign ou Adobe Sign."},
+          {k:"Fin des reconductions subies", d:"Alertes automatiques d'échéance et de préavis envoyées aux propriétaires des contrats."}
         ],
+        limit:"Déployé seul : le contrat reste un document PDF statique ; impossible de savoir en temps réel combien a déjà été commandé ou facturé dessus.",
         syn:[
-          "Exécution en 1 clic (CTM-PR-1 & CTM-PR-2) : création directe d'une demande d'achat depuis le contrat et contrôle des plafonds d'engagement.",
-          "Touchless sur les factures sans commande (CTM-AP) : les calendriers de facturation pré-approuvés valident automatiquement loyers et abonnements dans AP.",
-          "Contrat financièrement vivant (PR-CTM & AP-CTM) : suivi en temps réel du Total engagé (PR) et du Total facturé (AP) face à l'enveloppe contractuelle."
-        ]
+          {k:"Passage de commande en 1 clic (CTM-PR-1 & CTM-PR-2)", d:"Création directe d'une demande d'achat depuis le contrat et contrôle automatique des plafonds d'engagement."},
+          {k:"Touchless sur les abonnements (CTM-AP)", d:"Les calendriers de facturation pré-approuvés valident automatiquement les factures de loyers ou de maintenance dans AP."},
+          {k:"Suivi du consommé temps réel (PR-CTM & AP-CTM)", d:"Incrémentation automatique des compteurs Total engagé (PR) et Total facturé (AP) face à l'enveloppe du contrat."}
+        ],
+        upsell:"Rebond commercial : coupler Contrats (CTM) avec Factures (AP) et Achats (PR) pour rendre le contrat financièrement exécutable et automatiser les factures récurrentes sans commande."
       },
       pr:{
         full:"E-Procurement (Demandes d'achat & Commandes)",
         solo:[
-          "Expérience d'achat guidée (catalogues internes, Punch-Out Amazon Business / Manutan, devis PDF lu par IA en 30 s) favorisant l'adoption.",
-          "Contrôle budgétaire a priori : vérification temps réel de l'enveloppe disponible avant l'émission du bon de commande.",
-          "Enregistrement des réceptions (Goods Receipts) totales ou partielles sur web et mobile (Esker Anywhere)."
+          {k:"Expérience type e-commerce", d:"Catalogues hébergés, Punch-Out (Amazon Business, Manutan) et création de DA en 30 s depuis un devis PDF lu par IA."},
+          {k:"Contrôle budgétaire a priori", d:"Vérification temps réel du budget disponible par centre de coût ou projet avant toute approbation."},
+          {k:"Réceptions web & mobile", d:"Saisie des réceptions (Goods Receipts) totales ou partielles par les demandeurs sur ordinateur ou mobile."}
         ],
+        limit:"Déployé seul : la comptabilité doit encore ressaisir ou rapprocher les factures dans un autre outil sans héritage natif des réceptions et imputations.",
         syn:[
-          "Moteur du Touchless comptable (PR-AP-1) : chaque commande et réception validée prépare le rapprochement automatique 2 ou 3 voies avec héritage analytique.",
-          "Clôture comptable accélérée (PR-AP-2) : calcul exact et automatisé des provisions pour Factures Non Parvenues (FNP = Réceptionné PR − Facturé AP).",
-          "Achats sous contrôle (SM-PR & CTM-PR) : commandes restreintes aux tiers qualifiés et imputées sur les tarifs et plafonds des contrats."
-        ]
+          {k:"Moteur du Touchless comptable (PR-AP-1)", d:"Chaque commande et réception validée prépare le rapprochement automatique 2 ou 3 voies avec héritage analytique complet."},
+          {k:"Clôture mensuelle instantanée (PR-AP-2)", d:"Calcul automatisé des provisions pour Factures Non Parvenues (FNP = Réceptionné PR − Facturé AP)."},
+          {k:"Conformité achats garantie (SM-PR & CTM-PR-1)", d:"Commandes restreintes aux fournisseurs homologués et imputées sur les tarifs et plafonds des contrats."}
+        ],
+        upsell:"Rebond commercial : pour un client déjà équipé de Factures (AP), ajouter Achats (PR) fait bondir le taux de factures Touchless au-delà de 80 % et sécurise le budget avant la dépense."
       },
       ap:{
         full:"Accounts Payable (Factures fournisseurs)",
         solo:[
-          "Capture omnicanale et lecture IA (Synergy AI) des factures en-tête et lignes, conforme Facturation Électronique (PA / e-invoicing).",
-          "Rapprochement automatique avec les commandes de l'ERP, circuits de validation des factures sans commande et gestion des litiges.",
-          "Intégration ERP temps réel, calcul des FNP et archivage légal à valeur probante."
+          {k:"Capture IA & Facturation Électronique", d:"Reconnaissance Synergy AI en-tête et lignes et conformité réglementaire Plateforme Agréée (PA / e-invoicing)."},
+          {k:"Rapprochement & Workflows", d:"Réconciliation avec les commandes de l'ERP, circuits d'approbation des factures sans commande et gestion des litiges."},
+          {k:"Intégration ERP & Archivage", d:"Comptabilisation temps réel multi-ERP, écritures de FNP et archivage probant sur 10 ans."}
         ],
+        limit:"Déployé seul : les factures « sans commande » demandent encore une validation manuelle récurrente et les opérationnels ne saisissent pas leurs réceptions dans Esker.",
         syn:[
-          "Taux de Touchless maximal (PR-AP-1 & CTM-AP) : réconciliation native avec les commandes/réceptions de PR ET les échéanciers de contrats CTM.",
-          "Sécurité et portail fournisseur (SM-AP-1, SM-AP-2, AP-SM) : contrôle IBAN anti-fraude, PO-Flip en 1 clic, visibilité des paiements 24/7 et escompte dynamique.",
-          "Décaissement unifié (EM-AP) : transformation en 1 clic des notes de frais approuvées en factures à payer dans le même flux ERP."
-        ]
+          {k:"Touchless sur 100 % des typologies (PR-AP-1 & CTM-AP)", d:"Rapprochement natif avec les commandes/réceptions de PR ET avec les échéanciers de contrats CTM pour le hors-commande."},
+          {k:"Zéro appel fournisseur & anti-fraude (SM-AP-1, SM-AP-2, AP-SM)", d:"Contrôle IBAN automatique, PO-Flip portail en 1 clic, visibilité des paiements 24/7 (-70 % d'appels) et escompte dynamique."},
+          {k:"Décaissements unifiés (EM-AP)", d:"Conversion en 1 clic des notes de frais validées en pièces comptables prêtes au remboursement."}
+        ],
+        upsell:"Rebond commercial : sur la base installée AP, proposer Contrats (CTM) pour automatiser les factures récurrentes sans PO, et Fournisseurs (SM) pour bloquer la fraude au RIB."
       },
       em:{
         full:"Expense Management (Notes de frais)",
         solo:[
-          "Saisie mobile instantanée (Esker Anywhere) : photo du reçu avec OCR/IA, indemnités kilométriques Google Maps et ventilation multi-TVA.",
-          "Contrôle automatique de la politique voyages (plafonds par nature, doublons, dépenses week-end).",
-          "Réconciliation automatique des relevés de cartes corporate (Visa, Mastercard, Amex) et gestion des avances."
+          {k:"Saisie mobile zéro papier", d:"Photo du reçu dans Esker Anywhere avec lecture IA, barèmes kilométriques Google Maps et ventilation multi-TVA."},
+          {k:"Contrôle de politique voyages", d:"Détection automatique des dépassements de plafonds, dépenses week-end et justificatifs en doublon."},
+          {k:"Cartes corporate & avances", d:"Rapprochement automatique des flux bancaires (Visa, Mastercard, Amex) avec les reçus photographiés."}
         ],
+        limit:"Déployé seul : nécessite une interface comptable dédiée pour les remboursements et laisse dans l'ombre les achats sauvages payés par carte.",
         syn:[
-          "Chaîne comptable unifiée (EM-AP) : l'action « Approuver et créer une facture » génère automatiquement la pièce à payer dans AP avec justificatifs et TVA.",
-          "Pilotage budgétaire complet (EM-PR) : partage des mêmes Centres de coût et Codes projet pour consolider achats commandés et frais de mission.",
-          "Réduction des achats sauvages (EM-SM) : détection des marchands récurrents payés par carte pour les rapatrier sous contrat."
-        ]
+          {k:"Circuit comptable unique (EM-AP)", d:"Le bouton « Approuver et créer une facture » génère automatiquement la pièce à payer dans AP avec justificatifs et TVA ventilée."},
+          {k:"Coût complet par projet (EM-PR)", d:"Partage des mêmes tables Centres de coût et Codes projet pour consolider achats commandés et frais de mission."},
+          {k:"Chasse aux achats sauvages (EM-SM)", d:"Identification des marchands récurrents payés par carte pour rapatrier ces dépenses sous contrat fournisseur."}
+        ],
+        upsell:"Rebond commercial : un client équipé de Factures (AP) déploie Notes de frais (EM) sur le même socle analytique sans créer de nouveau flux d'intégration ERP."
       }
     },
     syn:[
@@ -134,7 +146,7 @@ const SUITES = {
          "Le panneau Transmission des commandes de la fiche SM détermine automatiquement le canal d'envoi du BC (portail, e-mail PDF, EDI/cXML ou Punch-Out).",
          "Gain : 100 % des dépenses opérationnelles sont orientées vers des tiers conformes et actifs."
        ]},
-      {n:"CTM-PR-1", from:"ctm", to:"pr", fam:"eng", side:"up", core:true, lvl:1.0, tp:0.28, st:"ok",
+      {n:"CTM-PR-1", from:"ctm", to:"pr", fam:"eng", side:"up", core:true, lvl:1.0, tp:0.26, st:"ok",
        t:"Demande d'achat en 1 clic depuis le contrat",
        p:"Depuis un contrat actif, un bouton génère une demande d'achat pré-remplie aux tarifs négociés.",
        d:[
@@ -160,7 +172,7 @@ const SUITES = {
          "À l'arrivée de la facture dans AP, Esker la rapproche de l'échéance du contrat : si elle est dans la tolérance, elle passe en 100 % Touchless sans relancer les valideurs.",
          "Exemple type : une prestation annuelle de 100 k€ facturée 8,3 k€ chaque mois."
        ]},
-      {n:"PR-AP-1", from:"pr", to:"ap", fam:"inv", side:"up", core:true, lvl:1.0, tp:0.28, st:"ok",
+      {n:"PR-AP-1", from:"pr", to:"ap", fam:"inv", side:"up", core:true, lvl:1.0, tp:0.26, st:"ok",
        t:"Rapprochement 2 et 3 voies & héritage analytique",
        p:"La facture est comparée ligne à ligne à la commande et à la réception, et hérite de l'imputation.",
        d:[
@@ -195,7 +207,7 @@ const SUITES = {
          "Les remboursements collaborateurs et les relevés de cartes corporate suivent exactement le même moteur d'intégration ERP et d'audit que les factures fournisseurs."
        ]},
 
-      /* === 12 SYNERGIES AVANCÉES (core: false — visibles en mode « Toutes les synergies » ou par filtre module / famille) === */
+      /* === 12 SYNERGIES AVANCÉES S2P === */
       {n:"SM-SO", from:"sm", to:"so", fam:"sup", side:"down", core:false, lvl:1.0, tp:0.50, st:"ok",
        t:"Panel qualifié et scoré pour consultation",
        p:"L'acheteur sélectionne son panel d'appel d'offres parmi les fournisseurs qualifiés et notés dans SM.",
@@ -226,7 +238,7 @@ const SUITES = {
          "Consolide dynamiquement tous les contrats actifs, en négociation, arrivant à échéance ou expirés liés à ce fournisseur dans CTM.",
          "Donne à l'acheteur une vision complète de l'exposition contractuelle lors des revues de performance fournisseur (Business Reviews)."
        ]},
-      {n:"CTM-PR-2", from:"ctm", to:"pr", fam:"eng", side:"up", core:false, lvl:2.35, tp:0.72, st:"ok",
+      {n:"CTM-PR-2", from:"ctm", to:"pr", fam:"eng", side:"up", core:false, lvl:2.35, tp:0.74, st:"ok",
        t:"Contrôle des dates d'effet et du plafond contractuel",
        p:"Chaque demande d'achat rattachée à un contrat vérifie sa validité et son plafond financier.",
        d:[
@@ -241,7 +253,7 @@ const SUITES = {
          "Tous les bons de commande émis dans PR remontent dans l'onglet Commandes de la fiche SM et sur le portail fournisseur (accusé de réception, avis d'expédition ASN).",
          "Les données de réception (respect des délais de livraison, conformité des quantités livrées, litiges) alimentent les Scorecards d'évaluation fournisseur dans SM."
        ]},
-      {n:"PR-AP-2", from:"pr", to:"ap", fam:"inv", side:"up", core:false, lvl:2.35, tp:0.72, st:"ok",
+      {n:"PR-AP-2", from:"pr", to:"ap", fam:"inv", side:"up", core:false, lvl:2.35, tp:0.74, st:"ok",
        t:"Calcul automatisé des provisions FNP en clôture",
        p:"Les réceptions validées dans Achats mais non encore facturées dans AP génèrent les écritures de FNP.",
        d:[
@@ -262,7 +274,7 @@ const SUITES = {
          "Dès qu'une facture rattachée à un contrat (avec ou sans commande) est comptabilisée dans AP, elle incrémente les compteurs Facturé (avec commande) ou Facturé (sans commande) dans CTM.",
          "La facture s'affiche dans l'onglet Factures du contrat et alimente le graphique de consommation mensuelle ; une alerte part si le plafond du contrat est dépassé."
        ]},
-      {n:"SM-AP-2", from:"sm", to:"ap", fam:"inv", side:"down", core:false, lvl:4.4, tp:0.36, st:"ok",
+      {n:"SM-AP-2", from:"sm", to:"ap", fam:"inv", side:"down", core:false, lvl:4.4, tp:0.34, st:"ok",
        t:"Dépôt portail et conversion BC en facture (PO-Flip)",
        p:"Sur le portail géré via SM, le fournisseur dépose ses factures ou convertit son BC en facture en 1 clic.",
        d:[
@@ -276,7 +288,7 @@ const SUITES = {
          "EM et PR s'appuient sur les mêmes tables maîtres analytiques (S2P - Centres de coût, S2P - Codes projet, S2P - Codes société).",
          "Les frais de mission imputés sur un code projet dans EM se consolident avec les achats commandés sur ce même projet dans PR pour suivre le coût de revient complet."
        ]},
-      {n:"EM-SM", from:"em", to:"sm", fam:"sup", side:"down", core:false, lvl:5.0, tp:0.54, st:"cfg",
+      {n:"EM-SM", from:"em", to:"sm", fam:"sup", side:"down", core:false, lvl:5.1, tp:0.54, st:"cfg",
        t:"Détection des achats sauvages payés par carte",
        p:"L'analyse des marchands récurrents en notes de frais identifie les dépenses à rapatrier sous contrat.",
        d:[
@@ -297,7 +309,7 @@ const SUITES = {
   O2C: {
     key:"O2C", slug:"o2c", name:"Order-to-Cash", short:"Clients et encaissements",
     title:"Order-to-Cash : <em>du risque crédit à l'encaissement</em>",
-    lead:"Sept modules sur un référentiel client et un portail uniques. Chaque code indique le module source et le module cible (ex. CM-OM : de Crédit client vers Commandes). Filtrez par module ou par enjeu pour explorer les synergies.",
+    lead:"Sept modules sur un compte client 360° et un portail uniques. Chaque code indique le module source et le module cible (ex. CM-OM : de Crédit client vers Commandes). Sélectionnez un ou plusieurs modules pour isoler leurs synergies ou préparer votre rebond commercial.",
     preview:false,
     order:["crm","cim","om","id","ca","cd","com"],
     acr:{crm:"CM", cim:"CS", om:"OM", id:"ID", ca:"CA", cd:"CD", com:"CL"},
@@ -308,162 +320,277 @@ const SUITES = {
       crm:{
         full:"Credit Management (Gestion du risque crédit)",
         solo:[
-          "Onboarding crédit digitalisé (formulaire web client) et workflows d'approbation des limites de crédit.",
-          "Connecteurs natifs aux agences de notation et assureurs-crédit (D&B, Ellisphere, Creditsafe, Coface, Allianz Trade).",
-          "Calcul automatisé du score de risque et alertes de veille sur défaillance."
+          {k:"Onboarding crédit digital", d:"Formulaire web client en libre-service, collecte des bilans et workflows d'approbation des limites de crédit."},
+          {k:"Agences & assureurs-crédit", d:"Connecteurs natifs D&B, Ellisphere, Creditsafe, Coface et Allianz Trade."},
+          {k:"Scoring & veille", d:"Calcul automatisé du score de risque et alertes en temps réel sur défaillance ou changement de notation."}
         ],
+        limit:"Déployé seul : l'analyste crédit ne voit pas les commandes en cours de saisie avant facturation et ne peut pas déclencher d'appel de recouvrement prioritaire en un clic.",
         syn:[
-          "Aval (CM-OM) : blocage préventif automatique (Credit Hold) des commandes clients dépassant la limite de crédit autorisée.",
-          "Amont (CL-CM) : réévaluation dynamique du score de risque selon les retards de paiement réels et promesses non tenues dans Recouvrement."
-        ]
+          {k:"Verrou sur les commandes (CM-OM & OM-CM)", d:"Mise en attente automatique (Credit Hold) des commandes dépassant l'encours autorisé et visibilité du carnet d'ordres non facturés."},
+          {k:"Pilotage du recouvrement (CM-CL & CL-CM)", d:"Adaptation automatique de la stratégie de relance selon la classe de risque et réévaluation du score selon le délai réel de paiement (ADP)."},
+          {k:"Déblocage immédiat au paiement (CA-CM)", d:"Recalcul instantané de l'exposition crédit dès qu'un encaissement est lettré dans CA."}
+        ],
+        upsell:"Rebond commercial : ajouter Commandes (OM) et Recouvrement (CL) pour que les règles de crédit bloquent réellement les commandes à risque et pilotent la priorité des relances."
       },
       cim:{
-        full:"Customer Inquiries (Service client)",
+        full:"Customer Inquiries (Service client / Demandes clients)",
         solo:[
-          "Boîte de réception collaborative intelligente remplaçant les boîtes Outlook partagées de l'ADV.",
-          "Détection automatique de l'intention et du sentiment par Synergy AI pour prioriser les demandes urgentes.",
-          "Réponses assistées par IA générative (Synergy-GPT) et suivi des SLA."
+          {k:"Boîte ADV collaborative", d:"Remplace les boîtes Outlook partagées par une file unifiée avec attribution, suivi des SLA et détection de doublons."},
+          {k:"Tri par IA (Synergy AI)", d:"Classification automatique de chaque e-mail entrant par intention (commande, question livraison, facture, litige) et analyse de tonalité."},
+          {k:"Réponses assistées Synergy-GPT", d:"Génération de projets de réponse contextualisés et bibliothèque de modèles."}
         ],
+        limit:"Déployé seul : l'agent Service Client doit encore basculer dans l'ERP ou interroger la comptabilité pour trouver un bon de livraison, une facture ou l'état d'un litige.",
         syn:[
-          "Amont (OM-CS) : accès direct aux statuts de commande en temps réel pour répondre dès le premier contact.",
-          "Aval (CS-CD) : conversion en 1 clic d'un e-mail de réclamation client en dossier de litige structuré dans CD."
-        ]
+          {k:"Passerelle directe vers Commandes (CS-OM & OM-CS)", d:"Envoi automatique des commandes en saisie OM et remontée directe des avis d'expédition (ASN) et liens de tracking transporteur dans CS."},
+          {k:"Autonomie sur les factures (CS-ID & ID-CS)", d:"Accès immédiat au duplicata PDF de la facture et aux dates exactes de consultation par le client sur le portail."},
+          {k:"Industrialisation des réclamations (CS-CD & CD-CS)", d:"Conversion en 1 clic d'un e-mail de réclamation en dossier de litige CD et visibilité sur l'avancement de l'avoir."}
+        ],
+        upsell:"Rebond commercial : un client équipé de Commandes (OM) qui ajoute Demandes clients (CS) élimine 100 % du tri manuel dans sa boîte ADV et divise par 3 son délai de réponse."
       },
       om:{
         full:"Order Management (Prise de commandes clients)",
         solo:[
-          "Capture omnicanale et extraction IA sans modèle des commandes clients (PDF, e-mail, Excel, EDI) avec 80 % de gain de temps.",
-          "Contrôles métiers automatisés (références articles, tarifs, quantités minimales) avant création dans l'ERP.",
-          "Visibilité temps réel des commandes en anomalie."
+          {k:"Capture IA sans modèle", d:"Extraction automatique des commandes PDF, e-mail, Excel ou EDI avec jusqu'à 80 % de gain de temps de saisie pour l'ADV."},
+          {k:"Contrôles métiers avant ERP", d:"Vérification automatique des références articles, tarifs, quantités minimales et unités avant création dans SAP / ERP."},
+          {k:"Pilotage de la charge ADV", d:"Tableaux de bord temps réel des commandes en anomalie, des délais de traitement et de la productivité."}
         ],
+        limit:"Déployé seul : les commandes arrivent mélangées aux questions clients dans la boîte mail, et l'exposition crédit n'est vérifiée qu'après coup dans l'ERP.",
         syn:[
-          "Amont (CM-OM) : sécurisation financière dès la réception de la commande par contrôle temps réel de l'exposition crédit.",
-          "Aval (OM-CS & OM-ID) : partage du statut de commande avec le Service Client et annexion du bon de commande original à la facture."
-        ]
+          {k:"Sécurisation crédit en amont (CM-OM & OM-CM)", d:"Contrôle temps réel de la limite de crédit avant validation et actualisation de l'exposition engagée."},
+          {k:"Portail client unifié (OM-ID)", d:"Le client retrouve au même endroit ses commandes, ses avis d'expédition (ASN) et ses factures liées à son numéro de PO."},
+          {k:"Preuve contractuelle en cas de litige (OM-CD)", d:"Le bon de commande original du client archivé dans OM est consultable en 1 clic par l'analyste litiges."}
+        ],
+        upsell:"Rebond commercial : compléter Commandes (OM) par Demandes clients (CS) en amont et Facturation (ID) en aval pour offrir un portail client de bout en bout."
       },
       id:{
-        full:"Invoice Delivery (Facturation client)",
+        full:"Invoice Delivery (Facturation client & Portail)",
         solo:[
-          "Diffusion omnicanale automatisée (Portail, e-mail, EDI, Peppol, Plateforme Agréée e-invoicing dans +60 pays, courrier).",
-          "Archivage légal à valeur probante et réduction jusqu'à 80 % des coûts d'envoi.",
-          "Portail client en libre-service 24/7."
+          {k:"Diffusion omnicanale & PA", d:"Envoi automatisé (Portail, e-mail, EDI, Peppol, Plateforme Agréée e-invoicing dans +60 pays, courrier éditique)."},
+          {k:"Archivage légal probant", d:"Coffre-fort électronique certifié et portail client en libre-service 24/7."},
+          {k:"Économies directes", d:"Réduction jusqu'à 80 % des coûts d'éditique et d'affranchissement et suppression du délai postal."}
         ],
+        limit:"Déployé seul : la facture est livrée avec preuve de lecture, mais personne n'exploite automatiquement cette preuve pour relancer ni pour lettrer les virements en banque.",
         syn:[
-          "Aval (ID-CL) : preuve horodatée de réception et d'ouverture de la facture transmise au Recouvrement (fin de l'excuse « facture non reçue »).",
-          "Aval (ID-CA) : paiement en ligne sur le portail transmis nativement à Encaissements pour un lettrage automatique à 100 %."
-        ]
+          {k:"Accélérateur de recouvrement (ID-CL & CL-ID)", d:"La preuve d'ouverture de la facture alimente CL (fin du prétexte « facture non reçue ») et chaque relance embarque le lien de paiement portail."},
+          {k:"Socle du lettrage automatique (ID-CA & CA-ID)", d:"Les factures ouvertes et paiements portail alimentent CA pour un lettrage automatique, qui met à jour le statut « Payée » sur le portail."},
+          {k:"Service client informé (ID-CS)", d:"Partage du PDF certifié et des dates de première/dernière consultation avec le Service Client."}
+        ],
+        upsell:"Rebond commercial : sur une base installée Facturation (ID), ajouter Recouvrement (CL) et Encaissements (CA) transforme le portail de facturation en machine à encaisser le cash."
       },
       ca:{
         full:"Cash Application (Lettrage des encaissements)",
         solo:[
-          "Rapprochement automatique par IA des relevés bancaires (CAMT.053, MT940, BAI2) et des avis de paiement (PDF, Excel, e-mail) avec les factures ouvertes.",
-          "Taux élevé de lettrage automatique réduisant le cash non affecté (Unapplied Cash)."
+          {k:"Rapprochement bancaire par IA", d:"Lecture automatique des relevés bancaires (CAMT.053, MT940, BAI2) et des avis de paiement (PDF, Excel, e-mail)."},
+          {k:"Élimination du cash non affecté", d:"Taux de lettrage automatique de 85 % à 95 % même sur des paiements groupés multi-factures ou avec escompte."}
         ],
+        limit:"Déployé seul : lorsqu'un client paie partiellement (déduction), le comptable reste bloqué pour qualifier l'écart et faire valider un avoir par les métiers.",
         syn:[
-          "Aval (CA-CD) : lors d'un paiement partiel, lettrage immédiat du cash reçu et création automatique d'un dossier de déduction dans CD pour l'écart.",
-          "Aval (CA-CL) : arrêt immédiat des relances et sortie de la liste d'appels dès qu'un virement est lettré le matin."
-        ]
+          {k:"Traitement industriel des paiements partiels (CA-CD & CD-CA)", d:"CA lettre immédiatement le cash reçu et crée automatiquement un dossier de déduction dans CD pour l'écart résiduel."},
+          {k:"Arrêt immédiat des relances (CA-CL & CL-CA)", d:"Les factures payées le matin sortent instantanément des listes d'appels CL, et les promesses de paiement CL guident le lettrage CA."},
+          {k:"Libération instantanée du crédit (CA-CM)", d:"Le paiement lettré reconstitue aussitôt la ligne de crédit disponible dans CM."}
+        ],
+        upsell:"Rebond commercial : coupler Encaissements (CA) avec Litiges & Déductions (CD) pour ne plus jamais bloquer un lettrage sur un paiement partiel."
       },
       cd:{
         full:"Claims & Deductions (Litiges et déductions)",
         solo:[
-          "Centralisation, qualification par motif (Reason Codes : casse, écart de prix, pénalité GSA) et workflow de résolution des litiges.",
-          "Collaboration structurée entre Finance, ADV, Logistique et Commercial avec suivi des SLA.",
-          "Génération automatisée des demandes d'avoir ou des courriers de rejet."
+          {k:"Qualification structurée", d:"Catégorisation par motif (Reason Codes : casse transport, écart de prix, pénalité GSA, remise) et calcul de cause racine."},
+          {k:"Workflow inter-services", d:"Circuit d'instruction collaboratif entre Finance, ADV, Logistique et Commercial avec suivi des SLA."},
+          {k:"Émission d'avoirs ou rejets", d:"Génération automatisée des demandes de notes de crédit dans l'ERP ou des courriers de refus documentés."}
         ],
+        limit:"Déployé seul : les litiges doivent être saisis manuellement et le recouvrement risque de continuer à relancer des factures pourtant contestées.",
         syn:[
-          "Amont (CA-CD & CS-CD) : ouverture sans ressaisie des dossiers de litige depuis un paiement partiel ou un e-mail client.",
-          "Aval (CD-CL) : suspension automatique des relances sur le montant contesté pendant l'instruction et reprise automatique après résolution."
-        ]
+          {k:"Alimentation zéro ressaisie (CA-CD, CL-CD, CS-CD)", d:"Création automatique du dossier de litige depuis un moins-perçu au lettrage (CA), un appel de relance (CL) ou un e-mail client (CS)."},
+          {k:"Gel coordonné des relances (CD-CL)", d:"Toute facture en litige passe au statut Disputed dans CL, suspendant les relances automatiques sur le montant contesté."},
+          {k:"Vérification commande & crédit (OM-CD & CD-CM)", d:"Accès en 1 clic au bon de commande original (OM) et neutralisation du litige légitime dans la revue de crédit (CM)."}
+        ],
+        upsell:"Rebond commercial : indispensable en complément d'Encaissements (CA) et de Recouvrement (CL) pour récupérer les déductions abusives et assainir la balance âgée."
       },
       com:{
         full:"Collections Management (Recouvrement)",
         solo:[
-          "Automatisation des relances préventives et curatives (e-mail, courrier, SMS) et agenda d'appels priorisé par IA.",
-          "Suivi des promesses de paiement, plans d'apurement et tableaux de bord DSO / CEI."
+          {k:"Relances multicanales automatisées", d:"Scénarios préventifs et curatifs (e-mail, courrier, SMS, portail) adaptés au profil payeur."},
+          {k:"Agenda d'appels priorisé par IA", d:"Liste quotidienne d'appels classée selon le risque et l'enjeu cash, avec suivi des promesses de paiement."},
+          {k:"Pilotage du DSO & prévisions", d:"Tableaux de bord DSO, CEI (Collection Effectiveness Index), balance âgée dynamique et prévisions d'encaissement."}
         ],
+        limit:"Déployé seul : risque de relancer un client qui a payé le matin même ou qui a déjà ouvert une réclamation auprès du service client.",
         syn:[
-          "Amont (ID-CL, CA-CL, CD-CL) : relances 100 % pertinentes grâce à la preuve de lecture de facture, au gel des factures en litige et à l'arrêt dès lettrage.",
-          "Aval (CL-CM) : escalade automatique vers Crédit Client pour réviser la limite d'un compte en retard critique."
-        ]
+          {k:"Relances 100 % fiables (ID-CL, CA-CL, CD-CL)", d:"Preuve d'ouverture de facture (ID), arrêt immédiat dès lettrage (CA) et suspension automatique sur litige ouvert (CD)."},
+          {k:"Boucle complète avec le Crédit (CM-CL & CL-CM)", d:"Stratégie de relance pilotée par le score de risque CM et déclenchement automatique d'une révision de crédit en cas de promesse rompue."},
+          {k:"Conversion en paiement ou litige (CL-ID, CL-CA, CL-CD)", d:"Lien de paiement en ligne dans chaque relance, promesse guidant le lettrage et déclaration de litige en 1 clic."}
+        ],
+        upsell:"Rebond commercial : un client équipé de Recouvrement (CL) maximise son gain DSO en ajoutant Encaissements (CA) et Litiges (CD) pour concentrer 100 % des appels sur le vrai retard."
       }
     },
     syn:[
-      {n:"CM-OM", from:"crm", to:"om", fam:"eng", side:"up", core:true, lvl:2.2, tp:0.50, st:"ok",
-       t:"Contrôle de limite de crédit dès la commande",
-       p:"Toute commande dépassant l'exposition crédit autorisée est mise en attente (Credit Hold) avant l'ERP.",
+      /* === 10 SYNERGIES MAJEURES O2C (core: true — affichées par défaut) === */
+      {n:"CM-OM", from:"crm", to:"om", fam:"eng", side:"up", core:true, lvl:1.9, tp:0.42, st:"ok",
+       t:"Blocage automatique commande sur risque",
+       p:"Lors de la validation d'une commande dans OM, Esker contrôle la solvabilité et bloque en cas de dépassement.",
        d:[
-         "À la validation d'une commande dans OM, Esker vérifie l'exposition temps réel gérée par CM (encours facturé + commandes en cours + nouvelle commande).",
-         "En cas de dépassement ou de compte bloqué, la commande passe en attente de crédit et alerte l'analyste dans CM.",
-         "Dès approbation d'une dérogation ou relèvement de limite dans CM, la commande est libérée automatiquement dans OM."
+         "Contrôle temps réel des règles définies dans CM (statut de blocage client, limite de crédit autorisée, catégorie de risque, encours disponible).",
+         "Si le plafond est dépassé, la commande est mise en attente (Credit Hold) avec alerte visuelle immédiate pour l'ADV.",
+         "Pourquoi équiper les deux : sécurise le chiffre d'affaires dès la prise de commande avant toute expédition."
        ]},
-      {n:"OM-CS", from:"om", to:"cim", fam:"ret", side:"down", core:true, lvl:1.1, tp:0.50, st:"ok",
-       t:"Statuts de commande temps réel pour le Service Client",
-       p:"L'agent Service Client voit l'avancement exact de la commande et convertit un e-mail en commande.",
+      {n:"CS-OM", from:"cim", to:"om", fam:"eng", side:"up", core:true, lvl:1.0, tp:0.50, st:"ok",
+       t:"Transfert automatique commandes et questions",
+       p:"L'IA de Service Client trie la boîte ADV et route les commandes directement dans OM.",
        d:[
-         "Lorsqu'un client écrit pour demander le statut de sa commande, Synergy AI dans CS interroge directement OM et propose la réponse avec les pièces liées.",
-         "Inversement, un bon de commande reçu sur la boîte du Service Client (CS) est transféré en 1 clic vers OM pour extraction."
+         "Le moteur Synergy AI de CS analyse les e-mails entrants : ceux qualifiés en commande (Order) créent automatiquement une commande à valider dans OM.",
+         "Les questions portant sur une commande existante (Order question) sont rattachées directement au fil de conversation de la commande dans OM.",
+         "Pourquoi équiper les deux : élimine 100 % du tri manuel dans la boîte mail partagée de l'ADV."
        ]},
-      {n:"OM-ID", from:"om", to:"id", fam:"inv", side:"up", core:true, lvl:1.1, tp:0.50, st:"cfg",
-       t:"Bon de commande original rattaché à la facture",
-       p:"Le bon de commande capturé dans OM suit le dossier et peut être annexé au PDF de la facture.",
+      {n:"OM-CS", from:"om", to:"cim", fam:"ret", side:"down", core:true, lvl:1.0, tp:0.50, st:"ok",
+       t:"Suivi commande, ASN et tracking transporteur",
+       p:"L'agent Service Client visualise les colis, l'avis d'expédition et le lien transporteur pour répondre en 1 clic.",
        d:[
-         "Le bon de commande initial du client, capturé et archivé dans OM, est lié à la facture correspondante dans ID.",
-         "Selon les exigences du client acheteur, ID joint automatiquement la copie du BC initial à la facture pour éviter tout rejet."
+         "Face à une demande « Où en est ma commande ? », CS interroge OM et affiche les confirmations de commande, les avis d'expédition (ASN) et les liens de tracking.",
+         "Synergy-GPT rédige automatiquement la réponse client avec les données exactes de livraison.",
+         "Pourquoi équiper les deux : résolution dès le premier contact des demandes de suivi de livraison."
        ]},
-      {n:"ID-CL", from:"id", to:"com", fam:"inv", side:"up", core:true, lvl:3.4, tp:0.52, st:"ok",
-       t:"Preuve de réception et d'ouverture de la facture",
-       p:"Le chargé de recouvrement sait en temps réel si la facture a été reçue, lue ou téléchargée.",
+      {n:"OM-ID", from:"om", to:"id", fam:"inv", side:"up", core:true, lvl:1.0, tp:0.50, st:"ok",
+       t:"Portail unifié commande, expédition et facture",
+       p:"Le client retrouve sur un seul portail ses commandes, ses bons de livraison et ses factures liées.",
        d:[
-         "Toute facture diffusée par ID alimente la balance âgée dans CL avec sa traçabilité de diffusion (reçue, ouverte sur le portail, ou en rebond e-mail).",
-         "Élimine le premier motif de retard (« Je n'ai jamais reçu votre facture ») et permet le renvoi du duplicata en 1 clic."
+         "L'activation du profil O2C - Customer réunit sur le même portail client les commandes soumises (OM), les avis d'expédition (ASN) et les factures (ID).",
+         "Selon les exigences du client, ID peut joindre automatiquement la copie du bon de commande initial capturé dans OM au PDF de la facture.",
+         "Pourquoi équiper les deux : guichet digital unique pour le client final et zéro rejet de facture pour pièce manquante."
        ]},
-      {n:"ID-CA", from:"id", to:"ca", fam:"inv", side:"up", core:true, lvl:1.1, tp:0.50, st:"ok",
-       t:"Paiement sur le portail lettré à 100 %",
-       p:"Une facture payée en ligne sur le portail client est lettrée automatiquement sans intervention humaine.",
+      {n:"ID-CL", from:"id", to:"com", fam:"inv", side:"up", core:true, lvl:3.2, tp:0.54, st:"ok",
+       t:"Preuve de remise et lecture de facture",
+       p:"Le chargé de recouvrement voit si la facture a été reçue, ouverte ou téléchargée sur le portail.",
        d:[
-         "Le portail alimenté par ID permet au client de payer ses factures en ligne (carte bancaire, prélèvement SEPA / ACH).",
-         "Le détail des factures réglées est transmis nativement à CA pour un rapprochement automatique à 100 %."
+         "Les factures diffusées par ID alimentent CL avec leurs dates de première et dernière consultation (First/Last view date) et leur statut de remise.",
+         "Permet d'attacher le duplicata certifié ou le relevé de compte en un clic lors d'une relance.",
+         "Pourquoi équiper les deux : supprime définitivement l'excuse n°1 des retards de paiement (« Je n'ai pas reçu la facture »)."
        ]},
-      {n:"CA-CD", from:"ca", to:"cd", fam:"inv", side:"up", core:true, lvl:1.1, tp:0.50, st:"ok",
-       t:"Paiement partiel converti en dossier de déduction",
-       p:"Lors d'un règlement partiel, CA lettre le cash reçu et ouvre automatiquement le litige résiduel dans CD.",
+      {n:"ID-CA", from:"id", to:"ca", fam:"inv", side:"up", core:true, lvl:1.0, tp:0.50, st:"ok",
+       t:"Référentiel factures et paiement portail lettré",
+       p:"Les factures émises et les paiements effectués sur le portail alimentent directement le moteur de lettrage.",
        d:[
-         "Si un client pratique une retenue ou un paiement partiel (Short Payment), CA comptabilise immédiatement le montant encaissé.",
-         "L'écart résiduel crée automatiquement un dossier dans CD avec l'avis de paiement joint et le motif (Reason Code) extrait par Synergy AI."
+         "Les factures diffusées dans ID alimentent la table des créances ouvertes (Open AR) avec montants, devises et conditions d'escompte pour CA.",
+         "Tout règlement effectué en ligne sur le portail client (CB, prélèvement SEPA / ACH) est réconcilié automatiquement à 100 % dans CA.",
+         "Pourquoi équiper les deux : taux de rapprochement automatique maximal dès la réception des fonds."
        ]},
-      {n:"CD-CL", from:"cd", to:"com", fam:"sup", side:"down", core:true, lvl:1.1, tp:0.50, st:"ok",
-       t:"Suspension automatique des relances en cas de litige",
-       p:"Un litige ouvert dans CD gèle automatiquement les relances sur le montant contesté dans Recouvrement.",
+      {n:"CA-CD", from:"ca", to:"cd", fam:"inv", side:"up", core:true, lvl:1.0, tp:0.50, st:"ok",
+       t:"Création auto de déduction sur moins-perçu",
+       p:"Lors d'un paiement partiel, CA lettre le cash reçu et ouvre automatiquement le dossier de litige dans CD.",
        d:[
-         "Dès qu'une facture (ou une partie de facture) est en litige dans CD, son statut passe en En litige dans CL, ce qui suspend les relances automatiques sur la part contestée.",
-         "Dès que le litige est résolu ou rejeté dans CD, la facture réintègre automatiquement le scénario de relance CL."
+         "Lorsqu'un paiement partiel (Short payment) est détecté sur un virement ou un avis de paiement dans CA, la partie encaissée est comptabilisée sans attendre.",
+         "L'écart résiduel instancie automatiquement un dossier dans le workflow Claim/Deduction de CD avec le montant déduit, le motif extrait par IA et l'avis de paiement joint.",
+         "Pourquoi équiper les deux : aucun paiement partiel ne bloque plus le lettrage et aucune déduction abusive ne passe sous le radar."
        ]},
-      {n:"CA-CL", from:"ca", to:"com", fam:"ret", side:"up", core:false, lvl:2.3, tp:0.56, st:"ok",
+      {n:"CD-CL", from:"cd", to:"com", fam:"sup", side:"up", core:true, lvl:1.0, tp:0.50, st:"ok",
+       t:"Gel automatique des relances sur litige",
+       p:"Toute facture en litige dans CD passe en statut contesté dans CL et suspend ses relances automatiques.",
+       d:[
+         "Dès qu'une réclamation ou déduction est ouverte dans CD, la facture passe au statut Disputed dans CL avec affichage du motif et de la cause racine.",
+         "Les relances automatiques sont gelées sur le montant litigieux pendant toute l'instruction, puis reprennent automatiquement si le litige est rejeté.",
+         "Pourquoi équiper les deux : protège la relation commerciale en n'envoyant jamais de mise en demeure sur un litige en cours de traitement."
+       ]},
+      {n:"CA-CL", from:"ca", to:"com", fam:"ret", side:"down", core:true, lvl:2.1, tp:0.42, st:"ok",
        t:"Arrêt immédiat des relances dès le lettrage",
-       p:"Dès qu'un paiement est lettré dans CA, la facture sort instantanément de la liste d'appels CL.",
+       p:"Un paiement lettré le matin dans CA stoppe aussitôt les relances et clôt la promesse de règlement dans CL.",
        d:[
-         "La réconciliation effectuée le matin dans CA met immédiatement à jour l'encours ouvert dans Esker, avant même les traitements batch de nuit.",
-         "Garantit qu'aucun chargé de recouvrement n'appelle un client qui vient de payer."
+         "Tout règlement alloué dans CA met à jour le solde ouvert et marque la facture comme réconciliée dans l'environnement partagé.",
+         "Stoppe immédiatement les relances automatiques et passe les promesses de paiement associées au statut Completed dans CL.",
+         "Pourquoi équiper les deux : aucun chargé de recouvrement n'appelle plus un client qui a payé le matin même."
        ]},
-      {n:"CS-CD", from:"cim", to:"cd", fam:"sup", side:"down", core:false, lvl:2.8, tp:0.48, st:"ok",
-       t:"E-mail de réclamation converti en litige suivi",
-       p:"Un e-mail client signalant une avarie ou un écart de prix devient en 1 clic un dossier d'instruction CD.",
+      {n:"CL-CM", from:"com", to:"crm", fam:"ret", side:"down", core:true, lvl:4.9, tp:0.50, st:"ok",
+       t:"Révision du score crédit selon comportement payeur",
+       p:"Les retards moyens (ADP) et promesses rompues dans CL recalculent le score de risque dans CM.",
        d:[
-         "Synergy AI dans CS catégorise les e-mails entrants portant sur une contestation de facture ou un problème de livraison.",
-         "L'agent crée en 1 clic la fiche de réclamation dans CD avec toutes les pièces jointes et l'historique de la conversation."
+         "Les indicateurs de paiement issus de CL (Average Days to Pay, Payer rating, promesses non tenues) alimentent la Credit Scorecard de CM.",
+         "De plus, dès que l'appel de recouvrement demandé par l'analyste crédit est effectué dans CL, la revue de crédit en attente (On hold) reprend automatiquement dans CM.",
+         "Pourquoi équiper les deux : un pilotage du risque fondé sur l'expérience réelle de paiement et non sur les seuls bilans passés."
        ]},
-      {n:"CL-CM", from:"com", to:"crm", fam:"eng", side:"down", core:false, lvl:4.2, tp:0.50, st:"ok",
-       t:"Comportement de paiement réel vers révision du crédit",
-       p:"Les retards constatés et promesses non tenues dans CL déclenchent une revue de limite de crédit dans CM.",
+
+      /* === 12 SYNERGIES AVANCÉES O2C === */
+      {n:"OM-CM", from:"om", to:"crm", fam:"ret", side:"down", core:false, lvl:2.0, tp:0.66, st:"ok",
+       t:"Actualisation temps réel de l'encours engagé",
+       p:"Les commandes non encore facturées incrémentent l'exposition future du client et déclenchent une alerte crédit.",
        d:[
-         "Le délai moyen de paiement réel (ADP), la balance âgée et les promesses non respectées dans CL alimentent en continu le score de risque dans CM.",
-         "Au-delà d'un seuil de retard critique, CM déclenche automatiquement une demande de révision de la limite de crédit."
+         "La validation ou l'import des commandes ouvertes (Uninvoiced orders) dans OM met à jour l'exposition engagée du client dans CM.",
+         "Si une commande fait franchir le seuil d'exposition future (Potential Future Exposure), CM déclenche automatiquement une revue de crédit."
+       ]},
+      {n:"CM-CL", from:"crm", to:"com", fam:"eng", side:"up", core:false, lvl:5.0, tp:0.50, st:"ok",
+       t:"Stratégie de relance pilotée par le risque",
+       p:"La classe de risque calculée dans CM adapte la stratégie de relance et déclenche des appels prioritaires.",
+       d:[
+         "La mise à jour de la catégorie de risque dans CM affecte dynamiquement le client à la stratégie de recouvrement correspondante dans CL (relances plus précoces sur profil risqué).",
+         "Depuis une revue de crédit avec commandes bloquées, le bouton « Request collection call » crée directement un appel prioritaire dans CL."
+       ]},
+      {n:"CA-CM", from:"ca", to:"crm", fam:"ret", side:"up", core:false, lvl:4.1, tp:0.35, st:"ok",
+       t:"Libération immédiate de la ligne de crédit",
+       p:"Dès le lettrage bancaire dans CA, l'encours disponible est reconstitué dans CM sans attendre la nuit.",
+       d:[
+         "Le rapprochement d'un règlement dans CA diminue immédiatement l'encours ouvert (Open AR) utilisé par CM.",
+         "Permet aux règles automatiques de libérer sans délai les commandes en attente de crédit."
+       ]},
+      {n:"CD-CM", from:"cd", to:"crm", fam:"sup", side:"down", core:false, lvl:4.1, tp:0.36, st:"cfg",
+       t:"Neutralisation des litiges légitimes dans le risque",
+       p:"L'analyste crédit distingue l'encours sain en retard des montants contestés en cours d'instruction.",
+       d:[
+         "Les montants qualifiés dans CD (Disputed amount) sont isolés dans la revue de crédit CM.",
+         "Évite de pénaliser le score ou de bloquer les commandes d'un bon client dont le retard résulte d'une erreur logistique ou tarifaire interne."
+       ]},
+      {n:"CS-ID", from:"cim", to:"id", fam:"inv", side:"up", core:false, lvl:2.5, tp:0.42, st:"ok",
+       t:"Récupération immédiate de duplicata de facture",
+       p:"Depuis un e-mail demandant une copie de facture, l'agent CS joint le PDF original issu d'ID.",
+       d:[
+         "Lorsqu'un e-mail entrant est qualifié en « Invoice question » dans CS, le gestionnaire accède directement au PDF archivé dans ID et au lien portail.",
+         "Permet à l'ADV de répondre au premier contact sans solliciter la comptabilité clients."
+       ]},
+      {n:"ID-CS", from:"id", to:"cim", fam:"ret", side:"down", core:false, lvl:2.4, tp:0.52, st:"ok",
+       t:"Traçabilité d'envoi et de lecture pour le support",
+       p:"Le Service Client vérifie en temps réel quand et par quel canal la facture a été envoyée et ouverte.",
+       d:[
+         "ID expose dans CS le canal de diffusion (portail, e-mail, EDI, courrier), l'adresse destinataire et les dates exactes d'ouverture par le client."
+       ]},
+      {n:"CS-CD", from:"cim", to:"cd", fam:"sup", side:"down", core:false, lvl:3.3, tp:0.46, st:"cfg",
+       t:"Qualification d'un e-mail client en dossier litige",
+       p:"Un e-mail signalant une avarie ou une erreur de prix est transmis avec ses preuves dans le workflow CD.",
+       d:[
+         "Les e-mails classés en réclamation (Claim) par l'IA dans CS sont routés vers CD avec le BL émargé, les photos et le numéro de facture extrait."
+       ]},
+      {n:"OM-CD", from:"om", to:"cd", fam:"eng", side:"up", core:false, lvl:2.4, tp:0.52, st:"ok",
+       t:"Vérification du bon de commande original en litige",
+       p:"L'analyste litiges consulte en 1 clic le bon de commande original du client capturé dans OM.",
+       d:[
+         "Lors d'une contestation de tarif, de remise ou de quantité commandée dans CD, l'analyste ouvre directement le PDF du PO client archivé dans OM."
+       ]},
+      {n:"CL-ID", from:"com", to:"id", fam:"inv", side:"down", core:false, lvl:3.2, tp:0.66, st:"ok",
+       t:"Relances embarquant le lien de paiement portail",
+       p:"Chaque e-mail de relance et relevé de compte CL inclut le renvoi de facture et le lien de paiement en ligne ID.",
+       d:[
+         "Les courriers et e-mails de relance générés par CL intègrent nativement le bouton d'accès direct au portail de paiement ID et l'action « Pay on behalf of customer »."
+       ]},
+      {n:"CA-ID", from:"ca", to:"id", fam:"ret", side:"down", core:false, lvl:1.0, tp:0.50, st:"ok",
+       t:"Mise à jour du statut Payée sur le portail client",
+       p:"Dès l'allocation du règlement dans CA, le portail client ID affiche la facture soldée et le détail du paiement.",
+       d:[
+         "Le lettrage effectué dans CA actualise en temps réel le solde restant dû et alimente l'onglet Payments du portail client ID."
+       ]},
+      {n:"CD-CA", from:"cd", to:"ca", fam:"ret", side:"down", core:false, lvl:1.0, tp:0.50, st:"ok",
+       t:"Lien dossier litige et apurement par avoir dans CA",
+       p:"L'opérateur de lettrage voit le dossier CD sur la ligne de facture et l'avoir validé apure le solde.",
+       d:[
+         "L'écran de lettrage CA affiche le numéro cliquable du dossier CD, la date, le motif et le montant contesté ; l'avoir émis après résolution solde automatiquement le poste ouvert."
+       ]},
+      {n:"CL-CD", from:"com", to:"cd", fam:"sup", side:"down", core:false, lvl:1.0, tp:0.50, st:"ok",
+       t:"Déclaration de litige en 1 clic pendant un appel",
+       p:"Lors d'un appel de relance dans CL, le gestionnaire déclare un litige qui ouvre directement le workflow CD.",
+       d:[
+         "Depuis la fiche facture dans CL, le bouton « Dispute » permet de saisir le motif, le montant contesté et les pièces jointes pour lancer l'instruction dans CD."
        ]}
     ],
     ai:{t:"Synergy, l'IA à chaque étape", st:"ok",
-        p:"Extraire les commandes sans modèle, détecter l'intention des e-mails clients, prioriser les appels de recouvrement, lettrer les avis de paiement et qualifier les déductions : Synergy IA accélère tout le cycle Order-to-Cash.",
-        d:["Synergy IA : disponible sur les 7 modules Order-to-Cash"]},
+        p:"Trier la boîte mail ADV, extraire les commandes sans modèle, prédire le risque de retard, lettrer les avis de paiement complexes et qualifier les déductions : Synergy IA accélère les 7 modules Order-to-Cash.",
+        d:[
+          "Synergy IA : disponible nativement sur les 7 modules Order-to-Cash",
+          "Synergy-GPT : rédaction assistée des réponses clients dans Demandes clients (CS)",
+          "Auto-apprentissage continu sur les habitudes de commande et de règlement de chaque client"
+        ]},
     chain:false
   }
 };

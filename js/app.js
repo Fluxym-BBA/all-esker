@@ -302,9 +302,10 @@ function dockToggle(){ dock.classList.contains("open") ? dockClose() : dockOpen(
     });
   }
 
-  /* --- cartes --- */
-  document.getElementById("gridS2P").innerHTML = ORDER_S2P.map(id => cardHTML(byId(id))).join("");
-  document.getElementById("gridO2C").innerHTML = ORDER_O2C.map(id => cardHTML(byId(id))).join("");
+  /* --- cartes (optionnelles : supprimées au profit de la navigation 3 niveaux) --- */
+  const gS2P = document.getElementById("gridS2P"), gO2C = document.getElementById("gridO2C");
+  if(gS2P) gS2P.innerHTML = ORDER_S2P.map(id => cardHTML(byId(id))).join("");
+  if(gO2C) gO2C.innerHTML = ORDER_O2C.map(id => cardHTML(byId(id))).join("");
   document.querySelectorAll(".card").forEach(c => {
     c.addEventListener("click", () => sel(c.dataset.id));
     c.addEventListener("keydown", e => { if(e.key === "Enter" || e.key === " "){ e.preventDefault(); sel(c.dataset.id); } });
@@ -347,7 +348,8 @@ function dockToggle(){ dock.classList.contains("open") ? dockClose() : dockOpen(
   const onScroll = () => {
     hdr.classList.toggle("scrolled", window.scrollY > 10);
     /* le widget et la flèche n'apparaissent qu'une fois la grande roue dépassée */
-    const past = window.scrollY > (stageEl.offsetHeight * 0.55);
+    const inSubLevel = !!(window.NAV && window.NAV.suite) || !!current;
+    const past = inSubLevel || window.scrollY > (stageEl.offsetHeight * 0.55);
     dock.classList.toggle("on", past);
     toTop.classList.toggle("on", past);
     if(!past && dock.classList.contains("open")) dockClose();
