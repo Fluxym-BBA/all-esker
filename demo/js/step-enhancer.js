@@ -99,13 +99,14 @@
     chatTd.style.display = chatTd.dataset.synergyOpen === 'true' ? 'table-cell' : 'none';
 
     const openPanel = () => {
-      // Si le contenu n'a pas pu être injecté plus tôt, l'injecter maintenant
       if (!chatTd.querySelector('#chatbot-container') && window.ESKER_INPLACE_STATES && window.ESKER_INPLACE_STATES.synergy_panel_html) {
         chatTd.innerHTML = window.ESKER_INPLACE_STATES.synergy_panel_html;
         bindPanelEvents();
       }
       chatTd.dataset.synergyOpen = 'true';
       chatTd.style.display = 'table-cell';
+      chatTd.style.height = 'calc(100vh - 56px)';
+      chatTd.style.minHeight = '100%';
       synBtn.classList.add('header-synergy-button-open');
       const input = chatTd.querySelector('#message-input');
       if (input) setTimeout(() => input.focus(), 80);
@@ -354,10 +355,32 @@
     if (!chartBox) return;
     const reportLink = chartBox.querySelector('.dashReportLink');
     const titleCell = chartBox.querySelector('.dashReportTitleCell');
-    if (reportLink) { reportLink.setAttribute('href','javascript:void(0)'); reportLink.onclick=e=>{e.preventDefault();e.stopPropagation(); if(stepId===4) notifyParentStep(5);}; }
-    if (titleCell) { titleCell.style.cursor = stepId===4 ? 'pointer':'default'; titleCell.onclick=e=>{e.preventDefault();e.stopPropagation(); if(stepId===4) notifyParentStep(5);}; }
+    if (reportLink) {
+      reportLink.setAttribute('href','javascript:void(0)');
+      reportLink.style.cursor = 'pointer';
+      reportLink.title = 'Cliquer pour ouvrir le rapport détaillé Factures en attente (Étape 5)';
+      reportLink.onclick = e => { e.preventDefault(); e.stopPropagation(); notifyParentStep(5); };
+    }
+    if (titleCell) {
+      titleCell.style.cursor = 'pointer';
+      titleCell.title = 'Cliquer pour ouvrir le rapport détaillé Factures en attente (Étape 5)';
+      titleCell.onclick = e => { e.preventDefault(); e.stopPropagation(); notifyParentStep(5); };
+    }
 
     chartBox.querySelectorAll('.highcharts-breadcrumbs-button').forEach(btn=>{ if(btn.dataset.bound) return; btn.dataset.bound='true'; btn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation(); const t=btn.textContent||''; notifyParentStep(t.includes('Marc')?2:1);}); });
+
+    if (stepId === 2 || stepId === 8 || stepId === 1) {
+      const labels=Array.from(chartBox.querySelectorAll('.highcharts-data-label')).filter(l=>l.textContent.includes('Marc'));
+      const slice=chartBox.querySelector('.highcharts-point.highcharts-color-0');
+      if (slice) {
+        slice.style.cursor = 'pointer';
+        slice.onclick = e => { e.preventDefault(); e.stopPropagation(); notifyParentStep(3); };
+      }
+      labels.forEach(l => {
+        l.style.cursor = 'pointer';
+        l.onclick = e => { e.preventDefault(); e.stopPropagation(); notifyParentStep(3); };
+      });
+    }
 
     if (stepId === 2) {
       const labels=Array.from(chartBox.querySelectorAll('.highcharts-data-label')).filter(l=>l.textContent.includes('Marc')); const slice=chartBox.querySelector('.highcharts-point.highcharts-color-0'); const target=labels.at(-1)||slice;
@@ -380,15 +403,165 @@
     setTimeout(updateAllBadges,80);
   }
 
-  function setupDashboardHoverExplanations() {
-    const add=(el,title,text)=>{ if(!el||el.dataset.hoverExplanation) return; el.dataset.hoverExplanation='true'; el.classList.add('esk-dash-hoverable'); bindTooltip(el,title,text); };
-    const search=document.querySelector('input[placeholder*="Recherch"], input[aria-label*="Recherch"]');
-    add(search,'Recherche universelle','Recherchez une facture, un numéro de commande ou un fournisseur pour retrouver rapidement les informations utiles.');
-    document.querySelectorAll('[data-testid="counter"]').forEach(el=>add(el,el.textContent.trim().replace(/\s+/g,' '),'Ce compteur donne une vue immédiate du volume à traiter et permet d\'ouvrir la liste correspondante.'));
-    document.querySelectorAll('.dashButtonContent').forEach(el=>add(el,el.textContent.trim().replace(/\s+/g,' '),'Action rapide du poste Factures Fournisseurs : import, export ou téléchargement de documents.'));
-    document.querySelectorAll('.dashReportContent').forEach(el=>{const title=el.querySelector('.dashReportTitleCell,.dashReportTitle,.dashReportLink'); const t=title?title.textContent.trim().replace(/\s+/g,' '):''; if(t) add(el,t,'Ce rapport transforme les données du processus en indicateur exploitable pour piloter les délais, les blocages, les paiements ou les fournisseurs.');});
-    const workspace=document.querySelector('.header-menu-with-synergy, #header-contents');
-    add(workspace,'Espaces de travail','Naviguez entre les tables, les factures fournisseurs, les exportations, les fournisseurs, les propositions de paiement et les rapports.');
+    function setupDashboardHoverExplanations() {
+    const add = (el, title, text) => {
+      if (!el || el.dataset.hoverExplanation) return;
+      el.dataset.hoverExplanation = 'true';
+      el.classList.add('esk-dash-hoverable');
+      bindTooltip(el, title, text);
+    };
+
+    const search = document.querySelector('input[placeholder*="Recherch"], input[aria-label*="Recherch"]');
+    add(search, 'Recherche universelle intelligente', 'Recherchez instantanément par numéro de facture, référence de commande, nom de fournisseur ou montant pour accéder directement à la pièce comptable recherchée.');
+
+    const workspace = document.querySelector('.header-menu-with-synergy, #header-contents');
+    add(workspace, 'Espaces de travail & Processus Esker', 'Basculez en un clic entre la gestion des factures fournisseurs, les bons de commande, les fournisseurs référencés, les campagnes de paiement et les rapports décisionnels.');
+
+    // Explications métier précises pour chaque compteur
+    const counterMap = {
+      "DashCounter_AP_InvoiceBatchesToSplit": [
+        "Lots à découper (Capture)",
+        "Fichiers multi-factures en attente de découpage manuel ou assisté par IA. Permet d'éliminer les goulots d'étranglement dès l'acquisition pour éviter que des factures ne restent invisibles dans la file de traitement."
+      ],
+      "DashCounter_AP_InvoicesInAccountingDepartment": [
+        "Assignées au comptable (40 factures)",
+        "Volume de factures en cours de contrôle ou de saisie par l'équipe comptable. Thermomètre de charge : plus ce volume baisse à périmètre constant, plus le taux d'automatisation (Touchless) est performant."
+      ],
+      "DashCounter_AP_InvoicesToApprove": [
+        "Assignées aux approbateurs (20 factures)",
+        "Factures en attente de visa chez les opérationnels (acheteurs, managers de centres de coûts). Permet d'identifier et relancer de façon ciblée les directions métier qui retardent le cycle de validation."
+      ],
+      "DashCounter_AP_InvoicesOnHold": [
+        "En attente (7 factures en litige)",
+        "Factures bloquées pour litige tarifaire, service non fait ou attente d'avoir. Isole les contestations actives pour sécuriser les décaissements et accélérer les résolutions de litiges."
+      ],
+      "DashCounter_AP_InvoicesToPay": [
+        "En attente de paiement (8 factures)",
+        "Factures validées et comptabilisées prêtes pour la prochaine campagne de règlement. Donne au Trésorier une visibilité exacte sur les décaissements certains à court terme."
+      ],
+      "DashCounter_AP_InvoicesInError": [
+        "En erreur d'interface (1 facture)",
+        "Factures bloquées techniquement (échec de synchronisation ERP, données de base manquantes). Alerte immédiate évitant qu'une anomalie système ne devienne un retard de paiement."
+      ],
+      "DashCounter_AP_Invoices overdue": [
+        "Montant échu (228 k€ / 24 factures)",
+        "Dettes fournisseurs dont la date d'échéance contractuelle est dépassée sans règlement. Indicateur direct de risque d'amendes administratives (Loi LME), de pénalités et d'interruption de livraisons."
+      ],
+      "DashCounter_AP_Potentially Invoices overdue": [
+        "Risque de retard (7,07 k€ / 4 factures)",
+        "Factures non soldées arrivant à échéance sous 5 à 10 jours avec risque de dépassement. Permet de prioriser les validations par urgence financière plutôt qu'au fil de l'eau."
+      ],
+      "DashCounter_AP_Invoices with available discounts": [
+        "Escomptes disponibles (108 $ / 1 facture)",
+        "Montant potentiel de remises pour paiement anticipé encore captables. Transforme la comptabilité fournisseurs en centre de profit en optimisant le rendement des liquidités de trésorerie."
+      ],
+      "DashCounter_AP_VendorStatementsToApprove": [
+        "Relevés fournisseurs à rapprocher (1 relevé)",
+        "Relevés de comptes reçus des partenaires en attente de cadrage. Permet de détecter les pièces manquantes et les doublons avant la clôture mensuelle pour sécuriser les provisions (FNP/CCA)."
+      ]
+    };
+
+    Object.keys(counterMap).forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        add(el, counterMap[id][0], counterMap[id][1]);
+      }
+    });
+
+    // Explications métier précises pour chaque graphique
+    const reportMap = {
+      "DashReport_AP_TimePerStep": [
+        "Délai moyen de traitement par état",
+        "Mesure la durée moyenne passée par une facture à chaque étape (Capture, Saisie, Approbation, Contrôle, Validation ERP). Permet de localiser immédiatement les goulots d'étranglement pour fluidifier le cycle global."
+      ],
+      "DashReport_AP_Invoices verified by month": [
+        "Factures vérifiées par mois",
+        "Volume mensuel de factures contrôlées par l'équipe comptable. Permet de mesurer l'évolution de la productivité dans le temps, d'anticiper la saisonnalité (clôtures) et de calibrer les effectifs."
+      ],
+      "DashReport_AP_Average processing time": [
+        "Délai moyen de traitement par fournisseur",
+        "Temps moyen de cycle entre réception et bon à payer par tiers. Isole les fournisseurs générant des anomalies récurrentes pour alimenter les négociations achats et imposer la facturation électronique."
+      ],
+      "DashReport_AP_Time By ApproverCDL": [
+        "Délai moyen d'approbation par approbateur",
+        "Classement des valideurs métier en fonction de leur temps de réponse. Permet au management d'ajuster les règles d'escalade, de fixer des délégations temporaires et d'éradiquer les rétentions injustifiées."
+      ],
+      "DashReport_AP_SLA over time": [
+        "Délai moyen de traitement par mois",
+        "Évolution historique du temps de traitement global par rapport aux engagements de service (SLA). Démontre le ROI de la dématérialisation (ex. réduction de 25 à 4 jours de cycle) et la conformité légale."
+      ],
+      "DashReport_AP_Invoices pending per vendor": [
+        "Factures en attente par fournisseur",
+        "Concentration du stock d'impayés en cours par partenaire stratégique. Prévient les suspensions de livraisons et les appels au standard comptable en traitant en priorité les fournisseurs clés."
+      ],
+      "DashReport_AP_Invoices pending per approver": [
+        "Factures en attente par approbateur (Graphique central interactif)",
+        "Répartition des factures actuellement retenues par chaque valideur. Permet d'organiser des relances ciblées avant la clôture mensuelle pour garantir l'exhaustivité des engagements comptables."
+      ],
+      "DashReport_AP_PaidOnTime": [
+        "Factures payées à temps",
+        "Taux de conformité des règlements à l'échéance contractuelle. Indicateur audité par la direction générale et les commissaires aux comptes, garantissant l'image de marque et la négociation d'escomptes."
+      ],
+      "DashReport_AP_InvoicesWithHolds": [
+        "Factures précédemment mises en attente",
+        "Proportion de factures ayant subi un gel au cours de leur traitement. Révèle les coûts de non-qualité amont (commandes mal passées, réceptions en retard en entrepôt) pour agir sur les causes racines."
+      ],
+      "DashReport_AP_Invoices by submission method": [
+        "Factures par mode de réception (3 derniers mois)",
+        "Répartition des canaux d'entrée (E-mail PDF, EDI, Portail, Factur-X, Papier). Permet de piloter la transition vers les flux structurés de la réforme électronique pour maximiser le traitement automatisé."
+      ],
+      "DashReport_AP_Invoices PO vs Non-PO trend": [
+        "Répartition des factures avec et sans commande",
+        "Ratio factures associées à un bon de commande (PO) vs frais généraux directs (Non-PO). Pilote l'adhésion à la politique Achats 'No PO, No Pay' et maximise le rapprochement automatique 3-way matching."
+      ],
+      "DashReport_AP_User per profile": [
+        "Utilisateurs par profil",
+        "Ventilation des utilisateurs actifs par profil (Comptables, Approbateurs, Gestionnaires, Administrateurs). Permet de gérer la sécurité des accès et la séparation des tâches de contrôle."
+      ],
+      "DashReport_AP_InvoicesByDueDate": [
+        "Balance âgée",
+        "Ventilation des dettes exigibles par tranches d'antériorité (Non échues, 1-30j, 31-60j, 61-90j, >90j). Offre au DAF et Trésorier une vue claire du passif pour arbitrer les priorités de trésorerie."
+      ],
+      "DashReport_AP_PaymentForecast": [
+        "Prévisions de paiements",
+        "Calendrier prévisionnel des montants à décaisser sur les semaines à venir. Permet d'anticiper les besoins en liquidités, d'optimiser les lignes de crédit et de lisser les tirages bancaires."
+      ],
+      "DashReport_AP_DiscountForecast": [
+        "Escomptes disponibles",
+        "Calendrier des remises financières pour paiement anticipé à capturer. Permet de générer un gain financier direct sur les liquidités dormantes en accélérant les factures éligibles."
+      ],
+      "DashReport_AP_DPO": [
+        "Délai moyen de paiement (DPO)",
+        "Days Payable Outstanding : nombre moyen de jours mis pour régler les dettes fournisseurs. Indicateur clé du BFR permettant d'équilibrer trésorerie préservée et ponctualité exemplaire."
+      ],
+      "DashReport_AP_InvoicesCompanyCodes": [
+        "Factures par code société",
+        "Ventilation de l'activité comptable par entité juridique ou filiale du groupe. Permet de mesurer la charge des centres de services partagés (CSP) et d'identifier les filiales en retard de traitement."
+      ],
+      "DashReport_AP_ProcessedDocuments60Days": [
+        "Factures des 60 derniers jours",
+        "Volume de documents traités sur les 2 derniers mois. Permet de suivre le rythme opérationnel à court terme et la réactivité immédiate du centre de traitement."
+      ],
+      "DashReport_AP_ProcessedDocuments6Months": [
+        "Factures des 6 derniers mois",
+        "Volume semestriel consolidé. Permet de mesurer la trajectoire de productivité et de lisser les effets de saisonnalité entre clôtures semestrielles."
+      ],
+      "DashReport_AP_ProcessedDocuments3Years": [
+        "Factures des 3 dernières années",
+        "Volume pluriannuel traité sur la plateforme. Démontre la capacité de montée en charge de la solution sans augmentation linéaire des coûts de gestion comptable."
+      ]
+    };
+
+    Object.keys(reportMap).forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        add(el, reportMap[id][0], reportMap[id][1]);
+      }
+    });
+
+    document.querySelectorAll('.dashButtonContent').forEach(el => {
+      add(el, 'Action rapide opérationnelle', 'Lancement immédiat d\'une opération comptable clé : téléversement de factures, import de relevés bancaires ou exportation des écritures validées.');
+    });
   }
 
   /* =========================================================================
@@ -510,204 +683,49 @@
     if (!filterPanel || filterPanel.dataset.dropdownEnhanced) return;
     filterPanel.dataset.dropdownEnhanced = 'true';
 
-    const fields = (FILTER_CATALOG.fields || []).slice().sort((a, b) => a.display_order - b.display_order);
-    const operators = FILTER_CATALOG.operator_catalog || [];
-    const opById = new Map(operators.map(op => [op.id, op]));
+    // Infobulle explicative sur les critères de filtres
+    bindTooltip(
+      filterPanel,
+      'Critères de filtrage configurables',
+      'Vous pouvez ajouter autant de critères de filtrage que nécessaire grâce au bouton « + » en bas à gauche. Chaque champ et chaque opérateur s\'adaptent dynamiquement aux règles de gestion de l\'entreprise.'
+    );
 
-    // Liste des opérateurs par défaut pour chaque type si non spécifié
-    const defaultTextOps = [
-      { id: 'equals', label: 'égal à' },
-      { id: 'not_equals', label: 'différent de' },
-      { id: 'starts_with', label: 'commence par' },
-      { id: 'contains', label: 'contient' },
-      { id: 'not_contains', label: 'ne contient pas' },
-      { id: 'less_than', label: 'inférieur à' },
-      { id: 'less_or_equal', label: 'inférieur ou égal à' },
-      { id: 'greater_than', label: 'supérieur à' },
-      { id: 'greater_or_equal', label: 'supérieur ou égal à' }
-    ];
-    const defaultDateOps = [
-      { id: 'equals', label: 'égal à' },
-      { id: 'not_equals', label: 'différent de' },
-      { id: 'less_than', label: 'inférieur à' },
-      { id: 'less_or_equal', label: 'inférieur ou égal à' },
-      { id: 'greater_than', label: 'supérieur à' },
-      { id: 'greater_or_equal', label: 'supérieur ou égal à' }
-    ];
-    const defaultStatusOps = [
-      { id: 'equals', label: 'égal à' },
-      { id: 'not_equals', label: 'différent de' }
-    ];
+    // Infobulle sur le bouton Ajouter un filtre (+)
+    const addBtn = filterPanel.querySelector('.ConditionListAddButton, button[title*="Ajouter"], a[title*="Ajouter"]');
+    if (addBtn) {
+      addBtn.style.cursor = 'pointer';
+      bindTooltip(
+        addBtn,
+        'Ajouter un critère de filtrage',
+        'Cliquez pour ajouter une nouvelle condition de filtrage (ET logique). Vous pouvez combiner autant de critères que nécessaire pour affiner la corbeille de factures.'
+      );
+    }
 
-    let activeMenu = null;
-    const closeMenu = () => {
-      if (activeMenu) {
-        activeMenu.remove();
-        activeMenu = null;
-      }
-    };
-    document.addEventListener('click', e => {
-      if (activeMenu && !activeMenu.contains(e.target) && !e.target.closest('.select2-container, .esk-select-dropdown')) {
-        closeMenu();
-      }
-    }, true);
+    // Rendre les champs de saisie de valeur directement interactifs
+    const editInputs = filterPanel.querySelectorAll('input[id*="_edit"]');
+    editInputs.forEach(inp => {
+      inp.classList.remove('sf-hidden');
+      inp.style.display = 'block';
+      inp.style.backgroundColor = '#ffffff';
+      inp.style.border = '1px solid #d1d5db';
+      inp.style.borderRadius = '4px';
+      inp.style.padding = '4px 8px';
+      inp.style.width = '100%';
+      inp.style.fontSize = '12px';
+      inp.placeholder = 'Filtrer en direct…';
+      inp.removeAttribute('readonly');
+      inp.removeAttribute('disabled');
+      inp.style.pointerEvents = 'auto';
+    });
 
-    const rows = Array.from(filterPanel.querySelectorAll('tr.ConditionListRow'));
-    rows.forEach((row, rowIdx) => {
-      const fieldSel = row.querySelector('select[id*="_ddl1"]');
-      const opSel = row.querySelector('select[id*="_ddl3"]');
-
-      const fieldS2 = fieldSel ? fieldSel.nextElementSibling : null;
-      const opS2 = opSel ? opSel.nextElementSibling : null;
-
-      // Configuration du sélecteur de champ
-      if (fieldS2 && fieldSel) {
-        fieldS2.style.cursor = 'pointer';
-        const fieldRendered = fieldS2.querySelector('.select2-selection__rendered');
-
-        fieldS2.addEventListener('click', e => {
-          e.preventDefault();
-          e.stopPropagation();
-          closeMenu();
-
-          activeMenu = document.createElement('div');
-          activeMenu.className = 'esk-select-dropdown';
-          const rect = fieldS2.getBoundingClientRect();
-          activeMenu.style.left = Math.max(8, rect.left) + 'px';
-          activeMenu.style.top = (rect.bottom + 4) + 'px';
-          activeMenu.style.minWidth = Math.max(220, rect.width) + 'px';
-
-          const searchBox = document.createElement('div');
-          searchBox.className = 'esk-select-search';
-          searchBox.innerHTML = '<input type="search" placeholder="Rechercher un champ…">';
-          activeMenu.appendChild(searchBox);
-
-          const optsContainer = document.createElement('div');
-          optsContainer.className = 'esk-select-options';
-          activeMenu.appendChild(optsContainer);
-
-          const renderFieldOpts = (term = '') => {
-            optsContainer.innerHTML = '';
-            fields.filter(f => f.label.toLowerCase().includes(term.toLowerCase())).forEach(f => {
-              const btn = document.createElement('button');
-              btn.type = 'button';
-              btn.className = 'esk-select-opt' + (fieldRendered && fieldRendered.textContent.trim() === f.label ? ' active' : '');
-              btn.innerHTML = `<span>${f.label}</span><small style="opacity:0.6">${f.input_type}</small>`;
-              btn.onclick = ev => {
-                ev.preventDefault();
-                ev.stopPropagation();
-                if (fieldRendered) fieldRendered.textContent = f.label;
-                fieldSel.value = f.id;
-                // Adapter l'opérateur par défaut
-                if (opSel && opS2) {
-                  const opRendered = opS2.querySelector('.select2-selection__rendered');
-                  if (opRendered) opRendered.textContent = f.default_operator_label || 'égal à';
-                  opSel.value = f.default_operator || 'equals';
-                }
-                closeMenu();
-                runLiveTableFilter();
-              };
-              optsContainer.appendChild(btn);
-            });
-          };
-
-          renderFieldOpts();
-          searchBox.querySelector('input').addEventListener('input', ev => renderFieldOpts(ev.target.value));
-          document.body.appendChild(activeMenu);
-          searchBox.querySelector('input').focus();
-        });
-      }
-
-      // Configuration du sélecteur d'opérateur
-      if (opS2 && opSel) {
-        opS2.style.cursor = 'pointer';
-        const opRendered = opS2.querySelector('.select2-selection__rendered');
-
-        opS2.addEventListener('click', e => {
-          e.preventDefault();
-          e.stopPropagation();
-          closeMenu();
-
-          // Déterminer le champ actuel pour cette ligne
-          const fieldLabel = (fieldS2 && fieldS2.querySelector('.select2-selection__rendered'))
-            ? fieldS2.querySelector('.select2-selection__rendered').textContent.trim()
-            : '';
-          const currentField = fields.find(f => f.label === fieldLabel) || fields[rowIdx] || fields[0];
-
-          // Déterminer la liste des opérateurs
-          let opList = [];
-          if (currentField && Array.isArray(currentField.available_operators) && currentField.available_operators.length) {
-            opList = currentField.available_operators.map(id => opById.get(id)).filter(Boolean).map(o => ({ id: o.id, label: o.label_html || o.label }));
-          } else if (currentField && currentField.input_type === 'date') {
-            opList = defaultDateOps;
-          } else if (currentField && currentField.input_type === 'select_or_text') {
-            opList = defaultStatusOps;
-          } else {
-            opList = defaultTextOps;
-          }
-
-          activeMenu = document.createElement('div');
-          activeMenu.className = 'esk-select-dropdown';
-          const rect = opS2.getBoundingClientRect();
-          activeMenu.style.left = Math.max(8, rect.left) + 'px';
-          activeMenu.style.top = (rect.bottom + 4) + 'px';
-          activeMenu.style.minWidth = Math.max(180, rect.width) + 'px';
-
-          const optsContainer = document.createElement('div');
-          optsContainer.className = 'esk-select-options';
-          activeMenu.appendChild(optsContainer);
-
-          opList.forEach(op => {
-            const btn = document.createElement('button');
-            btn.type = 'button';
-            btn.className = 'esk-select-opt' + (opRendered && opRendered.textContent.trim() === op.label ? ' active' : '');
-            btn.textContent = op.label;
-            btn.onclick = ev => {
-              ev.preventDefault();
-              ev.stopPropagation();
-              if (opRendered) opRendered.textContent = op.label;
-              opSel.value = op.id;
-              closeMenu();
-              runLiveTableFilter();
-            };
-            optsContainer.appendChild(btn);
-          });
-
-          document.body.appendChild(activeMenu);
-        });
-      }
-
-      // Configuration de la saisie de valeur
-      const editInp = row.querySelector('input[id*="_edit"]');
-      const tagifySpan = row.querySelector('tags span.tagify__input');
-      const browseBtn = row.querySelector('.ConditionListBrowseContainer');
-
-      if (editInp) {
-        editInp.classList.remove('sf-hidden');
-        editInp.style.display = 'block';
-        editInp.style.backgroundColor = '#ffffff';
-        editInp.style.border = '1px solid #d1d5db';
-        editInp.style.borderRadius = '4px';
-        editInp.style.padding = '4px 8px';
-        editInp.style.width = '100%';
-        editInp.style.fontSize = '12px';
-        editInp.placeholder = 'Saisir une valeur…';
-        editInp.removeAttribute('readonly');
-        editInp.removeAttribute('disabled');
-        editInp.addEventListener('input', runLiveTableFilter);
-      }
-      if (tagifySpan) {
-        tagifySpan.setAttribute('contenteditable', 'true');
-        tagifySpan.style.cursor = 'text';
-        tagifySpan.addEventListener('input', () => {
-          if (editInp) editInp.value = tagifySpan.textContent.trim();
-          runLiveTableFilter();
-        });
-      }
-      if (browseBtn) {
-        browseBtn.style.visibility = 'visible';
-        browseBtn.style.cursor = 'pointer';
-      }
+    const tagifySpans = filterPanel.querySelectorAll('tags span.tagify__input');
+    tagifySpans.forEach((span, idx) => {
+      span.setAttribute('contenteditable', 'true');
+      span.style.cursor = 'text';
+      span.addEventListener('input', () => {
+        if (editInputs[idx]) editInputs[idx].value = span.textContent.trim();
+        runLiveTableFilter();
+      });
     });
   }
 
@@ -810,7 +828,12 @@
     if (viewBtns && !viewBtns.dataset.enhanced) {
       viewBtns.dataset.enhanced = 'true';
       viewBtns.style.cursor = 'pointer';
-      viewBtns.title = 'Personnaliser les colonnes affichées';
+      viewBtns.title = 'Personnaliser les colonnes (ajouter, masquer, réordonner)';
+      bindTooltip(
+        viewBtns,
+        'Personnalisation complète des colonnes',
+        'Les colonnes de la vue sont totalement configurables : vous pouvez en ajouter, en masquer, réordonner leur disposition ou enregistrer des vues personnalisées adaptées à chaque rôle comptable.'
+      );
       viewBtns.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();

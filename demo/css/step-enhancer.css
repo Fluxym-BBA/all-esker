@@ -396,6 +396,40 @@ tr.esk-pulse-row-amber:hover > td {
 #reactChatPanelRoot.synergy-panel {
   vertical-align: top;
   background-color: var(--main-color-grey, #e8e8e8);
+  height: calc(100vh - 56px) !important;
+  min-height: 100% !important;
+  display: table-cell;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-sizing: border-box;
+}
+
+#reactChatPanelRoot.synergy-panel > .esk-chat-panel {
+  position: relative;
+  padding: 10px 10px 10px 0;
+  height: 100% !important;
+  box-sizing: border-box;
+  background-color: var(--main-color-grey, #e8e8e8);
+}
+
+#reactChatPanelRoot.synergy-panel .esk-chat-container {
+  height: 100% !important;
+  min-width: 400px;
+  max-width: 400px;
+}
+
+#reactChatPanelRoot.synergy-panel .chatbot-container,
+#reactChatPanelRoot.synergy-panel #chatbot-container {
+  height: 100% !important;
+  display: flex !important;
+  flex-flow: column !important;
+}
+
+#reactChatPanelRoot.synergy-panel #message-list-container {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
 }
 #reactChatPanelRoot.synergy-panel[style*="display: none"] {
   display: none !important;
