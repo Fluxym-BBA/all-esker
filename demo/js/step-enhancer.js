@@ -72,22 +72,12 @@
      VOLET LATÉRAL « SYNERGY AGENT » (ACTIF SUR TOUTES LES PAGES QUI ONT LE BOUTON)
      ========================================================================= */
   function setupSynergyAgentGlobal() {
-    let synBtn = document.getElementById('header-synergy-agent-button');
+    const synBtn = document.getElementById('header-synergy-agent-button');
     let chatTd = document.getElementById('reactChatPanelRoot');
 
-    // Les écrans 10 et 11 sont des pages Esker d’un autre gabarit et ne
-    // contiennent pas la cellule React du panneau. On ajoute uniquement le
-    // point de montage manquant, puis on injecte le DOM capturé d’Esker.
-    if (!synBtn) {
-      const header = document.getElementById('form-header') || document.querySelector('.form-header') || document.body;
-      synBtn = document.createElement('button');
-      synBtn.id = 'header-synergy-agent-button';
-      synBtn.type = 'button';
-      synBtn.className = 'header-synergy-agent-button';
-      synBtn.textContent = '✦ Synergy Agent';
-      synBtn.setAttribute('aria-label', 'Ouvrir Synergy Agent');
-      header.appendChild(synBtn);
-    }
+    // Le bouton Synergy Agent n'existe que dans les écrans où Esker le fournit.
+    // Ne jamais l'inventer sur une facture ou un autre gabarit.
+    if (!synBtn) return;
     if (!chatTd) {
       chatTd = document.createElement('div');
       chatTd.id = 'reactChatPanelRoot';
@@ -407,6 +397,30 @@
     setTimeout(updateAllBadges,180);
   }
 
+  function bindInvoiceQuitButtons(targetStep, badgeText) {
+    const candidates = [];
+    const header = document.getElementById('header-quit-button');
+    if (header) candidates.push(header);
+    document.querySelectorAll('.form-footer a, .FooterButtons a').forEach(function (el) {
+      const text = (el.textContent || '').trim();
+      if (text === 'Quitter' && !el.classList.contains('sf-hidden') && !el.classList.contains('HiddenRunTime')) candidates.push(el);
+    });
+    Array.from(new Set(candidates)).forEach(function (quitBtn) {
+      quitBtn.classList.add('esk-pulse-primary');
+      quitBtn.onclick = function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        notifyParentStep(targetStep);
+      };
+      if (!quitBtn.dataset.eskQuitBound) {
+        quitBtn.dataset.eskQuitBound = 'true';
+        createFloatingBadge(quitBtn, badgeText || '🎯 Cliquez sur Quitter pour revenir au tableau de bord', function () {
+          notifyParentStep(targetStep);
+        }, { pos: 'bottom', offsetX: -110 });
+      }
+    });
+  }
+
   /* =========================================================================
      ÉTAPES 5 & 6 : FACTURE BLOQUÉE ACME (281270) & CONVERSATION INTERNE MARC
      ========================================================================= */
@@ -473,18 +487,7 @@
       );
 
       // Bouton Quitter ramenant au tableau de bord (Étape 8)
-      const quitBtn = document.getElementById('header-quit-button') || document.querySelector('.Quit-button');
-      if (quitBtn) {
-        quitBtn.classList.add('esk-pulse-primary');
-        quitBtn.onclick = function (e) {
-          e.preventDefault();
-          e.stopPropagation();
-          notifyParentStep(8);
-        };
-        createFloatingBadge(quitBtn, '🎯 Cliquez sur Quitter pour revenir au Tableau de bord', function () {
-          notifyParentStep(8);
-        }, { pos: 'bottom', offsetX: -110 });
-      }
+      bindInvoiceQuitButtons(8, '🎯 Cliquez sur Quitter pour revenir au tableau de bord');
     }
 
     setupPreviewControls();
@@ -770,18 +773,7 @@
       'Le circuit de validation route automatiquement la facture vers Éric Demandeur (Contrôleur) pour arbitrer l’écart.'
     );
 
-    const quitBtn = document.getElementById('header-quit-button') || document.querySelector('.Quit-button');
-    if (quitBtn) {
-      quitBtn.classList.add('esk-pulse-primary');
-      quitBtn.onclick = function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        notifyParentStep(8);
-      };
-      createFloatingBadge(quitBtn, '🎯 Revenir au tableau de bord', function () {
-        notifyParentStep(8);
-      }, { pos: 'bottom', offsetX: -140 });
-    }
+    bindInvoiceQuitButtons(8, '🎯 Revenir au tableau de bord');
 
     setupPreviewControls();
     setTimeout(updateAllBadges, 80);
@@ -838,14 +830,7 @@
       'Facture de service (S1) reçue et contrôlée via la Plateforme Agréée (PA) avec statut « Mise à disposition ».'
     );
 
-    const quitBtn = document.getElementById('header-quit-button') || document.querySelector('.Quit-button');
-    if (quitBtn) {
-      quitBtn.onclick = function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        notifyParentStep(8);
-      };
-    }
+    bindInvoiceQuitButtons(8, '🎯 Revenir au tableau de bord');
 
     setupMultiDocumentsCarousel();
     setupPreviewControls();
@@ -1147,7 +1132,7 @@
     });
 
     if ([1, 2, 3, 4, 8].includes(stepId)) {
-      setupDashboardStep(stepId, !isInPlaceTransition);
+      setupDashboardStep(stepId, !isInPlaceTransition || [2, 3, 4].includes(stepId));
     } else if (stepId === 5) {
       setupReportStep();
     } else if (stepId === 6 || stepId === 7) {
