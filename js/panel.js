@@ -1,3 +1,91 @@
+
+function o2cModuleHTML(id) {
+  const data = typeof O2C_DETAILS !== 'undefined' ? O2C_DETAILS[id] : null;
+  if (!data) return "";
+
+  const metricsHtml = data.metrics.map(m => `
+    <div class="o2c-metric-card">
+      <span class="o2c-metric-num">${m.num}</span>
+      <span class="o2c-metric-lbl">${m.label}</span>
+    </div>
+  `).join("");
+
+  const briquesHtml = data.briques.map(b => `
+    <div class="o2c-brique-card">
+      <h5>${b.t}</h5>
+      <p>${b.d}</p>
+    </div>
+  `).join("");
+
+  const usecaseHtml = `
+    <div class="o2c-usecase-box">
+      <div class="o2c-usecase-text">
+        <span class="usecase-badge">${data.usecase.tag}</span>
+        <h4>${data.usecase.title}</h4>
+        <p>${data.usecase.desc}</p>
+      </div>
+      <div class="o2c-usecase-img">
+        <img src="${data.usecase.img}" alt="${data.usecase.title}" loading="lazy">
+      </div>
+    </div>
+  `;
+
+  const processHtml = `
+    <div class="o2c-process-grid">
+      <div class="process-step-item">
+        <strong>Étape Métier Cible</strong>
+        <span>${data.process.step}</span>
+      </div>
+      <div class="process-step-item">
+        <strong>Rôle & Couverture Solution</strong>
+        <span>${data.process.role}</span>
+      </div>
+      <div class="process-step-item">
+        <strong>Systèmes de Référence (System of Record)</strong>
+        <span>${data.process.system}</span>
+      </div>
+      <div class="process-step-item">
+        <strong>Synergies Transverses</strong>
+        <span>${data.process.synergy}</span>
+      </div>
+    </div>
+  `;
+
+  return `
+    <div class="o2c-deep-dive">
+      <div class="o2c-tabs-header" role="tablist">
+        <button type="button" class="o2c-tab-btn active" data-o2ctab="briques">Contenu Applicatif</button>
+        <button type="button" class="o2c-tab-btn" data-o2ctab="usecase">Cas d'Usage Réel</button>
+        <button type="button" class="o2c-tab-btn" data-o2ctab="process">Rapprochement Processus SI</button>
+      </div>
+      <div class="o2c-tab-content active" data-o2cpane="briques">
+        <div class="o2c-metrics-row">${metricsHtml}</div>
+        <div class="o2c-briques-grid">${briquesHtml}</div>
+      </div>
+      <div class="o2c-tab-content" data-o2cpane="usecase">
+        ${usecaseHtml}
+      </div>
+      <div class="o2c-tab-content" data-o2cpane="process">
+        ${processHtml}
+      </div>
+    </div>
+  `;
+}
+
+function bindO2CTabs(container) {
+  if (!container) return;
+  const tabBtns = container.querySelectorAll('.o2c-tab-btn');
+  const panes = container.querySelectorAll('.o2c-tab-content');
+
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.o2ctab;
+      tabBtns.forEach(b => b.classList.toggle('active', b === btn));
+      panes.forEach(p => p.classList.toggle('active', p.dataset.o2cpane === target));
+    });
+  });
+}
+
 /* =========================================================================
    5. PANNEAU VIDÉO
    ========================================================================= */
@@ -116,6 +204,7 @@ function renderPanel(id, vidIdx, autoplay){
       </header>
       <div class="panel-body">${media}</div>
       ${XP[id] && !soon ? xpHTML(m) : ""}
+      ${o2cModuleHTML(id)}
     </article>`;
 
   markActive(id);
@@ -142,6 +231,7 @@ function renderPanel(id, vidIdx, autoplay){
   const rb = document.getElementById("replayBtn");
   if(rb) rb.addEventListener("click", () => { if(player){ player.currentTime = 0; playVideo(); } });
 
+  bindO2CTabs(host);
   host.querySelectorAll("#pClose").forEach(b => b.addEventListener("click", closePanel));
   host.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", () => sel(b.dataset.go, {keepPlace:true, focus:false})));
   host.querySelectorAll("[data-vid]").forEach(b =>
