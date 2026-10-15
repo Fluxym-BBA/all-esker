@@ -203,7 +203,7 @@
     document.addEventListener("DOMContentLoaded", function () {
       const c = document.getElementById("fluxymServicesContainer");
       if (c && typeof renderFluxymServicesHTML === "function") {
-        c.innerHTML = renderFluxymServicesHTML();
+        c.innerHTML = renderFluxymServicesHTML(); if (typeof bindFluxymServicesEvents === "function") bindFluxymServicesEvents();
       }
     });
   </script>
