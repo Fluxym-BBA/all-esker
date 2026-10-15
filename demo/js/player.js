@@ -22,7 +22,6 @@
   const btnPrev = document.getElementById('btnPrev');
   const btnNext = document.getElementById('btnNext');
   const btnFocusTarget = document.getElementById('btnFocusTarget');
-  const btnQuitDemo = document.getElementById('btnQuitDemo');
   const btnCollapseDock = document.getElementById('btnCollapseDock');
   const drawer = document.getElementById('drawerPanel');
   const drawerBackdrop = document.getElementById('drawerBackdrop');
@@ -123,8 +122,6 @@
     guideAction.textContent = step.action;
 
     btnPrev.disabled = index === 0;
-    const quitEnabled = [6, 7, 10, 11].includes(step.id);
-    btnQuitDemo.hidden = !quitEnabled;
     btnNext.innerHTML = index === DEMO_STEPS.length - 1 ? ' Recommencer ↺' : 'Étape suivante →';
 
     updateHeaderPills();
@@ -207,12 +204,6 @@
         renderStep(targetIdx, true);
       }
     }
-  });
-
-  btnQuitDemo.addEventListener('click', function () {
-    const dashboardIndex = DEMO_STEPS.findIndex(function (s) { return s.id === 8; });
-    renderStep(dashboardIndex === -1 ? 0 : dashboardIndex, true);
-    showToast('Retour au tableau de bord');
   });
 
   btnNext.addEventListener('click', nextStep);

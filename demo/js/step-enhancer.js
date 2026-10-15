@@ -30,6 +30,13 @@
 
     const href = a.getAttribute('href') || '';
     const origHref = a.getAttribute('data-esk-href') || '';
+    const isLogo = /logo/i.test(a.id || '') || /logo/i.test(a.className || '');
+    if (isLogo || a.id === 'header-logo-left') {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      notifyParentStep(8);
+      return;
+    }
 
     // Bloquer systématiquement toute tentative de navigation vers un serveur Esker externe
     if (href.indexOf('esker.com') !== -1 || href.indexOf('.aspx') !== -1 || origHref) {
@@ -42,11 +49,11 @@
       if (tabText === 'ACCUEIL' || a.id === 'header-logo-left') {
         e.preventDefault();
         e.stopPropagation();
-        notifyParentStep(8);
+        notifyParentStep(7);
       } else if (tabText === 'FACTURES FOURNISSEURS') {
         e.preventDefault();
         e.stopPropagation();
-        notifyParentStep(9);
+        notifyParentStep(8);
       } else if (tabText === 'RAPPORTS') {
         e.preventDefault();
         e.stopPropagation();
@@ -67,124 +74,61 @@
      VOLET LATÉRAL « SYNERGY AGENT » (ACTIF SUR TOUTES LES PAGES QUI ONT LE BOUTON)
      ========================================================================= */
   function setupSynergyAgentGlobal() {
-    let synBtn = document.getElementById('header-synergy-agent-button');
-    let chatTd = document.getElementById('reactChatPanelRoot');
-
-    // Les écrans 10 et 11 sont des pages Esker d’un autre gabarit et ne
-    // contiennent pas la cellule React du panneau. On ajoute uniquement le
-    // point de montage manquant, puis on injecte le DOM capturé d’Esker.
-    if (!synBtn) {
-      const header = document.getElementById('form-header') || document.querySelector('.form-header') || document.body;
-      synBtn = document.createElement('button');
-      synBtn.id = 'header-synergy-agent-button';
-      synBtn.type = 'button';
-      synBtn.className = 'header-synergy-agent-button';
-      synBtn.textContent = '✦ Synergy Agent';
-      synBtn.setAttribute('aria-label', 'Ouvrir Synergy Agent');
-      header.appendChild(synBtn);
-    }
-    if (!chatTd) {
-      chatTd = document.createElement('div');
-      chatTd.id = 'reactChatPanelRoot';
-      chatTd.className = 'synergy-panel synergy-panel-fallback';
-      document.body.appendChild(chatTd);
-    }
+    const synBtn = document.getElementById('header-synergy-agent-button');
+    if (!synBtn) return;
 
     synBtn.classList.add('esk-synergy-ready');
-    synBtn.title = 'Cliquez pour ouvrir ou fermer le volet Synergy Agent';
-    chatTd.classList.add('synergy-panel');
-    chatTd.style.verticalAlign = 'top';
+    synBtn.title = 'Ouvrir Synergy Agent';
 
-    // Réutiliser le DOM capturé d'Esker, et non une reconstruction parallèle.
-    if (!chatTd.querySelector('.esk-chat-panel') && window.ESKER_INPLACE_STATES && window.ESKER_INPLACE_STATES.synergy_panel_html) {
-      chatTd.innerHTML = window.ESKER_INPLACE_STATES.synergy_panel_html;
+    let overlay = document.getElementById('esk-synergy-overlay');
+    if (!overlay) {
+      overlay = document.createElement('aside');
+      overlay.id = 'esk-synergy-overlay';
+      overlay.className = 'esk-synergy-overlay';
+      overlay.setAttribute('aria-label', 'Synergy Agent');
+      overlay.innerHTML = `
+        <div class="esk-synergy-head">
+          <div><strong>Synergy Agent</strong><small>Assistant intelligent Esker</small></div>
+          <div class="esk-synergy-head-actions"><button type="button" data-syn-expand title="Agrandir">⤢</button><button type="button" data-syn-close title="Fermer">×</button></div>
+        </div>
+        <div class="esk-synergy-intro">Interrogez vos factures, vos échéances, vos fournisseurs, vos workflows et vos indicateurs sans quitter l'espace de travail.</div>
+        <div class="esk-synergy-quick-btns">
+          <button type="button" class="esk-synergy-qbtn" data-syn-prompt="Quelles sont les factures en retard ?">Factures en retard</button>
+          <button type="button" class="esk-synergy-qbtn" data-syn-prompt="Quelles factures sont bloquées chez Marc ?">Blocages chez Marc</button>
+          <button type="button" class="esk-synergy-qbtn" data-syn-prompt="Montre-moi les écarts de rapprochement.">Écarts de rapprochement</button>
+        </div>
+        <div class="esk-synergy-messages" data-syn-messages>
+          <div class="esk-synergy-message assistant"><strong>Synergy Agent</strong><p>Je peux vous aider à retrouver une facture, expliquer un blocage, analyser les échéances ou résumer les exceptions détectées.</p></div>
+        </div>
+        <form class="esk-synergy-form" data-syn-form><input type="text" data-syn-input placeholder="Posez une question à Synergy Agent…"><button type="submit">➤</button></form>`;
+      document.body.appendChild(overlay);
     }
-    chatTd.style.display = chatTd.dataset.synergyOpen === 'true' ? 'table-cell' : 'none';
 
     const openPanel = () => {
-      chatTd.dataset.synergyOpen = 'true';
-      chatTd.style.display = 'table-cell';
+      overlay.classList.add('open');
       synBtn.classList.add('header-synergy-button-open');
-      const input = chatTd.querySelector('#message-input');
-      if (input) setTimeout(() => input.focus(), 80);
-      setTimeout(updateAllBadges, 60);
+      const input=overlay.querySelector('[data-syn-input]');
+      if(input) setTimeout(()=>input.focus(),80);
     };
     const closePanel = () => {
-      chatTd.dataset.synergyOpen = 'false';
-      chatTd.style.display = 'none';
+      overlay.classList.remove('open');
       synBtn.classList.remove('header-synergy-button-open');
-      setTimeout(updateAllBadges, 60);
     };
 
     if (!synBtn.dataset.synergyBound) {
-      synBtn.dataset.synergyBound = 'true';
-      synBtn.addEventListener('click', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        if (chatTd.dataset.synergyOpen === 'true') closePanel();
-        else openPanel();
-      });
-
-      const closeIcon = chatTd.querySelector('.chat-close');
-      if (closeIcon) {
-        const closeBtn = closeIcon.closest('.chatbot-header-button') || closeIcon;
-        closeBtn.addEventListener('click', function (e) {
-          e.preventDefault();
-          e.stopPropagation();
-          closePanel();
-        });
-      }
-
-      const expandIcon = chatTd.querySelector('.chat-expand-arrow');
-      const chatContainer = chatTd.querySelector('.esk-chat-container');
-      if (expandIcon && chatContainer) {
-        const expandBtn = expandIcon.closest('.chatbot-header-button') || expandIcon;
-        expandBtn.addEventListener('click', function (e) {
-          e.preventDefault();
-          e.stopPropagation();
-          const expanded = chatContainer.classList.toggle('expanded');
-          chatContainer.style.minWidth = expanded ? '560px' : '400px';
-          chatContainer.style.maxWidth = expanded ? '560px' : '400px';
-          setTimeout(updateAllBadges, 60);
-        });
-      }
-
-      const msgInput = chatTd.querySelector('#message-input');
-      const sendArrow = chatTd.querySelector('#message-input-arrow');
-      const msgList = chatTd.querySelector('#message-list-container');
-      const sendSynergyMessage = () => {
-        if (!msgInput || !msgList) return;
-        const text = msgInput.value.trim();
-        if (!text) return;
-        const userMsg = document.createElement('div');
-        userMsg.className = 'message-container';
-        userMsg.innerHTML = '<div class="user-name-container"><div class="icon-assistant"></div><span class="user-name">Vous</span></div><div class="fade-animation"><div class="message-content lighter-table"><p></p></div></div>';
-        userMsg.querySelector('p').textContent = text;
-        msgList.appendChild(userMsg);
-        msgInput.value = '';
-        if (sendArrow) sendArrow.classList.add('disable');
-        msgList.scrollTop = msgList.scrollHeight;
-        setTimeout(() => {
-          const botMsg = document.createElement('div');
-          botMsg.className = 'message-container';
-          botMsg.innerHTML = '<div class="user-name-container"><div class="icon-assistant"></div><span class="user-name">Synergy</span></div><div class="fade-animation"><div class="message-content lighter-table"><p></p></div></div>';
-          botMsg.querySelector('p').textContent = "Je peux vous orienter vers les factures en retard, les blocages d'approbation et les écarts de rapprochement dans cette démonstration.";
-          msgList.appendChild(botMsg);
-          msgList.scrollTop = msgList.scrollHeight;
-        }, 350);
+      synBtn.dataset.synergyBound='true';
+      synBtn.addEventListener('click', function(e){ e.preventDefault(); e.stopImmediatePropagation(); if(overlay.classList.contains('open')) closePanel(); else openPanel(); }, true);
+      overlay.querySelector('[data-syn-close]').addEventListener('click', closePanel);
+      overlay.querySelector('[data-syn-expand]').addEventListener('click', function(){ overlay.classList.toggle('expanded'); });
+      const messages=overlay.querySelector('[data-syn-messages]');
+      const input=overlay.querySelector('[data-syn-input]');
+      const send=(text)=>{
+        text=(text||'').trim(); if(!text) return;
+        const user=document.createElement('div'); user.className='esk-synergy-message user'; user.innerHTML='<strong>Vous</strong><p></p>'; user.querySelector('p').textContent=text; messages.appendChild(user); input.value=''; messages.scrollTop=messages.scrollHeight;
+        setTimeout(()=>{ const bot=document.createElement('div'); bot.className='esk-synergy-message assistant'; bot.innerHTML='<strong>Synergy Agent</strong><p>Dans cette démo, je peux vous orienter vers les factures en retard, les factures assignées au comptable, les blocages d\'approbation et les écarts de rapprochement. Les données affichées correspondent aux écrans capturés dans Esker.</p>'; messages.appendChild(bot); messages.scrollTop=messages.scrollHeight; },350);
       };
-      if (msgInput) {
-        msgInput.addEventListener('input', () => {
-          if (sendArrow) sendArrow.classList.toggle('disable', !msgInput.value.trim());
-        });
-        msgInput.addEventListener('keydown', e => {
-          if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            sendSynergyMessage();
-          }
-        });
-      }
-      if (sendArrow) sendArrow.addEventListener('click', e => { e.preventDefault(); sendSynergyMessage(); });
+      overlay.querySelector('[data-syn-form]').addEventListener('submit',e=>{e.preventDefault();send(input.value);});
+      overlay.querySelectorAll('[data-syn-prompt]').forEach(b=>b.addEventListener('click',()=>send(b.dataset.synPrompt)));
     }
   }
 
@@ -344,7 +288,7 @@
     if (counter40) {
       counter40.onclick = e => { e.preventDefault(); e.stopPropagation(); notifyParentStep(9); };
       counter40.classList.add(stepId === 8 ? 'esk-pulse-primary' : 'esk-pulse-secondary');
-      if (stepId === 1 || stepId === 8) createFloatingBadge(counter40, '🎯 40 factures assignées au comptable : cliquez ici pour ouvrir la corbeille', ()=>notifyParentStep(9), {pos:'bottom'});
+      if (stepId === 1 || stepId === 8) createFloatingBadge(counter40, '🎯 40 factures assignées au comptable : ouvrir la vue filtrée des factures fournisseurs', ()=>notifyParentStep(9), {pos:'bottom'});
     }
 
     setupDashboardHoverExplanations();
@@ -357,7 +301,7 @@
 
     chartBox.querySelectorAll('.highcharts-breadcrumbs-button').forEach(btn=>{ if(btn.dataset.bound) return; btn.dataset.bound='true'; btn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation(); const t=btn.textContent||''; notifyParentStep(t.includes('Marc')?2:1);}); });
 
-    if (stepId === 2) {
+    if (stepId === 2 || stepId === 8) {
       const labels=Array.from(chartBox.querySelectorAll('.highcharts-data-label')).filter(l=>l.textContent.includes('Marc')); const slice=chartBox.querySelector('.highcharts-point.highcharts-color-0'); const target=labels.at(-1)||slice;
       if(slice){slice.classList.add('esk-svg-pulse'); slice.onclick=e=>{e.preventDefault();e.stopPropagation();notifyParentStep(3);};}
       labels.forEach(l=>{l.style.cursor='pointer';l.onclick=e=>{e.preventDefault();e.stopPropagation();notifyParentStep(3);}});
@@ -372,23 +316,29 @@
       if(target){target.classList.add('esk-pulse-primary');createFloatingBadge(target,'🎯 Niveau 3 : ouvrez le rapport filtré sur Acme',()=>notifyParentStep(5),{pos:'top'});}
     }
 
-    if (firstStep) { window.scrollTo({top:0, behavior:'auto'}); }
-    else if (stepId === 8) { window.scrollTo({top:0, behavior:'auto'}); }
-    else if (shouldScroll) setTimeout(()=>{chartBox.scrollIntoView({behavior:'smooth',block:'center'});updateAllBadges();},80);
+    if (firstStep || stepId === 8) { window.scrollTo({top:0, behavior:'auto'}); }
+    else if ([2,3,4].includes(stepId)) setTimeout(()=>{chartBox.scrollIntoView({behavior:'smooth',block:'center'});updateAllBadges();},80);
     setTimeout(updateAllBadges,80);
+  }
+
+  function cleanVisibleText(el) {
+    if (!el) return '';
+    const clone=el.cloneNode(true);
+    clone.querySelectorAll('svg, path, style, script').forEach(x=>x.remove());
+    let text=(clone.textContent||'').replace(/\s+/g,' ').trim();
+    text=text.replace(/\.?B\{[^}]+\}/gi,'').replace(/\{FILL:[^}]+\}/gi,'').replace(/\s+/g,' ').trim();
+    text=text.replace(/(\d)(?=[A-Za-zÀ-ÿ])/g,'$1 ');
+    return text;
   }
 
   function setupDashboardHoverExplanations() {
     const add=(el,title,text)=>{ if(!el||el.dataset.hoverExplanation) return; el.dataset.hoverExplanation='true'; el.classList.add('esk-dash-hoverable'); bindTooltip(el,title,text); };
-    const search=document.querySelector('input[placeholder*="Recherch"], input[aria-label*="Recherch"]');
-    add(search,'Recherche universelle','Recherchez une facture, un numéro de commande ou un fournisseur pour retrouver rapidement les informations utiles.');
-    document.querySelectorAll('[data-testid="counter"]').forEach(el=>add(el,el.textContent.trim().replace(/\s+/g,' '),'Ce compteur donne une vue immédiate du volume à traiter et permet d\'ouvrir la liste correspondante.'));
-    document.querySelectorAll('.dashButtonContent').forEach(el=>add(el,el.textContent.trim().replace(/\s+/g,' '),'Action rapide du poste Factures Fournisseurs : import, export ou téléchargement de documents.'));
-    document.querySelectorAll('.dashReportContent').forEach(el=>{const title=el.querySelector('.dashReportTitleCell,.dashReportTitle,.dashReportLink'); const t=title?title.textContent.trim().replace(/\s+/g,' '):''; if(t) add(el,t,'Ce rapport transforme les données du processus en indicateur exploitable pour piloter les délais, les blocages, les paiements ou les fournisseurs.');});
-    const workspace=document.querySelector('.header-menu-with-synergy, #header-contents');
-    add(workspace,'Espaces de travail','Naviguez entre les tables, les factures fournisseurs, les exportations, les fournisseurs, les propositions de paiement et les rapports.');
+    add(document.querySelector('input[placeholder*="Recherch"], input[aria-label*="Recherch"]'),'Recherche universelle','Recherchez un numéro de facture, un numéro de commande ou un fournisseur pour retrouver rapidement les informations utiles.');
+    document.querySelectorAll('[data-testid="counter"]').forEach(el=>add(el,cleanVisibleText(el),'Ce compteur donne une vue immédiate du volume à traiter et permet d’ouvrir la vue filtrée correspondante.'));
+    document.querySelectorAll('.dashButtonContent').forEach(el=>{const label=cleanVisibleText(el);if(label.length>3)add(el,label,'Action rapide du poste Factures Fournisseurs : import, export ou téléchargement de documents.');});
+    document.querySelectorAll('.dashReportContent').forEach(el=>{const t=el.querySelector('.dashReportTitleCell,.dashReportTitle,.dashReportLink');const label=cleanVisibleText(t);if(label&&!/factures en attente par approbateur/i.test(label))add(el,label,'Ce rapport transforme les données du processus en indicateur exploitable pour piloter les délais, les blocages, les paiements ou les fournisseurs.');});
+    add(document.querySelector('#header-contents'),'Espaces de travail','Naviguez entre les tables, les factures fournisseurs, les exportations, les fournisseurs, les propositions de paiement et les rapports.');
   }
-
   /* =========================================================================
      ÉTAPE 4 : RAPPORT DÉTAILLÉ (OUVERT DIRECTEMENT AU NIVEAU 3 FILTRÉ SUR ACME)
      ========================================================================= */
@@ -425,38 +375,38 @@
       'La facture est en attente chez Marc GestionnaireCC (« waiting for GR »).'
     );
 
+    function setConversationPane(open) {
+      if (leftPane) leftPane.style.cssText = open ? 'top:0%;bottom:0%;left:0%;width:41%;display:block' : 'top:0%;bottom:0%;left:0%;width:54%;display:block';
+      if (rightPane) rightPane.style.cssText = open ? 'top:0%;bottom:0%;left:41%;width:35%;display:block' : 'top:0%;bottom:0%;left:54%;width:46%;display:block';
+      if (chatPane) { chatPane.classList.toggle('sf-hidden', !open); chatPane.style.cssText = open ? 'top:0%;bottom:0%;left:75%;width:25%;display:block' : 'top:0%;bottom:0%;left:100%;width:25%;display:none'; }
+      if (chatBtn) chatBtn.classList.toggle('isActivated', open);
+      setTimeout(updateAllBadges,60);
+    }
+
     if (stepId === 6) {
-      if (leftPane) leftPane.style.cssText = 'top:0%;bottom:0%;left:0%;width:54%;display:block';
-      if (rightPane) rightPane.style.cssText = 'top:0%;bottom:0%;left:54%;width:46%;display:block';
-      if (chatPane) {
-        chatPane.style.cssText = 'top:0%;bottom:0%;left:100%;width:25%;display:none';
-        chatPane.classList.add('sf-hidden');
-      }
+      setConversationPane(false);
       if (chatBtn) {
         chatBtn.classList.remove('isActivated');
         chatBtn.classList.add('esk-pulse-primary');
         chatBtn.onclick = function (e) {
           e.preventDefault();
           e.stopPropagation();
+          setConversationPane(true);
           notifyParentStep(7);
         };
         createFloatingBadge(chatBtn, '🎯 Cliquez sur Conversation interne pour interpeller Marc', function () {
+          setConversationPane(true);
           notifyParentStep(7);
         }, { pos: 'bottom', offsetX: -90 });
       }
     } else if (stepId === 7) {
-      if (leftPane) leftPane.style.cssText = 'top:0%;bottom:0%;left:0%;width:41%;display:block';
-      if (rightPane) rightPane.style.cssText = 'top:0%;bottom:0%;left:41%;width:35%;display:block';
-      if (chatPane) {
-        chatPane.classList.remove('sf-hidden');
-        chatPane.style.cssText = 'top:0%;bottom:0%;left:75%;width:25%;display:block';
-      }
+      setConversationPane(true);
       if (chatBtn) {
         chatBtn.classList.add('isActivated');
         chatBtn.onclick = function (e) {
           e.preventDefault();
           e.stopPropagation();
-          notifyParentStep(6);
+          setConversationPane(false);
         };
       }
 
@@ -467,7 +417,7 @@
         'Marc GestionnaireCC a été ajouté à la conversation directement sur la facture.'
       );
 
-      // Bouton Quitter ramenant au tableau de bord (Étape 8)
+      // Bouton Quitter ramenant au Tableau de bord (Étape 7) pour cliquer sur les 40 factures
       const quitBtn = document.getElementById('header-quit-button') || document.querySelector('.Quit-button');
       if (quitBtn) {
         quitBtn.classList.add('esk-pulse-primary');
@@ -521,13 +471,15 @@
     if (!grid) return;
 
     // Mettre en évidence que l'onglet ACCUEIL en haut à gauche permet de revenir au tableau de bord
-    const homeTab = document.getElementById(':r0:-tab-home');
+    const homeTab = document.getElementById(':r0:-tab-home') || Array.from(document.querySelectorAll('a,button,[role=tab]')).find(x => cleanVisibleText(x).toUpperCase() === 'ACCUEIL');
     if (homeTab) {
       homeTab.style.cursor = 'pointer';
+      homeTab.classList.add('esk-pulse-primary');
       homeTab.title = 'Revenir au tableau de bord Accueil';
+      createFloatingBadge(homeTab,'⌂ Revenir au tableau de bord',()=>notifyParentStep(8),{pos:'bottom'});
     }
 
-    // Ligne 1 : Stark Industries (ST2610131135-01) -> Étape 10
+    // Ligne 1 : Stark Industries (ST2610131135-01) -> Étape 9
     const linkStark = Array.from(grid.querySelectorAll('a')).find(function (a) {
       return a.textContent.trim() === 'ST2610131135-01';
     });
@@ -537,14 +489,14 @@
       rowStark.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
-        notifyParentStep(10);
+        notifyParentStep(9);
       });
       createFloatingBadge(linkStark || rowStark, '🎯 Cas 1 : Cliquez sur la ligne Stark Industries (Facture avec commande & écart)', function () {
-        notifyParentStep(10);
+        notifyParentStep(9);
       }, { pos: 'top' });
     }
 
-    // Ligne 2 : ACME FR (BBA-261001183030) -> Étape 11 (Facture électronique PA)
+    // Ligne 2 : ACME FR (BBA-261001183030) -> Étape 10 (Facture électronique PA)
     const linkPdp = Array.from(grid.querySelectorAll('a')).find(function (a) {
       return a.textContent.trim() === 'BBA-261001183030';
     });
@@ -554,12 +506,20 @@
       rowPdp.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
-        notifyParentStep(11);
+        notifyParentStep(10);
       });
       createFloatingBadge(linkPdp || rowPdp, '⚡ Cas 2 : Cliquez sur ACME FR / BBA-261001183030 (Facture électronique PA)', function () {
-        notifyParentStep(11);
+        notifyParentStep(10);
       }, { amber: true, pos: 'bottom' });
     }
+
+    grid.addEventListener('click', function(e) {
+      const tr=e.target && e.target.closest ? e.target.closest('tr') : null;
+      if(!tr) return;
+      const text=cleanVisibleText(tr).toUpperCase();
+      if(text.includes('STARK INDUSTRIES') || text.includes('ST2610131135-01')) { e.preventDefault(); e.stopImmediatePropagation(); notifyParentStep(10); }
+      else if(text.includes('BBA-261001183030') || text.includes('ACME FR')) { e.preventDefault(); e.stopImmediatePropagation(); notifyParentStep(11); }
+    }, true);
 
     // Rendre les filtres du haut réellement fonctionnels sur les 40 lignes
     const filterPanel = document.getElementById('tpl_ih_adminList_displayed_filters_panel');
@@ -727,10 +687,10 @@
       quitBtn.onclick = function (e) {
         e.preventDefault();
         e.stopPropagation();
-        notifyParentStep(8);
+        notifyParentStep(9);
       };
-      createFloatingBadge(quitBtn, '🎯 Revenir au tableau de bord', function () {
-        notifyParentStep(8);
+      createFloatingBadge(quitBtn, '🎯 Revenir à la liste des 40 factures pour choisir le cas suivant', function () {
+        notifyParentStep(9);
       }, { pos: 'bottom', offsetX: -140 });
     }
 
