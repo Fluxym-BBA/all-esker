@@ -61,8 +61,12 @@
   }, true);
 
   document.addEventListener('click', function(e) {
+    // Si on clique sur le bouton Synergy Agent ou un de ses enfants, ne pas intercepter
+    if (e.target && e.target.closest && e.target.closest('#header-synergy-agent-button, #reactChatPanelRoot')) return;
     const el=e.target && e.target.closest ? e.target.closest('a,button,[role="tab"]') : null;
     if(!el) return;
+    // Si l'élément est le bouton Synergy Agent, ignorer
+    if (el.id === 'header-synergy-agent-button' || el.closest('#reactChatPanelRoot')) return;
     const text=(el.textContent||'').replace(/\s+/g,' ').trim().toUpperCase();
     if(text === 'ACCUEIL' || text === 'ESKER') { e.preventDefault(); e.stopImmediatePropagation(); notifyParentStep(8); }
     else if(text === 'FACTURES FOURNISSEURS') { e.preventDefault(); e.stopImmediatePropagation(); notifyParentStep(9); }
@@ -75,8 +79,6 @@
     const synBtn = document.getElementById('header-synergy-agent-button');
     let chatTd = document.getElementById('reactChatPanelRoot');
 
-    // Le bouton Synergy Agent n'existe que dans les écrans où Esker le fournit.
-    // Ne jamais l'inventer sur une facture ou un autre gabarit.
     if (!synBtn) return;
     if (!chatTd) {
       chatTd = document.createElement('div');
@@ -90,13 +92,18 @@
     chatTd.classList.add('synergy-panel');
     chatTd.style.verticalAlign = 'top';
 
-    // Réutiliser le DOM capturé d'Esker, et non une reconstruction parallèle.
-    if (!chatTd.querySelector('.esk-chat-panel') && window.ESKER_INPLACE_STATES && window.ESKER_INPLACE_STATES.synergy_panel_html) {
+    // Injecter le DOM complet de Synergy Agent s'il n'est pas encore présent
+    if (!chatTd.querySelector('#chatbot-container') && window.ESKER_INPLACE_STATES && window.ESKER_INPLACE_STATES.synergy_panel_html) {
       chatTd.innerHTML = window.ESKER_INPLACE_STATES.synergy_panel_html;
     }
     chatTd.style.display = chatTd.dataset.synergyOpen === 'true' ? 'table-cell' : 'none';
 
     const openPanel = () => {
+      // Si le contenu n'a pas pu être injecté plus tôt, l'injecter maintenant
+      if (!chatTd.querySelector('#chatbot-container') && window.ESKER_INPLACE_STATES && window.ESKER_INPLACE_STATES.synergy_panel_html) {
+        chatTd.innerHTML = window.ESKER_INPLACE_STATES.synergy_panel_html;
+        bindPanelEvents();
+      }
       chatTd.dataset.synergyOpen = 'true';
       chatTd.style.display = 'table-cell';
       synBtn.classList.add('header-synergy-button-open');
@@ -111,37 +118,29 @@
       setTimeout(updateAllBadges, 60);
     };
 
-    if (!synBtn.dataset.synergyBound) {
-      synBtn.dataset.synergyBound = 'true';
-      synBtn.addEventListener('click', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        if (chatTd.dataset.synergyOpen === 'true') closePanel();
-        else openPanel();
-      });
-
+    function bindPanelEvents() {
       const closeIcon = chatTd.querySelector('.chat-close');
       if (closeIcon) {
         const closeBtn = closeIcon.closest('.chatbot-header-button') || closeIcon;
-        closeBtn.addEventListener('click', function (e) {
+        closeBtn.onclick = function (e) {
           e.preventDefault();
           e.stopPropagation();
           closePanel();
-        });
+        };
       }
 
       const expandIcon = chatTd.querySelector('.chat-expand-arrow');
       const chatContainer = chatTd.querySelector('.esk-chat-container');
       if (expandIcon && chatContainer) {
         const expandBtn = expandIcon.closest('.chatbot-header-button') || expandIcon;
-        expandBtn.addEventListener('click', function (e) {
+        expandBtn.onclick = function (e) {
           e.preventDefault();
           e.stopPropagation();
           const expanded = chatContainer.classList.toggle('expanded');
           chatContainer.style.minWidth = expanded ? '560px' : '400px';
           chatContainer.style.maxWidth = expanded ? '560px' : '400px';
           setTimeout(updateAllBadges, 60);
-        });
+        };
       }
 
       const msgInput = chatTd.querySelector('#message-input');
@@ -169,23 +168,31 @@
         }, 350);
       };
       if (msgInput) {
-        msgInput.addEventListener('input', () => {
+        msgInput.oninput = () => {
           if (sendArrow) sendArrow.classList.toggle('disable', !msgInput.value.trim());
-        });
-        msgInput.addEventListener('keydown', e => {
+        };
+        msgInput.onkeydown = e => {
           if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
             sendSynergyMessage();
           }
-        });
+        };
       }
-      if (sendArrow) sendArrow.addEventListener('click', e => { e.preventDefault(); sendSynergyMessage(); });
+      if (sendArrow) sendArrow.onclick = e => { e.preventDefault(); sendSynergyMessage(); };
+    }
+
+    if (!synBtn.dataset.synergyBound) {
+      synBtn.dataset.synergyBound = 'true';
+      synBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (chatTd.dataset.synergyOpen === 'true') closePanel();
+        else openPanel();
+      });
+      bindPanelEvents();
     }
   }
 
-  /* =========================================================================
-     INFOBULLES PROPRES (UNICITÉ SUR LES CHAMPS EN ANOMALIE & PASTILLES ⓘ)
-     ========================================================================= */
   function ensureHoverTooltip() {
     if (!hoverTooltip) {
       hoverTooltip = document.createElement('div');
@@ -463,6 +470,7 @@
           notifyParentStep(7);
         }, { pos: 'bottom', offsetX: -90 });
       }
+      bindInvoiceQuitButtons(8, '🎯 Cliquez sur Quitter pour revenir au tableau de bord');
     } else if (stepId === 7) {
       if (leftPane) leftPane.style.cssText = 'top:0%;bottom:0%;left:0%;width:41%;display:block';
       if (rightPane) rightPane.style.cssText = 'top:0%;bottom:0%;left:41%;width:35%;display:block';
@@ -500,70 +508,206 @@
 
   function setupFilterDropdowns(filterPanel) {
     if (!filterPanel || filterPanel.dataset.dropdownEnhanced) return;
-    filterPanel.dataset.dropdownEnhanced='true';
-    const labels={
-      'égal à':'égal à','commence par':'commence par','contient':'contient','différent de':'différent de','ne commence pas par':'ne commence pas par','ne contient pas':'ne contient pas',
-      'antérieur à':'antérieur à','postérieur à':'postérieur à','compris entre':'compris entre','aujourd’hui':'aujourd’hui','aujourd hui':'aujourd’hui','ce mois-ci':'ce mois-ci'
-    };
-    let menu=null;
-    const close=()=>{if(menu){menu.remove();menu=null;}};
-    document.addEventListener('click',e=>{if(menu && !menu.contains(e.target) && !e.target.closest('.esk-filter-select-enhanced')) close();},true);
-    filterPanel.querySelectorAll('select').forEach(sel=>{
-      sel.classList.add('esk-filter-select-enhanced');
-      sel.addEventListener('mousedown',e=>{e.preventDefault();},true);
-      sel.addEventListener('click',e=>{
-        e.preventDefault();e.stopPropagation();close();
-        menu=document.createElement('div');menu.className='esk-select-dropdown';
-        const r=sel.getBoundingClientRect(); menu.style.left=Math.max(8,r.left)+'px';menu.style.top=(r.bottom+4)+'px';menu.style.minWidth=Math.max(210,r.width)+'px';
-        const search=document.createElement('div');search.className='esk-select-search';search.innerHTML='<input type="search" placeholder="Rechercher une option…">';menu.appendChild(search);
-        const opts=document.createElement('div');opts.className='esk-select-options';menu.appendChild(opts);
-        const all=Array.from(sel.options).map((o,i)=>({o,i,text:(labels[o.textContent.trim().toLowerCase()]||o.textContent.trim()||o.value||'Option '+(i+1))}));
-        const render=(term='')=>{opts.innerHTML='';all.filter(x=>x.text.toLowerCase().includes(term.toLowerCase())).forEach(x=>{const b=document.createElement('button');b.type='button';b.className='esk-select-opt';b.textContent=x.text;b.onclick=ev=>{ev.preventDefault();sel.selectedIndex=x.i;sel.dispatchEvent(new Event('change',{bubbles:true}));close();};opts.appendChild(b);});};
-        render();search.querySelector('input').addEventListener('input',ev=>render(ev.target.value));document.body.appendChild(menu);search.querySelector('input').focus();
-      });
-    });
-  }
+    filterPanel.dataset.dropdownEnhanced = 'true';
 
-  function configureInvoiceFilters(filterPanel) {
-    if (!filterPanel || filterPanel.dataset.catalogConfigured) return;
-    filterPanel.dataset.catalogConfigured = 'true';
     const fields = (FILTER_CATALOG.fields || []).slice().sort((a, b) => a.display_order - b.display_order);
     const operators = FILTER_CATALOG.operator_catalog || [];
-    const byId = new Map(operators.map(op => [op.id, op]));
-    const fieldSelects = Array.from(filterPanel.querySelectorAll('select')).filter(sel => /_ddl1$/.test(sel.id || '')).sort((a, b) => a.id.localeCompare(b.id));
-    const operatorSelects = Array.from(filterPanel.querySelectorAll('select')).filter(sel => /_ddl3$/.test(sel.id || '')).sort((a, b) => a.id.localeCompare(b.id));
+    const opById = new Map(operators.map(op => [op.id, op]));
 
-    function writeOptions(select, options, selectedId) {
-      select.innerHTML = options.map(option => `<option value="${option.id}">${option.label}</option>`).join('');
-      const selected = options.some(option => option.id === selectedId) ? selectedId : (options[0] && options[0].id);
-      if (selected) select.value = selected;
-      select.dispatchEvent(new Event('change', { bubbles: true }));
-    }
+    // Liste des opérateurs par défaut pour chaque type si non spécifié
+    const defaultTextOps = [
+      { id: 'equals', label: 'égal à' },
+      { id: 'not_equals', label: 'différent de' },
+      { id: 'starts_with', label: 'commence par' },
+      { id: 'contains', label: 'contient' },
+      { id: 'not_contains', label: 'ne contient pas' },
+      { id: 'less_than', label: 'inférieur à' },
+      { id: 'less_or_equal', label: 'inférieur ou égal à' },
+      { id: 'greater_than', label: 'supérieur à' },
+      { id: 'greater_or_equal', label: 'supérieur ou égal à' }
+    ];
+    const defaultDateOps = [
+      { id: 'equals', label: 'égal à' },
+      { id: 'not_equals', label: 'différent de' },
+      { id: 'less_than', label: 'inférieur à' },
+      { id: 'less_or_equal', label: 'inférieur ou égal à' },
+      { id: 'greater_than', label: 'supérieur à' },
+      { id: 'greater_or_equal', label: 'supérieur ou égal à' }
+    ];
+    const defaultStatusOps = [
+      { id: 'equals', label: 'égal à' },
+      { id: 'not_equals', label: 'différent de' }
+    ];
 
-    fieldSelects.forEach((select, index) => {
-      const previous = select.options[select.selectedIndex];
-      const previousLabel = previous ? previous.textContent.trim() : '';
-      const selectedField = fields.find(field => field.label === previousLabel) || fields[index] || fields[0];
-      if (!selectedField) return;
-      writeOptions(select, fields.map(field => ({ id: field.id, label: field.label })), selectedField.id);
-      select.dataset.catalogField = selectedField.id;
-      select.title = selectedField.operator_status === 'confirmed_by_screenshot'
-        ? 'Champ et opérateurs confirmés par le catalogue fourni'
-        : 'Opérateurs à confirmer dans Esker, seul l’opérateur par défaut est affiché';
-    });
+    let activeMenu = null;
+    const closeMenu = () => {
+      if (activeMenu) {
+        activeMenu.remove();
+        activeMenu = null;
+      }
+    };
+    document.addEventListener('click', e => {
+      if (activeMenu && !activeMenu.contains(e.target) && !e.target.closest('.select2-container, .esk-select-dropdown')) {
+        closeMenu();
+      }
+    }, true);
 
-    operatorSelects.forEach((select, index) => {
-      const field = fields[index] || fields[0];
-      if (!field) return;
-      const ids = Array.isArray(field.available_operators) && field.available_operators.length
-        ? field.available_operators
-        : [field.default_operator];
-      const options = ids.map(id => byId.get(id)).filter(Boolean).map(op => ({ id: op.id, label: op.label_html || op.label }));
-      writeOptions(select, options, field.default_operator);
-      select.dataset.catalogOperatorStatus = field.operator_status || 'unknown';
-      select.title = field.operator_status === 'confirmed_by_screenshot'
-        ? 'Opérateurs confirmés par le catalogue fourni'
-        : 'Liste limitée à l’opérateur par défaut, opérateurs à confirmer';
+    const rows = Array.from(filterPanel.querySelectorAll('tr.ConditionListRow'));
+    rows.forEach((row, rowIdx) => {
+      const fieldSel = row.querySelector('select[id*="_ddl1"]');
+      const opSel = row.querySelector('select[id*="_ddl3"]');
+
+      const fieldS2 = fieldSel ? fieldSel.nextElementSibling : null;
+      const opS2 = opSel ? opSel.nextElementSibling : null;
+
+      // Configuration du sélecteur de champ
+      if (fieldS2 && fieldSel) {
+        fieldS2.style.cursor = 'pointer';
+        const fieldRendered = fieldS2.querySelector('.select2-selection__rendered');
+
+        fieldS2.addEventListener('click', e => {
+          e.preventDefault();
+          e.stopPropagation();
+          closeMenu();
+
+          activeMenu = document.createElement('div');
+          activeMenu.className = 'esk-select-dropdown';
+          const rect = fieldS2.getBoundingClientRect();
+          activeMenu.style.left = Math.max(8, rect.left) + 'px';
+          activeMenu.style.top = (rect.bottom + 4) + 'px';
+          activeMenu.style.minWidth = Math.max(220, rect.width) + 'px';
+
+          const searchBox = document.createElement('div');
+          searchBox.className = 'esk-select-search';
+          searchBox.innerHTML = '<input type="search" placeholder="Rechercher un champ…">';
+          activeMenu.appendChild(searchBox);
+
+          const optsContainer = document.createElement('div');
+          optsContainer.className = 'esk-select-options';
+          activeMenu.appendChild(optsContainer);
+
+          const renderFieldOpts = (term = '') => {
+            optsContainer.innerHTML = '';
+            fields.filter(f => f.label.toLowerCase().includes(term.toLowerCase())).forEach(f => {
+              const btn = document.createElement('button');
+              btn.type = 'button';
+              btn.className = 'esk-select-opt' + (fieldRendered && fieldRendered.textContent.trim() === f.label ? ' active' : '');
+              btn.innerHTML = `<span>${f.label}</span><small style="opacity:0.6">${f.input_type}</small>`;
+              btn.onclick = ev => {
+                ev.preventDefault();
+                ev.stopPropagation();
+                if (fieldRendered) fieldRendered.textContent = f.label;
+                fieldSel.value = f.id;
+                // Adapter l'opérateur par défaut
+                if (opSel && opS2) {
+                  const opRendered = opS2.querySelector('.select2-selection__rendered');
+                  if (opRendered) opRendered.textContent = f.default_operator_label || 'égal à';
+                  opSel.value = f.default_operator || 'equals';
+                }
+                closeMenu();
+                runLiveTableFilter();
+              };
+              optsContainer.appendChild(btn);
+            });
+          };
+
+          renderFieldOpts();
+          searchBox.querySelector('input').addEventListener('input', ev => renderFieldOpts(ev.target.value));
+          document.body.appendChild(activeMenu);
+          searchBox.querySelector('input').focus();
+        });
+      }
+
+      // Configuration du sélecteur d'opérateur
+      if (opS2 && opSel) {
+        opS2.style.cursor = 'pointer';
+        const opRendered = opS2.querySelector('.select2-selection__rendered');
+
+        opS2.addEventListener('click', e => {
+          e.preventDefault();
+          e.stopPropagation();
+          closeMenu();
+
+          // Déterminer le champ actuel pour cette ligne
+          const fieldLabel = (fieldS2 && fieldS2.querySelector('.select2-selection__rendered'))
+            ? fieldS2.querySelector('.select2-selection__rendered').textContent.trim()
+            : '';
+          const currentField = fields.find(f => f.label === fieldLabel) || fields[rowIdx] || fields[0];
+
+          // Déterminer la liste des opérateurs
+          let opList = [];
+          if (currentField && Array.isArray(currentField.available_operators) && currentField.available_operators.length) {
+            opList = currentField.available_operators.map(id => opById.get(id)).filter(Boolean).map(o => ({ id: o.id, label: o.label_html || o.label }));
+          } else if (currentField && currentField.input_type === 'date') {
+            opList = defaultDateOps;
+          } else if (currentField && currentField.input_type === 'select_or_text') {
+            opList = defaultStatusOps;
+          } else {
+            opList = defaultTextOps;
+          }
+
+          activeMenu = document.createElement('div');
+          activeMenu.className = 'esk-select-dropdown';
+          const rect = opS2.getBoundingClientRect();
+          activeMenu.style.left = Math.max(8, rect.left) + 'px';
+          activeMenu.style.top = (rect.bottom + 4) + 'px';
+          activeMenu.style.minWidth = Math.max(180, rect.width) + 'px';
+
+          const optsContainer = document.createElement('div');
+          optsContainer.className = 'esk-select-options';
+          activeMenu.appendChild(optsContainer);
+
+          opList.forEach(op => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'esk-select-opt' + (opRendered && opRendered.textContent.trim() === op.label ? ' active' : '');
+            btn.textContent = op.label;
+            btn.onclick = ev => {
+              ev.preventDefault();
+              ev.stopPropagation();
+              if (opRendered) opRendered.textContent = op.label;
+              opSel.value = op.id;
+              closeMenu();
+              runLiveTableFilter();
+            };
+            optsContainer.appendChild(btn);
+          });
+
+          document.body.appendChild(activeMenu);
+        });
+      }
+
+      // Configuration de la saisie de valeur
+      const editInp = row.querySelector('input[id*="_edit"]');
+      const tagifySpan = row.querySelector('tags span.tagify__input');
+      const browseBtn = row.querySelector('.ConditionListBrowseContainer');
+
+      if (editInp) {
+        editInp.classList.remove('sf-hidden');
+        editInp.style.display = 'block';
+        editInp.style.backgroundColor = '#ffffff';
+        editInp.style.border = '1px solid #d1d5db';
+        editInp.style.borderRadius = '4px';
+        editInp.style.padding = '4px 8px';
+        editInp.style.width = '100%';
+        editInp.style.fontSize = '12px';
+        editInp.placeholder = 'Saisir une valeur…';
+        editInp.removeAttribute('readonly');
+        editInp.removeAttribute('disabled');
+        editInp.addEventListener('input', runLiveTableFilter);
+      }
+      if (tagifySpan) {
+        tagifySpan.setAttribute('contenteditable', 'true');
+        tagifySpan.style.cursor = 'text';
+        tagifySpan.addEventListener('input', () => {
+          if (editInp) editInp.value = tagifySpan.textContent.trim();
+          runLiveTableFilter();
+        });
+      }
+      if (browseBtn) {
+        browseBtn.style.visibility = 'visible';
+        browseBtn.style.cursor = 'pointer';
+      }
     });
   }
 
@@ -615,7 +759,6 @@
     // Rendre les filtres du haut réellement fonctionnels sur les 40 lignes
     const filterPanel = document.getElementById('tpl_ih_adminList_displayed_filters_panel');
     const applyBtn = document.getElementById('tpl_ih_adminList_displayedFilters_applyBtn');
-    configureInvoiceFilters(filterPanel);
     setupFilterDropdowns(filterPanel);
     if (filterPanel && !filterPanel.dataset.enhanced) {
       filterPanel.dataset.enhanced = 'true';
@@ -638,8 +781,13 @@
 
     function runLiveTableFilter() {
       if (!filterPanel) return;
-      const inputs = Array.from(filterPanel.querySelectorAll('input[type="text"], input:not([type])'));
-      const terms = inputs.map(function (i) { return i.value.trim().toLowerCase(); }).filter(Boolean);
+      const terms = [];
+      filterPanel.querySelectorAll('tr.ConditionListRow').forEach(row => {
+        const editInp = row.querySelector('input[id*="_edit"]');
+        const tagifySpan = row.querySelector('tags span.tagify__input');
+        const val = (editInp && editInp.value ? editInp.value : (tagifySpan ? tagifySpan.textContent : '')).trim().toLowerCase();
+        if (val) terms.push(val);
+      });
       const dataRows = Array.from(grid.querySelectorAll('tr')).filter(function (r) {
         return r.className && r.className.indexOf('edr-L') !== -1;
       });
