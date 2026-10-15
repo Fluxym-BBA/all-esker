@@ -15,6 +15,7 @@
 <link rel="stylesheet" href="css/base.css">
 <link rel="stylesheet" href="css/module.css">
 <link rel="stylesheet" href="css/suites.css">
+<link rel="stylesheet" href="css/synergy-agent.css">
 </head>
 <body>
 
@@ -63,10 +64,9 @@
         <button type="button" class="hnav-dd-btn" id="hnavDdBtn" aria-expanded="false">Accès direct module ▾</button>
         <div class="hnav-dd-menu" id="hnavDdMenu" hidden></div>
       </div>
-      <a href="demo/index.html" class="hnav-demo" target="_blank" style="color:var(--cy,#13b4e2);font-weight:700">✨ Démo interactive</a>
       <a href="https://www.fluxym.com/expertise/" target="_blank" rel="noopener">Notre expertise</a>
     </nav>
-    <a class="btn btn-blue" href="#contact">Contact</a>
+    <div class="header-actions"><button type="button" class="synergy-agent-trigger" id="synergyAgentButton" title="Discuter avec Synergy Agent" aria-label="Ouvrir Synergy Agent"><span class="sa-trigger-mark">✦</span><span>Synergy Agent</span></button><a class="btn btn-blue" href="#contact">Contact</a></div>
   </div>
 </header>
 
@@ -163,6 +163,8 @@
 
 <!-- ====== WIDGET ROUE FLOTTANT ====== -->
 <!-- Pas de fenêtre : la bulle Esker se transforme en roue au survol. -->
+<div class="synergy-panel" id="reactChatPanelRoot" hidden aria-label="Synergy Agent"></div>
+
 <div class="dock" id="dock">
   <div class="dock-vortex" aria-hidden="true"></div>
   <div class="dock-flash" aria-hidden="true"></div>
@@ -188,5 +190,6 @@
 <script src="js/app.js"></script>
 <script src="js/suites-data.js"></script>
 <script src="js/suites.js"></script>
+<script src="js/synergy-agent.js"></script>
 </body>
 </html>
