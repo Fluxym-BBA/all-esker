@@ -392,20 +392,93 @@ tr.esk-pulse-row-amber:hover > td {
 :root{--chat-base-color:#f9be00;--chat-light-color:rgba(249,190,0,.6);--chat-background-color:white;--chat-text-color:#000000;--chat-text-font:Roboto,Arial,Helvetica,sans-serif;--chat-text-size:14px;--chat-header-background-color:#F2AE00;--chat-border-color:#F2AE00;--chat-input-background-color:#f3f3f3;--chat-suggestions-border-color:#FF8700;--chat-suggestions-hover-color:#FF870029}.esk-chat-container{height:100%;min-width:400px;max-width:400px}.esk-chat-container .chatbot-container,.esk-chat-container #chatbot-container{height:100%;display:flex;flex-flow:column}.chatbot-container,#chatbot-container{border:solid 1px var(--chat-border-color);border-radius:8px;background-color:var(--chat-header-background-color)}@keyframes fadeIn{0%{opacity:0}to{opacity:1}}.message-container{margin-left:20px;margin-top:16px;margin-right:20px;flex-direction:row;gap:10px;position:relative;box-sizing:border-box}.message-container .message-content{text-align:left;vertical-align:text-top;color:var(--chat-text-color);font-size:var(--chat-text-size);font-family:var(--chat-text-font);line-height:normal;padding:8px 16px 8px 30px;position:relative;box-sizing:border-box;margin-top:0;word-wrap:break-word}.message-container .message-content p{margin:0;white-space:pre-wrap}.message-container.consecutive-message{margin-top:0;margin-bottom:0}.chat-header-container{background-color:var(--chat-header-background-color);border-top-left-radius:8px;border-top-right-radius:8px;height:44px;display:flex;align-items:center;box-sizing:border-box;width:100%;flex-shrink:0}.chat-title{margin-left:10px;text-align:left;font-size:16px;color:#000;font-family:Roboto Bold}.chat-header-button-container{display:flex;align-items:center;padding:10px;margin:0;height:100%;box-sizing:border-box;flex:0 0 auto}.chat-header-button-container .LevelHelp1{width:16px;height:16px;font-size:16px;line-height:16px;margin-right:10px;background-color:transparent}.chat-header-button-container .LevelHelp1:after{color:unset}.chat-header-button-container .LevelHelp1:hover{filter:invert(1)}.chat-header-button-container .chatbot-header-button{z-index:99;cursor:pointer;border-radius:50%;width:16px;height:16px;text-align:center;font-size:16px;line-height:16px}.chat-header-button-container .chatbot-header-button:not(:last-child){margin-right:10px}.chat-header-button-container .chatbot-header-button:hover i{filter:invert(1)}.chat-header-button-container .chatbot-header-button button{border:0;background-color:transparent;display:flex;justify-content:center;align-items:center;padding-left:0}.chat-header-button-container .chatbot-header-button:hover button{filter:invert(1);cursor:pointer}.chat-name-container{display:flex;align-items:center;overflow:hidden;flex:1 1 auto;min-width:0}.chat-name-area{display:grid;align-items:center;flex:1 1 auto;min-width:0;height:100%}.chat-name-area>.chat-name-container{grid-area:1/1;height:100%}.chat-name-area>.chat-drag{grid-area:1/1;height:100%;width:100%;z-index:1;background:transparent}.speech2text-btn{z-index:1;display:flex;cursor:pointer;border-radius:50%;text-align:center;padding:1px 10px 1px 0}.speech2text-btn:hover{color:var(--chat-base-color)}#message-input-form{display:flex;flex-flow:column;align-items:center;box-sizing:border-box;flex-shrink:0;padding:10px;background-color:var(--chat-background-color);border-bottom-left-radius:8px;border-bottom-right-radius:8px;height:auto;position:relative}#message-input-container{width:100%;display:flex;align-items:center;justify-content:center;position:relative;box-sizing:border-box;background-color:var(--chat-input-background-color);border-top-left-radius:8px;border-top-right-radius:8px}#message-input{width:100%;padding:10px;border:none;position:relative;font-size:14px;color:#000000de;background-color:transparent;text-align:left;vertical-align:text-top;box-sizing:border-box;overflow-y:auto;overflow-x:hidden;word-wrap:normal;resize:none}#message-input:focus{outline:none}#message-input ::placeholder{color:#0000005c;opacity:1}#message-input-actions{display:flex;align-items:center;justify-content:end;width:100%;padding:0 10px 10px;background-color:var(--chat-input-background-color);box-sizing:border-box;border-bottom-right-radius:8px;border-bottom-left-radius:8px}#message-input-arrow{padding-right:10px;font-size:24px;display:flex;align-items:center;justify-content:center}#message-input-arrow:hover{color:var(--chat-base-color)}#message-input-arrow.disable{color:var(--font-color-standard-disabled);cursor:default}#message-input-arrow.disable svg{fill:var(--font-color-standard-disabled)}.speech2text-btn{width:24px;height:24px;font-size:24px;line-height:24px}.speech2text-btn i{display:flex;align-items:center;justify-content:center}#message-list-container{overflow-y:auto;position:relative;width:100%;box-sizing:border-box;display:flex;flex-direction:column;background-color:var(--chat-background-color);flex-grow:1;border-top-left-radius:8px;border-top-right-radius:8px;scrollbar-width:thin;scrollbar-color:var(--main-color-grey) transparent}#message-list-container::-webkit-scrollbar{background-color:transparent;width:10px}#message-list-container::-webkit-scrollbar-track{background-color:transparent}#message-list-container::-webkit-scrollbar-thumb{background-color:var(--main-color-grey);border-radius:4px;border:2px solid transparent}#message-list-container .disclaimer-message-container{margin:1em 2em 0}#message-list-container .disclaimer-message-container .disclaimer-message{font-size:12px;text-align:center}#message-list-container .disclaimer-message-container .disclaimer-message a{color:var(--main-color-turquoise);margin-left:1em;white-space:nowrap}#message-list-container .disclaimer-message-container .disclaimer-message a i{margin-left:.5em}#message-list-container .disclaimer-message-container .disclaimer-message a:hover{color:var(--main-color-turquoise-light)}#suggestion-list-container{display:flex;background:#fff;flex-wrap:wrap;padding:1px 10px;justify-content:center;align-items:center}.esk-chat-panel{position:relative}.esk-chat-panel:has(.esk-chat-container){padding:10px 10px 10px 0;max-width:min-content;background-color:var(--main-color-grey)}.esk-chat-panel .esk-chat-resize-handle{position:absolute;left:0;top:0;width:10px;height:100%;cursor:col-resize;z-index:10}.esk-chat-panel:has(.esk-chat-container:not(.expanded)) .esk-chat-resize-handle{display:block}
 .user-name-container{display:flex;align-items:center;margin-bottom:5px}.user-name-container .icon-assistant{width:20px;height:20px;background-image:url(data:image/svg+xml,<svg\ xmlns=\"http://www.w3.org/2000/svg\"\ viewBox=\"0\ 0\ 20\ 20\">%0A%09<circle\ cx=\"10\"\ cy=\"10\"\ r=\"10\"\ fill=\"%23f2ae00\"/>%0A%09<path\ d=\"M12.091\ 13.13a1.5\ 1.5\ 0\ 0\ 0-.487-1.2\ 6.063\ 6.063\ 0\ 0\ 0-1.754-.885\ 11.647\ 11.647\ 0\ 0\ 1-2.006-.916\ 3.75\ 3.75\ 0\ 0\ 1-2.016-3.321\ 3.538\ 3.538\ 0\ 0\ 1\ .54-1.937\ 3.611\ 3.611\ 0\ 0\ 1\ 1.551-1.33\ 5.241\ 5.241\ 0\ 0\ 1\ 2.27-.478\ 4.785\ 4.785\ 0\ 0\ 1\ 2.257.52\ 3.753\ 3.753\ 0\ 0\ 1\ 1.539\ 1.468\ 4.222\ 4.222\ 0\ 0\ 1\ .548\ 2.153h-2.434a1.932\ 1.932\ 0\ 0\ 0-.512-1.431\ 1.945\ 1.945\ 0\ 0\ 0-1.437-.511\ 2.058\ 2.058\ 0\ 0\ 0-1.389.428\ 1.417\ 1.417\ 0\ 0\ 0-.5\ 1.127\ 1.33\ 1.33\ 0\ 0\ 0\ .581\ 1.095\ 6.191\ 6.191\ 0\ 0\ 0\ 1.709.828\ 7.138\ 7.138\ 0\ 0\ 1\ 3.034\ 1.756\ 3.747\ 3.747\ 0\ 0\ 1\ .95\ 2.613\ 3.393\ 3.393\ 0\ 0\ 1-1.161\ 2.73\ 4.661\ 4.661\ 0\ 0\ 1-3.126.99\ 5.433\ 5.433\ 0\ 0\ 1-2.485-.566\ 4.071\ 4.071\ 0\ 0\ 1-1.709-1.55\ 4.361\ 4.361\ 0\ 0\ 1-.589-2.282h2.444q0\ 2.218\ 2.339\ 2.218a2.078\ 2.078\ 0\ 0\ 0\ 1.356-.4\ 1.367\ 1.367\ 0\ 0\ 0\ .487-1.119z\"\ fill=\"%23fff\"/>%0A<\/svg>);border-radius:50%;align-items:center;justify-content:center}.user-name-container .user-name{margin-left:10px;font-family:Roboto Bold;font-size:14px}
 
+/* Panneau Synergy Agent : le DOM est celui capturé dans les HTML Esker fournis. */
+#reactChatPanelRoot.synergy-panel {
+  vertical-align: top;
+  background-color: var(--main-color-grey, #e8e8e8);
+}
+#reactChatPanelRoot.synergy-panel[style*="display: none"] {
+  display: none !important;
+}
+#reactChatPanelRoot.synergy-panel > .esk-chat-panel {
+  position: relative;
+  padding: 10px 10px 10px 0;
+  max-width: min-content;
+  background-color: var(--main-color-grey, #e8e8e8);
+}
+#reactChatPanelRoot.synergy-panel .esk-chat-container {
+  height: 100%;
+  min-width: 400px;
+  max-width: 400px;
+}
+#reactChatPanelRoot.synergy-panel .esk-chat-container.expanded {
+  min-width: 560px;
+  max-width: 560px;
+}
+#reactChatPanelRoot.synergy-panel .chatbot-container,
+#reactChatPanelRoot.synergy-panel #chatbot-container {
+  height: 100%;
+}
+#reactChatPanelRoot.synergy-panel .chatbot-header-button {
+  border: 0;
+  background: transparent;
+  padding: 0;
+}
+#reactChatPanelRoot.synergy-panel #message-input-form {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  padding: 10px;
+  background-color: var(--chat-background-color, #fff);
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+#reactChatPanelRoot.synergy-panel #message-input-form #message-input-container,
+#reactChatPanelRoot.synergy-panel #message-input-form #message-input-actions {
+  flex-shrink: 0;
+}
+#header-synergy-agent-button.header-synergy-button-open {
+  filter: invert(1);
+}
+@media (max-width: 900px) {
+  #reactChatPanelRoot.synergy-panel .esk-chat-container,
+  #reactChatPanelRoot.synergy-panel .esk-chat-container.expanded {
+    min-width: min(400px, 76vw);
+    max-width: min(400px, 76vw);
+  }
+}
 
-/* Synergy Agent de démonstration, fixe à droite comme dans Esker */
-.esk-synergy-overlay{position:fixed;top:54px;right:14px;width:420px;max-width:calc(100vw - 28px);height:min(690px,calc(100vh - 70px));background:#fff;z-index:2147483646;border:1px solid #c7d4df;border-radius:10px;box-shadow:0 18px 45px rgba(15,36,72,.32);display:none;flex-direction:column;overflow:hidden;font:13px/1.4 Roboto,Arial,sans-serif;color:#263645}
-.esk-synergy-overlay.open{display:flex}
-.esk-synergy-overlay.expanded{width:560px;max-width:calc(100vw - 28px)}
-.esk-synergy-head{background:#152c4b;color:#fff;padding:12px 14px;display:flex;justify-content:space-between;align-items:center}.esk-synergy-head strong{display:block;font-size:15px}.esk-synergy-head small{display:block;color:#b8c9db;font-size:11px;margin-top:2px}.esk-synergy-head-actions{display:flex;gap:6px}.esk-synergy-head-actions button{background:transparent;border:1px solid rgba(255,255,255,.35);color:#fff;border-radius:5px;width:26px;height:26px;cursor:pointer;font-size:16px}
-.esk-synergy-intro{padding:12px 14px;background:#f0f6f8;border-bottom:1px solid #d8e2ea;color:#34495e}.esk-synergy-quick-btns{padding:10px 12px;display:flex;flex-wrap:wrap;gap:6px;border-bottom:1px solid #e1e8ef}.esk-synergy-qbtn{background:#fffbeb;border:1px solid #f2ae00;color:#78350f;border-radius:14px;padding:5px 9px;font:600 11px Roboto,Arial,sans-serif;cursor:pointer}.esk-synergy-qbtn:hover{background:#f2ae00;color:#111}.esk-synergy-messages{flex:1;overflow:auto;padding:12px;background:#fff}.esk-synergy-message{border-radius:8px;padding:9px 11px;margin-bottom:9px;white-space:pre-line}.esk-synergy-message strong{display:block;font-size:11px;margin-bottom:4px}.esk-synergy-message.assistant{background:#f0f6f8;border-left:3px solid #008995}.esk-synergy-message.user{background:#e9f5fb;border-left:3px solid #13b4e2}.esk-synergy-form{display:flex;gap:8px;padding:10px;border-top:1px solid #d8e2ea;background:#f8fafc}.esk-synergy-form input{flex:1;padding:8px 10px;border:1px solid #bdcad6;border-radius:6px;font:13px Roboto,Arial,sans-serif}.esk-synergy-form button{width:36px;border:0;border-radius:6px;background:#008995;color:#fff;cursor:pointer}
-
-/* Isolation stricte du volet Synergy Agent de démonstration */
-#esk-synergy-overlay,#esk-synergy-overlay *{box-sizing:border-box!important}
-#esk-synergy-overlay{isolation:isolate!important;contain:layout paint!important;}
-#esk-synergy-overlay .esk-synergy-messages{display:block!important;position:relative!important;flex:1 1 auto!important;min-height:0!important;height:auto!important;overflow-y:auto!important;background:#fff!important;padding:12px!important}
-#esk-synergy-overlay .esk-synergy-form{display:flex!important;position:relative!important;flex:0 0 58px!important;height:58px!important;min-height:58px!important;width:100%!important;padding:10px!important;gap:8px!important;background:#f8fafc!important}
-#esk-synergy-overlay .esk-synergy-form input{display:block!important;position:static!important;flex:1 1 auto!important;width:auto!important;height:38px!important;min-height:38px!important;max-height:38px!important;padding:8px 10px!important;margin:0!important;background:#fff!important;border:1px solid #bdcad6!important;border-radius:6px!important;box-shadow:none!important;font:13px/20px Roboto,Arial,sans-serif!important;color:#263645!important}
-#esk-synergy-overlay .esk-synergy-form button{display:block!important;position:static!important;flex:0 0 36px!important;width:36px!important;height:38px!important;min-height:38px!important;padding:0!important;margin:0!important;background:#008995!important;border:0!important;border-radius:6px!important;color:#fff!important}
-#esk-synergy-overlay .esk-synergy-message{display:block!important;position:relative!important;width:100%!important;height:auto!important;min-height:0!important;margin:0 0 9px!important;padding:9px 11px!important;transform:none!important;opacity:1!important}
-#esk-synergy-overlay .esk-synergy-quick-btns{display:flex!important;position:relative!important;height:auto!important;min-height:0!important;width:100%!important}
+/* Gabarits Factures fournisseurs sans cellule React native (étapes 10 et 11). */
+#reactChatPanelRoot.synergy-panel-fallback {
+  position: fixed;
+  z-index: 10020;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 420px;
+  display: none;
+  box-sizing: border-box;
+  background: var(--main-color-grey, #e8e8e8);
+}
+#reactChatPanelRoot.synergy-panel-fallback > .esk-chat-panel {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  box-sizing: border-box;
+}
+#header-synergy-agent-button {
+  border: 1px solid #f2ae00;
+  background: #f2ae00;
+  color: #172b4d;
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin: 8px;
+  font: 700 12px/1 Roboto, Arial, sans-serif;
+  cursor: pointer;
+}
+#header-synergy-agent-button:hover { filter: brightness(.96); }
+@media (max-width: 720px) {
+  #reactChatPanelRoot.synergy-panel-fallback { width: 100vw; }
+}
