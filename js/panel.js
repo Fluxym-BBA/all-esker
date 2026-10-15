@@ -41,7 +41,20 @@ function renderPanel(id, vidIdx, autoplay){
       const s = byId(x);
       return `<button class="vid-end-card" type="button" data-go="${x}"><span>${s.icon}</span>${esc(s.label)}</button>`;
     }).join("");
+    const demoCard = (id === "ap") ? `
+      <div class="panel-demo-cta">
+        <div class="panel-demo-cta-text">
+          <span class="panel-demo-cta-badge"><i>✨</i> Nouveau · Style Guideflow</span>
+          <h4>Découvrez le module en immersion interactive (11 étapes)</h4>
+          <p>Naviguez pas à pas : drill-down 3 niveaux, analyse du litige Acme, collaboration interne, vue comptable 40 factures, rapprochement 3 voies et conformité PDP.</p>
+        </div>
+        <a class="panel-demo-cta-btn" href="demo/index.html" target="_blank">
+          <span>Explorer la démo interactive (11 étapes)</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>` : "";
     media = `
+      ${demoCard}
       <div class="vidframe" id="vidFrame">
         <video id="player" controls playsinline controlsList="nodownload" preload="metadata">
           <source src="${v.u}" type="video/mp4">
@@ -83,7 +96,6 @@ function renderPanel(id, vidIdx, autoplay){
       </div>`;
   }
 
-  const agentCta = id === "ap" ? `<div class="ap-agent-cta"><div><b>Explorer l’interface Esker On Demand</b><span>Filtres Factures fournisseurs et étapes de traitement, dans la fenêtre Synergy Agent.</span></div><button type="button" id="apAgentCta">Ouvrir la démo</button></div>` : "";
   host.innerHTML = `
     <article class="panel${XP[id] && !soon ? ' panel--xp' : ''}" style="--c:${m.c}" id="panel" tabindex="-1">
       <header class="panel-head">
@@ -102,7 +114,7 @@ function renderPanel(id, vidIdx, autoplay){
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
         </div>
       </header>
-      <div class="panel-body">${media}${agentCta}</div>
+      <div class="panel-body">${media}</div>
       ${XP[id] && !soon ? xpHTML(m) : ""}
     </article>`;
 
@@ -130,8 +142,6 @@ function renderPanel(id, vidIdx, autoplay){
   const rb = document.getElementById("replayBtn");
   if(rb) rb.addEventListener("click", () => { if(player){ player.currentTime = 0; playVideo(); } });
 
-  const apAgentCta = document.getElementById("apAgentCta");
-  if(apAgentCta) apAgentCta.addEventListener("click", () => { if(typeof openSynergyAgent === "function") openSynergyAgent("invoice", 9); });
   host.querySelectorAll("#pClose").forEach(b => b.addEventListener("click", closePanel));
   host.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", () => sel(b.dataset.go, {keepPlace:true, focus:false})));
   host.querySelectorAll("[data-vid]").forEach(b =>
