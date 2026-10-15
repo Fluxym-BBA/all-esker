@@ -1,0 +1,170 @@
+{
+  "catalogue": "Filtres - Factures fournisseurs",
+  "version": "0.1.0",
+  "langue": "fr-FR",
+  "statut": "prototype_a_completer",
+  "objectif": "Décrire les champs de filtre disponibles dans l'espace de travail Factures fournisseurs et les opérateurs associés, afin de générer une interface de démonstration HTML.",
+  "source": {
+    "type": "captures_ecran",
+    "fichiers": [
+      "image-1.png",
+      "image.png"
+    ],
+    "perimetre_observe": "Écran Factures fournisseurs (Accueil), liste Factures fournisseurs",
+    "limite": "Les champs visibles sont recensés. Les opérateurs de Code société sont confirmés par la capture de la liste déroulante. Les opérateurs des autres champs doivent être confirmés par le HTML source ou par des captures complémentaires."
+  },
+  "operator_catalog": [
+    {
+      "id": "equals",
+      "label": "égal à",
+      "label_html": "égal à",
+      "category": "comparison",
+      "confirmed_for": ["code_societe"]
+    },
+    {
+      "id": "not_equals",
+      "label": "différent de",
+      "label_html": "différent de",
+      "category": "comparison",
+      "confirmed_for": ["code_societe"]
+    },
+    {
+      "id": "starts_with",
+      "label": "commence par",
+      "label_html": "commence par",
+      "category": "text",
+      "confirmed_for": ["code_societe"]
+    },
+    {
+      "id": "contains",
+      "label": "contient",
+      "label_html": "contient",
+      "category": "text",
+      "confirmed_for": ["code_societe"]
+    },
+    {
+      "id": "not_contains",
+      "label": "ne contient pas",
+      "label_html": "ne contient pas",
+      "category": "text",
+      "confirmed_for": ["code_societe"]
+    },
+    {
+      "id": "less_than",
+      "label": "inférieur à",
+      "label_html": "inférieur à",
+      "category": "comparison",
+      "confirmed_for": ["code_societe"]
+    },
+    {
+      "id": "less_or_equal",
+      "label": "inférieur ou égal à",
+      "label_html": "inférieur ou égal à",
+      "category": "comparison",
+      "confirmed_for": ["code_societe"]
+    },
+    {
+      "id": "greater_than",
+      "label": "supérieur à",
+      "label_html": "supérieur à",
+      "category": "comparison",
+      "confirmed_for": ["code_societe"]
+    },
+    {
+      "id": "greater_or_equal",
+      "label": "supérieur ou égal à",
+      "label_html": "supérieur ou égal à",
+      "category": "comparison",
+      "confirmed_for": ["code_societe"]
+    }
+  ],
+  "fields": [
+    {
+      "id": "code_societe",
+      "label": "Code société",
+      "display_order": 1,
+      "input_type": "text",
+      "input_type_status": "inferred_from_screen",
+      "default_operator": "equals",
+      "default_operator_label": "égal à",
+      "available_operators": [
+        "equals",
+        "not_equals",
+        "starts_with",
+        "contains",
+        "not_contains",
+        "less_than",
+        "less_or_equal",
+        "greater_than",
+        "greater_or_equal"
+      ],
+      "operator_status": "confirmed_by_screenshot",
+      "value_example": "FR01"
+    },
+    {
+      "id": "nom_fournisseur",
+      "label": "Nom du fournisseur",
+      "display_order": 2,
+      "input_type": "text",
+      "input_type_status": "inferred_from_screen",
+      "default_operator": "starts_with",
+      "default_operator_label": "commence par",
+      "available_operators": null,
+      "operator_status": "to_validate_from_html_or_screenshot",
+      "value_example": "ACME"
+    },
+    {
+      "id": "date_facture",
+      "label": "Date de facture",
+      "display_order": 3,
+      "input_type": "date",
+      "input_type_status": "inferred_from_label",
+      "default_operator": "equals",
+      "default_operator_label": "égal à",
+      "available_operators": null,
+      "operator_status": "to_validate_from_html_or_screenshot",
+      "value_example": "2026-10-15",
+      "value_format": "YYYY-MM-DD"
+    },
+    {
+      "id": "numero_facture",
+      "label": "Numéro de facture",
+      "display_order": 4,
+      "input_type": "text",
+      "input_type_status": "inferred_from_screen",
+      "default_operator": "equals",
+      "default_operator_label": "égal à",
+      "available_operators": null,
+      "operator_status": "to_validate_from_html_or_screenshot",
+      "value_example": "FAC-2026-001"
+    },
+    {
+      "id": "etat_facture",
+      "label": "État de la facture",
+      "display_order": 5,
+      "input_type": "select_or_text",
+      "input_type_status": "to_validate_from_html",
+      "default_operator": "equals",
+      "default_operator_label": "égal à",
+      "available_operators": null,
+      "operator_status": "to_validate_from_html_or_screenshot",
+      "value_example": "À valider"
+    }
+  ],
+  "ui_defaults_observed": {
+    "filter_group": "Factures assignées au comptable",
+    "visible_invoice_count": 41,
+    "filter_rows_visible": 4,
+    "actions": [
+      "Ajouter un critère",
+      "Appliquer"
+    ],
+    "additional_filter_area": "État de la facture"
+  },
+  "integration_notes": {
+    "recommended_format": "JSON",
+    "reason": "Le JSON permet de conserver les labels, les identifiants techniques, l'ordre d'affichage, les types de valeurs, les opérateurs et le statut de validation dans une structure facilement consommable par JavaScript.",
+    "recommended_usage": "Charger le fichier côté JavaScript, générer la liste des champs, puis filtrer la liste des opérateurs selon fields[].available_operators.",
+    "fallback_behavior": "Si available_operators vaut null, afficher uniquement le champ et son opérateur par défaut, ou utiliser une configuration temporaire explicitement marquée comme hypothèse."
+  }
+}
