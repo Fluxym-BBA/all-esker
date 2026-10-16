@@ -60,7 +60,7 @@ img,svg{max-width:100%}
 /* ============ 2. APPLICATION ET VUES ============ */
 .fx-app{position:fixed;inset:var(--hdr) 0 0 0;overflow:hidden}
 .fx-loading{display:flex;height:100%;align-items:center;justify-content:center;color:var(--txt);font-weight:600}
-.fx-view{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;animation:fxView .5s var(--ease) both;scrollbar-width:thin}
+.fx-view{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;animation:fxView .5s var(--ease) backwards;scrollbar-width:thin}
 .fx-bg{position:fixed;inset:var(--hdr) 0 0 0;z-index:-1;pointer-events:none;overflow:hidden;background:linear-gradient(180deg,#fff 0%,#f7fbfd 35%,#eef5f9 100%)}
 .fx-bg i{position:absolute;display:block;border-radius:50%}
 .fx-bg .h1{top:-12%;right:-10%;width:60%;aspect-ratio:1;background:radial-gradient(circle,rgba(19,180,226,.2),transparent 62%);animation:drift 22s ease-in-out infinite alternate}
@@ -114,7 +114,7 @@ img,svg{max-width:100%}
 .fx-tab:hover{background:rgba(19,180,226,.1);color:var(--navy)}
 .fx-tab.on{color:#fff;background:var(--navy);box-shadow:0 8px 20px rgba(22,52,103,.3)}
 .fx-tab.on svg{color:var(--sun)}
-.fx-tabbody{overflow-y:auto;overflow-x:hidden;padding:4px 4px 10px;scrollbar-width:thin;animation:fxView .45s var(--ease) both}
+.fx-tabbody{overflow-y:auto;overflow-x:hidden;padding:4px 4px 10px;scrollbar-width:thin;animation:fxView .45s var(--ease) backwards}
 .fx-mh{align-items:center}
 .fx-mt{display:flex;align-items:center;gap:14px;min-width:0;flex:1 1 320px}
 .fx-mt small{display:block;font:700 .7rem Barlow,sans-serif;letter-spacing:.15em;text-transform:uppercase;color:var(--c,var(--cy))}
