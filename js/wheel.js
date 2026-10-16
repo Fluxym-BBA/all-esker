@@ -56,21 +56,21 @@ function arcTextFit(cx,cy,r,aMid,str,fsMax,fill,inward,maxDeg,lsMax,cls){
    ========================================================================= */
 function segment(a1,a2,id,fs,maxc,idx){
   const m=byId(id); if(!m) return "";
-  const am=(a1+a2)/2, c=m.c, soon=!m.videos.length;
+  const am=(a1+a2)/2, c=m.c, soon=false;
   const[tx,ty]=pol(0,0,10,am);
   const[ix,iy]=pol(0,0,-26,am);
   let rot=((am-90)%360+360)%360; if(rot>90&&rot<270)rot+=180;
   const rl=(R1+R2)/2+2,[lx,ly]=pol(C,C,rl,am);
   const lines=wrapTxt(m.label,maxc||15);
   const lh=fs+2.4, blockH=lines.length*lh, off=-(blockH-lh)/2-lh*.25;
-  const note = soon ? "Bientôt" : m.videos.length+" vidéo"+(m.videos.length>1?"s":"");
+  const note = m.videos.length ? m.videos.length+" vidéo"+(m.videos.length>1?"s":"") : "Fiche module";
   let t=`<text class="slab" x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" transform="rotate(${rot.toFixed(2)} ${lx.toFixed(1)} ${ly.toFixed(1)})" text-anchor="middle" font-size="${fs}" font-weight="700" fill="#163467" letter-spacing=".2" font-family="Miriam Libre, sans-serif">`;
   lines.forEach((L,i)=>{t+=`<tspan x="${lx.toFixed(1)}" dy="${i===0?off.toFixed(1):lh.toFixed(1)}">${esc(L)}</tspan>`});
   t+=`<tspan class="scnt" x="${lx.toFixed(1)}" dy="${(lh+3).toFixed(1)}" font-size="${(fs-2.5).toFixed(1)}" font-weight="700" fill="${soon?'#9aa7bb':c}" font-family="Barlow, sans-serif">${note}</tspan></text>`;
   return`<g class="seg${soon?' soon':''}" id="seg-${id}" role="button" tabindex="0"
     style="--c:${c};--tx:${tx.toFixed(2)}px;--ty:${ty.toFixed(2)}px;--ix:${ix.toFixed(2)}px;--iy:${iy.toFixed(2)}px;--d:${(0.18+idx*0.045).toFixed(3)}s"
     data-id="${id}" data-suite="${m.suite}">
-  <title>${esc(m.label)} : ${soon?'vidéo à venir':note}</title>
+  <title>${esc(m.label)} : ${note}</title>
   <path class="sglow" d="${ring(C,C,R1-5,R2+5,a1,a2,.3)}" fill="${c}" opacity="0" filter="url(#blur10)"/>
   <path class="sfill" d="${ring(C,C,R1,R2,a1,a2,.55)}" fill="#fff" stroke="${c}" stroke-width="2.2" stroke-linejoin="round"${soon?' opacity=".86"':''}/>
   <path class="srim" d="${ring(C,C,R1,R1+6,a1,a2,.55)}" fill="${c}" opacity="${soon?'.45':'.92'}" pointer-events="none"/>
@@ -168,25 +168,6 @@ function buildWheel(){
     <text x="${C}" y="${C+50}" text-anchor="middle" font-size="12" font-weight="700" fill="#9aa7bb" letter-spacing="1.6" font-family="Barlow, sans-serif">${TOTV} VIDÉOS · ${M.length} MODULES</text>
     <text x="${C}" y="${C+76}" text-anchor="middle" font-size="11.5" font-weight="700" fill="#13b4e2" letter-spacing=".4" font-family="Barlow, sans-serif">Survolez un module pour le découvrir</text>
   </g>`;
-  /* contrôle de taille intégré au noyau : il reste au centre, donc il ne « saute » plus */
-  g+=`<g class="hubzoom" id="hubZoom" transform="translate(${C} ${C+152})">
-    <title>Ajuster la taille de la roue</title>
-    <rect class="hzbar" x="-70" y="-19" width="140" height="38" rx="19" fill="#ffffff" stroke="#163467" stroke-opacity=".12" stroke-width="1.2"/>
-    <g class="hz-btn" id="hzMinus" role="button" tabindex="0" data-step="-1">
-      <title>Réduire la roue</title>
-      <circle class="hz-bg" cx="-48" cy="0" r="14" fill="#f0f6f8" stroke="#163467" stroke-opacity=".1" stroke-width="1"/>
-      <path class="hz-ico" d="M-55 0 H-41" stroke="#163467" stroke-width="2.6" stroke-linecap="round" fill="none"/>
-    </g>
-    <foreignObject x="-33" y="-16" width="66" height="32">
-      <input xmlns="http://www.w3.org/1999/xhtml" class="hz-input" id="hzInput" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="100%" aria-label="Taille de la roue en pourcentage" title="Saisissez une taille, de 50 % à 200 %"/>
-    </foreignObject>
-    <text class="hz-cap" x="0" y="-24" text-anchor="middle" font-size="8.5" font-weight="700" letter-spacing="1.6" fill="#a9b6c9" font-family="Barlow, sans-serif">TAILLE</text>
-    <g class="hz-btn" id="hzPlus" role="button" tabindex="0" data-step="1">
-      <title>Agrandir la roue</title>
-      <circle class="hz-bg" cx="48" cy="0" r="14" fill="#f0f6f8" stroke="#163467" stroke-opacity=".1" stroke-width="1"/>
-      <path class="hz-ico" d="M41 0 H55 M48 -7 V7" stroke="#163467" stroke-width="2.6" stroke-linecap="round" fill="none"/>
-    </g>
-  </g>`;
   /* contenu du noyau : état survol */
   g+=`<g class="hub-hover" id="hubHover" role="button" tabindex="-1" style="cursor:pointer">
     <circle id="hhRing" cx="${C}" cy="${C-72}" r="31" fill="#f0f6f8"/>
@@ -196,7 +177,7 @@ function buildWheel(){
     <text id="hhName2" x="${C}" y="${C+44}" text-anchor="middle" font-size="25" font-weight="700" fill="#163467" font-family="Miriam Libre, sans-serif"></text>
     <g id="hhCta" transform="translate(${C} ${C+78})">
       <rect x="-82" y="-15" width="164" height="30" rx="15" fill="#13b4e2"/>
-      <text id="hhCtaT" x="0" y="5" text-anchor="middle" font-size="12" font-weight="700" fill="#fff" letter-spacing=".6" font-family="Barlow, sans-serif">LANCER LA VIDÉO</text>
+      <text id="hhCtaT" x="0" y="5" text-anchor="middle" font-size="12" font-weight="700" fill="#fff" letter-spacing=".6" font-family="Barlow, sans-serif">OUVRIR LE MODULE</text>
     </g>
   </g>`;
   return g+`</svg>`;
@@ -207,14 +188,14 @@ function buildWheel(){
    ========================================================================= */
 function miniSegment(a1,a2,id,idx){
   const m=byId(id); if(!m) return "";
-  const am=(a1+a2)/2, soon=!m.videos.length;
+  const am=(a1+a2)/2, soon=false;
   const[tx,ty]=pol(0,0,11,am);
   let rot=((am-90)%360+360)%360; if(rot>90&&rot<270)rot+=180;
   const[ex,ey]=pol(C,C,347,am);           /* emoji */
   const[lx,ly]=pol(C,C,296,am);           /* code court */
   return`<g class="mini-seg${soon?' soon':''}" data-id="${id}" role="button" tabindex="0"
     style="--c:${m.c};--tx:${tx.toFixed(2)}px;--ty:${ty.toFixed(2)}px;--sd:${(0.17+(idx||0)*0.028).toFixed(3)}s;--sdo:${(0.014*(6-(idx||0))).toFixed(3)}s" data-suite="${m.suite}">
-    <title>${esc(m.label)}${soon?' (vidéo à venir)':''}</title>
+    <title>${esc(m.label)}</title>
     <path class="msf" d="${ring(C,C,R1,R2,a1,a2,.8)}" fill="#fff" stroke="${m.c}" stroke-width="2.6" stroke-linejoin="round"${soon?' opacity=".86"':''}/>
     <path class="mrim" d="${ring(C,C,R1,R1+8,a1,a2,.8)}" fill="${m.c}" opacity="${soon?'.45':'.92'}" pointer-events="none"/>
     <text class="mico" x="${ex.toFixed(1)}" y="${ey.toFixed(1)}" transform="rotate(${rot.toFixed(2)} ${ex.toFixed(1)} ${ey.toFixed(1)})" text-anchor="middle" dy="13" font-size="38">${m.icon}</text>
@@ -380,7 +361,7 @@ function buildMiniWheel(){
       <text class="mini-hub-label" id="mhName2" x="${C}" y="${C+62}" text-anchor="middle" font-size="33"></text>
       <g id="mhCta" transform="translate(${C} ${C+108})">
         <rect x="-96" y="-19" width="192" height="38" rx="19" fill="#13b4e2"/>
-        <text id="mhCtaT" x="0" y="7" text-anchor="middle" font-size="18" font-weight="700" fill="#fff" letter-spacing=".8" font-family="Barlow, sans-serif">LANCER LA VIDÉO</text>
+        <text id="mhCtaT" x="0" y="7" text-anchor="middle" font-size="18" font-weight="700" fill="#fff" letter-spacing=".8" font-family="Barlow, sans-serif">OUVRIR LE MODULE</text>
       </g>
     </g>`;
   return g+`</svg>`;

@@ -3,21 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Esker en vidéo | Fluxym</title>
-<meta name="description" content="Découvrez en vidéo chaque module de la suite Esker : Source-to-Pay et Order-to-Cash. Présenté par Fluxym, intégrateur et revendeur Esker.">
-<meta property="og:title" content="Esker en vidéo | Fluxym">
-<meta property="og:description" content="Découvrez en vidéo chaque module de la suite Esker : Source-to-Pay et Order-to-Cash.">
+<title>Esker × Fluxym | L'AI Automation Suite pour l'Office of the CFO</title>
+<meta name="description" content="Explorez la suite Esker (Source-to-Pay et Order-to-Cash) à partir de votre enjeu métier : modules, synergies, cas d'usage. Présenté par Fluxym, intégrateur et revendeur Esker.">
+<meta property="og:title" content="Esker × Fluxym | L'AI Automation Suite pour l'Office of the CFO">
+<meta property="og:description" content="Explorez la suite Esker à partir de votre enjeu métier.">
 <meta property="og:type" content="website">
 <link rel="icon" type="image/png" href="https://www.fluxym.com/public/uploads/2025/10/cropped-Vector-Stroke-1-32x32.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Miriam+Libre:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/base.css">
-<link rel="stylesheet" href="css/module.css">
-<link rel="stylesheet" href="css/suites.css">
-  <link rel="stylesheet" href="css/o2c-xp.css">
+<link rel="stylesheet" href="css/wheel.css?v=20261016a">
+<link rel="stylesheet" href="css/xp-kit.css?v=20261016a">
+<link rel="stylesheet" href="css/app.css?v=20261016a">
 </head>
-<body>
+<body data-view="home">
 
 <!-- ====== SPRITES ====== -->
 <svg width="0" height="0" style="display:none" aria-hidden="true" focusable="false">
@@ -48,130 +47,31 @@
   </symbol>
 </svg>
 
-<!-- ====== HEADER ====== -->
-<header class="header" id="hdr">
-  <div class="header-in">
-    <a class="hlogo" href="https://www.fluxym.com/" aria-label="Fluxym, accueil">
+<a class="fx-skip" href="#app">Aller au contenu</a>
+
+<!-- ====== EN-TÊTE ====== -->
+<header class="fx-hdr" id="hdr">
+  <div class="fx-hdr-in">
+    <a class="fx-logo" href="#/" aria-label="Accueil, Esker et Fluxym">
       <svg class="f-mark" role="img" aria-label="Logo Fluxym" focusable="false"><use href="#fluxym"/></svg>
-      <span class="hlogo-x" aria-hidden="true">×</span>
+      <span class="fx-logo-x" aria-hidden="true">×</span>
       <svg class="e-mark" role="img" aria-label="Logo Esker" focusable="false"><use href="#eskerword"/></svg>
     </a>
-    <nav class="hnav" id="hnav" aria-label="Navigation par niveau de granularité">
-      <a href="#roue" data-hnav="home" class="is-here">La roue Esker</a>
-      <a href="#suite=s2p" data-hnav="S2P">Suite Source-to-Pay</a>
-      <a href="#suite=o2c" data-hnav="O2C">Suite Order-to-Cash</a>
-      <div class="hnav-dd" id="hnavDd">
-        <button type="button" class="hnav-dd-btn" id="hnavDdBtn" aria-expanded="false">Accès direct module ▾</button>
-        <div class="hnav-dd-menu" id="hnavDdMenu" hidden></div>
-      </div>
-      <a href="demo/index.html" class="hnav-demo" target="_blank" style="color:var(--cy,#13b4e2);font-weight:700">✨ Démo interactive</a>
-      <a href="#services">Nos services</a>
-      <a href="https://www.fluxym.com/expertise/" target="_blank" rel="noopener">Notre expertise</a>
+    <nav class="fx-nav" id="hnav" aria-label="Navigation principale">
+      <a href="#/" data-nav="home">Accueil</a>
+      <a href="#/enjeux" data-nav="enjeux">Mon enjeu métier</a>
+      <a href="#/solution" data-nav="solution">La solution</a>
+      <a href="#/fluxym" data-nav="fluxym">Fluxym</a>
     </nav>
-    <a class="btn btn-blue" href="#contact">Contact</a>
+    <button type="button" class="fx-tourbtn" data-tour="start" aria-label="Lancer la visite guidée">Visite guidée</button>
   </div>
 </header>
 
-<main>
-<!-- ====== SCENE PLEIN ECRAN ====== -->
-<section class="stage" id="roue">
-  <div class="stage-bg" aria-hidden="true"><i class="b1"></i><i class="b2"></i></div>
-
-  <div class="wheel-cell">
-    <div class="wheel-box" id="wheelBox"></div>
-  </div>
-
-  <!-- barre d'état posée EN SURIMPRESSION dans les deux coins bas, zones que
-       l'arc du cercle ne peut jamais atteindre, quel que soit le zoom.
-       Elle ne consomme donc aucune hauteur : la roue a toute la fenêtre. -->
-  <div class="stage-bot" id="stageBot">
-    <h1>L'AI Automation Suite pour l'<em>Office of the CFO</em></h1>
-    <span class="hint">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
-      Cliquez un module, la vidéo s'ouvre <b>juste en dessous</b>
-    </span>
-  </div>
-</section>
-
-<!-- ====== PANNEAU VIDEO ====== -->
-<section class="suitesec" id="suitesec" aria-live="polite"></section>
-
-<section class="panelsec" id="playersec"><div class="wrap"><div id="panelHost"></div></div></section>
-
-
-<!-- ====== CONTACT ====== -->
-
-  <!-- Section Offre de Valeur Transverse & Modèle Planétaire Fluxym -->
-  <section class="services-sec" id="services">
-    <div id="fluxymServicesContainer"></div>
-  </section>
-
-  <section class="contactsec" id="contact">
-  <div class="wrap contact-grid">
-    <div class="contact-left">
-      <h2>Une <em>question&nbsp;?</em><br>Un <em>projet&nbsp;?</em></h2>
-      <p>Nous serons ravis de pouvoir y répondre et d'échanger avec vous dans les plus brefs délais. Contactez-nous en remplissant le formulaire ou en envoyant un email à <a href="/cdn-cgi/l/email-protection#6900070f06290f051c111004470a0604"><span class="__cf_email__" data-cfemail="056c6b636a456369707d7c682b666a68">[email&#160;protected]</span></a>.</p>
-      <p>Vous souhaitez une démonstration personnalisée d'un module Esker sur vos propres processus&nbsp;? Précisez-le dans votre demande, un expert Fluxym vous recontacte.</p>
-      <div class="offices">
-        <div class="office"><b>Paris</b><span>+33 1 56 90 55 80</span><span>15 rue de la Faisanderie, 75116</span></div>
-        <div class="office"><b>Lyon</b><span>+33 6 86 16 78 83</span><span>283 rue de l'étang, 69760 Limonest</span></div>
-        <div class="office"><b>Bordeaux</b><span>+33 5 40 25 58 41</span><span>31 rue d'Armagnac, 33088</span></div>
-        <div class="office"><b>Montréal</b><span>+1 418 446 6838</span><span>1010 Rue Sainte-Catherine Ouest</span></div>
-        <div class="office"><b>Singapour</b><span>+65 90058356</span><span>600 North Bridge Rd, 188778</span></div>
-      </div>
-    </div>
-    <div>
-      <div class="formcard">
-        <h3>Écrivez-nous</h3>
-        <div class="hs-form-frame" id="hsFormTarget"></div>
-        <div class="formfallback" id="formFallback">
-          Le formulaire ne s'est pas chargé (bloqueur de publicité ou connexion restreinte).
-          Écrivez-nous directement à <a href="/cdn-cgi/l/email-protection#6c05020a032c0a0019141501420f0301" style="color:var(--blue);font-weight:600"><span class="__cf_email__" data-cfemail="1871767e77587e746d606175367b7775">[email&#160;protected]</span></a>
-          ou via <a href="https://www.fluxym.com/nous-contacter/" target="_blank" rel="noopener" style="color:var(--blue);font-weight:600">la page contact de fluxym.com</a>.
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-</main>
-
-<!-- ====== FOOTER ====== -->
-<footer class="footer">
-  <div class="wrap">
-    <div class="foot-grid">
-      <div>
-        <a class="foot-logo" href="https://www.fluxym.com/" aria-label="Fluxym"><svg role="img" aria-label="Logo Fluxym" focusable="false"><use href="#fluxym"/></svg></a>
-        <p>Experts du Source-to-Pay et de l'Order-to-Cash. Fluxym est intégrateur et revendeur de la solution Esker.</p>
-      </div>
-      <div class="foot-col">
-        <b>Explorer</b>
-        <a href="#roue">La roue Esker</a>
-      <a href="#services">Accompagnement & Services</a>
-        <a href="#s2p">Modules Source-to-Pay</a>
-        <a href="#o2c">Modules Order-to-Cash</a>
-        <a href="#contact">Nous contacter</a>
-      </div>
-      <div class="foot-col">
-        <b>Fluxym</b>
-        <a href="https://www.fluxym.com/expertise/" target="_blank" rel="noopener">Notre expertise</a>
-        <a href="https://www.fluxym.com/nous-contacter/" target="_blank" rel="noopener">Nous contacter</a>
-        <a href="https://www.fluxym.com/mentions-legales/" target="_blank" rel="noopener">Mentions légales</a>
-        <a href="https://www.linkedin.com/company/fluxym/" target="_blank" rel="noopener">LinkedIn</a>
-      </div>
-    </div>
-    <div class="foot-bot">
-      <span>© <span id="yr"></span> Fluxym. Tous droits réservés.</span>
-      <span>Esker® et les noms de modules sont des marques déposées d'Esker SA.</span>
-    </div>
-  </div>
-</footer>
-
-<button class="totop" id="toTop" type="button" aria-label="Revenir en haut de la page" title="Revenir en haut">
-  <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
-</button>
+<!-- ====== APPLICATION : une seule vue à la fois ====== -->
+<main class="fx-app" id="app" aria-live="polite"><div class="fx-loading" id="loading">Chargement…</div></main>
+<noscript><p style="padding:96px 24px;text-align:center">Cette application nécessite JavaScript.</p></noscript>
 
 <!-- ====== WIDGET ROUE FLOTTANT ====== -->
-<!-- Pas de fenêtre : la bulle Esker se transforme en roue au survol. -->
 <div class="dock" id="dock">
   <div class="dock-vortex" aria-hidden="true"></div>
   <div class="dock-flash" aria-hidden="true"></div>
@@ -188,23 +88,24 @@
   </button>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
-<script src="js/data.js"></script>
-<script src="js/wheel.js"></script>
-  <script src="js/o2c-data.js"></script>
-  <script src="js/o2c-xp.js"></script>
-  <script src="js/panel.js"></script>
-<script src="js/module-data.js"></script>
-<script src="js/module.js"></script>
-<script src="js/app.js"></script>
-<script src="js/suites-data.js"></script>
-<script src="js/suites.js"></script>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      var c = document.getElementById("fluxymServicesContainer");
-      if (c && window.o2xServicesHTML) { c.innerHTML = window.o2xServicesHTML(); window.o2xMountServices(c); }
-    });
-  </script>
+<script src="js/data.js?v=20261016a"></script>
+<script src="js/wheel.js?v=20261016a"></script>
+<script src="js/suites-data.js?v=20261016a"></script>
+<script src="js/module-data.js?v=20261016a"></script>
+<script src="js/o2c-data.js?v=20261016a"></script>
+<script src="js/fiches.js?v=20261016a"></script>
+<script src="js/xp-kit.js?v=20261016a"></script>
+<script src="js/fx-core.js?v=20261016a"></script>
+<script src="js/fx-data.js?v=20261016a"></script>
+<script src="js/fx-home.js?v=20261016a"></script>
+<script src="js/fx-enjeux.js?v=20261016a"></script>
+<script src="js/fx-solution.js?v=20261016a"></script>
+<script src="js/fx-dock.js?v=20261016a"></script>
+<script src="js/fx-suite.js?v=20261016a"></script>
+<script src="js/fx-module.js?v=20261016a"></script>
+<script src="js/fx-module-tabs.js?v=20261016a"></script>
+<script src="js/fx-fluxym.js?v=20261016a"></script>
+<script src="js/fx-tour.js?v=20261016a"></script>
+<script src="js/fx-main.js?v=20261016a"></script>
 </body>
 </html>

@@ -1,0 +1,632 @@
+/* app.css : couche visuelle de l'application à écran unique (Esker × Fluxym).
+   Charte Fluxym (bleu nuit, cyan, violet, soleil), grammaire E-Procurement (xp-*), roue (wheel.css).
+   Une vue à la fois : chaque écran tient dans la fenêtre, le contenu défile à l'intérieur de son onglet si besoin. */
+
+/* ============ 0. JETONS ET BASE ============ */
+:root{
+  --dark-blue:#163467;--blue:#13b4e2;--purple-rain:#6b51ed;--light-blue:#f0f6f8;--sunlight:#ffcf63;--green:#7eefa0;--red:#ef7e7e;--white:#fff;
+  --esker-red:#db001b;--esker-cyan:#1dc0d5;--esker-grey:#f1f3f4;
+  --hdr:64px;--r:1.2rem;--shadow:0 18px 50px rgba(22,52,103,.10);--shadow-h:0 26px 70px rgba(22,52,103,.18);
+  --grad:linear-gradient(110deg,#13b4e2,#6b51ed);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+html,body{height:100%}
+body{font-family:Barlow,-apple-system,BlinkMacSystemFont,sans-serif;color:var(--navy);background:#fff;overflow:hidden;line-height:1.5}
+h1,h2,h3,h4,button{font-family:'Miriam Libre',Barlow,sans-serif}
+button{cursor:pointer;color:inherit;background:none;border:0;font-size:inherit}
+a{color:inherit;text-decoration:none}
+ul,ol{list-style:none}
+img,svg{max-width:100%}
+::selection{background:rgba(19,180,226,.35)}
+:focus-visible{outline:3px solid var(--cy);outline-offset:2px;border-radius:6px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.wheel-box{position:relative;flex:none;aspect-ratio:1;transition:width .3s var(--ease),height .3s var(--ease)}
+.wheel-svg{width:100%;height:100%;display:block;overflow:visible}
+@keyframes drift{0%{transform:translate(0,0) scale(1)}100%{transform:translate(3%,4%) scale(1.09)}}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(126,239,160,.65)}70%{box-shadow:0 0 0 9px rgba(126,239,160,0)}100%{box-shadow:0 0 0 0 rgba(126,239,160,0)}}
+@keyframes fxUp{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes fxView{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes fxSpin{to{transform:rotate(360deg)}}
+@keyframes fxSpinR{to{transform:rotate(-360deg)}}
+@keyframes fxFlow{to{stroke-dashoffset:-28}}
+@keyframes fxPulse{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:1;transform:scale(1.06)}}
+@keyframes fxFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes fxGlow{0%,100%{box-shadow:0 0 0 0 rgba(19,180,226,.55)}70%{box-shadow:0 0 0 14px rgba(19,180,226,0)}}
+@keyframes fxShine{from{background-position:-200% 0}to{background-position:200% 0}}
+@keyframes fxGauge{from{stroke-dasharray:0 201}}
+@keyframes fxBar{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+
+/* ============ 1. EN-TÊTE ============ */
+.fx-skip{position:fixed;left:12px;top:-60px;z-index:1000;background:var(--navy);color:#fff;padding:10px 16px;border-radius:10px;font-weight:700;transition:top .2s}
+.fx-skip:focus{top:10px}
+.fx-hdr{position:fixed;inset:0 0 auto 0;height:var(--hdr);z-index:300;background:rgba(255,255,255,.82);backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);border-bottom:1px solid var(--line)}
+.fx-hdr::after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--grad);opacity:.7;transform-origin:left;animation:fxBar 1.2s var(--ease) both}
+.fx-hdr-in{height:100%;max-width:1480px;margin:0 auto;padding:0 clamp(14px,2.4vw,36px);display:flex;align-items:center;gap:clamp(12px,2vw,28px)}
+.fx-logo{display:flex;align-items:center;gap:10px;flex:none}
+.fx-logo .f-mark{width:104px;height:34px}
+.fx-logo .e-mark{width:58px;height:15px;color:var(--esker-red);display:none}
+.fx-logo-x{display:none;color:#8da0bf;font-weight:700}
+@media(min-width:620px){.fx-logo .e-mark,.fx-logo-x{display:block}}
+.fx-nav{display:flex;gap:4px;margin-left:auto}
+.fx-nav a{position:relative;padding:9px 16px;border-radius:50px;font:700 .92rem 'Miriam Libre',sans-serif;color:var(--txt);transition:color .25s,background .25s}
+.fx-nav a:hover{color:var(--navy);background:rgba(22,52,103,.06)}
+.fx-nav a.is-here{color:#fff;background:var(--navy);box-shadow:0 8px 20px rgba(22,52,103,.28)}
+.fx-tourbtn{flex:none;display:inline-flex;align-items:center;gap:8px;padding:9px 18px;border-radius:50px;font:700 .88rem 'Miriam Libre',sans-serif;color:#fff;background:var(--grad);box-shadow:0 8px 22px rgba(107,81,237,.35);transition:transform .3s var(--spring),box-shadow .3s}
+.fx-tourbtn:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(107,81,237,.45)}
+.fx-tourbtn::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--green);animation:ping 2.4s infinite}
+@media(max-width:760px){.fx-nav a{padding:8px 10px;font-size:.8rem}.fx-tourbtn{display:none}.fx-nav{margin-left:auto}}
+@media(max-width:520px){.fx-nav a{padding:7px 8px;font-size:.74rem}.fx-logo .f-mark{width:86px}}
+
+/* ============ 2. APPLICATION ET VUES ============ */
+.fx-app{position:fixed;inset:var(--hdr) 0 0 0;overflow:hidden}
+.fx-loading{display:flex;height:100%;align-items:center;justify-content:center;color:var(--txt);font-weight:600}
+.fx-view{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;animation:fxView .5s var(--ease) both;scrollbar-width:thin}
+.fx-bg{position:fixed;inset:var(--hdr) 0 0 0;z-index:-1;pointer-events:none;overflow:hidden;background:linear-gradient(180deg,#fff 0%,#f7fbfd 35%,#eef5f9 100%)}
+.fx-bg i{position:absolute;display:block;border-radius:50%}
+.fx-bg .h1{top:-12%;right:-10%;width:60%;aspect-ratio:1;background:radial-gradient(circle,rgba(19,180,226,.2),transparent 62%);animation:drift 22s ease-in-out infinite alternate}
+.fx-bg .h2{top:34%;left:-16%;width:56%;aspect-ratio:1;background:radial-gradient(circle,rgba(107,81,237,.15),transparent 62%);animation:drift 26s ease-in-out infinite alternate-reverse}
+.fx-bg .h3{bottom:-14%;right:8%;width:44%;aspect-ratio:1;background:radial-gradient(circle,rgba(255,207,99,.2),transparent 62%);animation:drift 30s ease-in-out infinite alternate}
+.fx-bg .dots{inset:0;border-radius:0;background-image:radial-gradient(rgba(22,52,103,.11) 1px,transparent 1.2px);background-size:26px 26px;-webkit-mask-image:radial-gradient(ellipse at 50% 40%,#000 25%,transparent 78%);mask-image:radial-gradient(ellipse at 50% 40%,#000 25%,transparent 78%)}
+.fx-page{min-height:100%;height:100%;display:flex;flex-direction:column;max-width:1480px;margin:0 auto;padding:clamp(10px,1.6vh,20px) clamp(14px,2.4vw,36px) clamp(12px,2vh,22px);gap:clamp(8px,1.4vh,16px)}
+.fx-vh{flex:none;display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px clamp(14px,2vw,28px);justify-content:space-between}
+.fx-vt{min-width:0;flex:1 1 380px}
+.fx-vt h1,.fx-hh h1{font:700 clamp(1.5rem,3.1vw,2.6rem)/1.1 'Miriam Libre',sans-serif;letter-spacing:-.02em;margin:.5rem 0 .35rem;color:var(--navy);outline:none}
+.fx-vt h1 em,.fx-hh h1 em{font-style:normal;position:relative;white-space:normal;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;background-size:200% 100%;animation:fxShine 7s linear infinite}
+.fx-vt p{color:var(--txt);font-size:clamp(.88rem,1.2vw,1.02rem);max-width:70ch}
+.fx-vb{flex:1 1 auto;min-height:0}
+.fx-k{display:inline-flex;align-items:center;gap:.55rem;font-size:.68rem;font-weight:700;letter-spacing:.17em;text-transform:uppercase;color:var(--cy);background:rgba(19,180,226,.09);border:1px solid rgba(19,180,226,.25);padding:6px 13px;border-radius:50px}
+.fx-k i{width:6px;height:6px;border-radius:50%;background:var(--green);animation:ping 2.4s infinite}
+.fx-crumb{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:.78rem;color:#6b7c99;font-weight:600;flex:1 0 100%}
+.fx-crumb a{color:var(--cy)}
+.fx-crumb a:hover{text-decoration:underline}
+.fx-crumb i{font-style:normal;opacity:.6}
+.fx-crumb [aria-current]{color:var(--navy)}
+
+/* ============ 3. BOUTONS, PASTILLES, PUCES ============ */
+.fx-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 18px;border-radius:50px;font:700 .9rem 'Miriam Libre',sans-serif;color:var(--navy);background:#fff;border:1.5px solid rgba(22,52,103,.18);transition:transform .3s var(--spring),box-shadow .3s,background .25s,color .25s,border-color .25s}
+.fx-btn svg{width:16px;height:16px;flex:none}
+.fx-btn:hover{border-color:var(--cy);color:var(--cy);transform:translateY(-2px);box-shadow:0 10px 24px rgba(19,180,226,.22)}
+.fx-btn.pri{color:#fff;border-color:transparent;background:var(--grad);box-shadow:0 10px 26px rgba(107,81,237,.32)}
+.fx-btn.pri:hover{color:#fff;box-shadow:0 16px 34px rgba(107,81,237,.45)}
+.fx-btn.ghost{background:transparent}
+.fx-btn.sm{padding:8px 14px;font-size:.8rem}
+.fx-pill{display:inline-flex;align-items:center;gap:9px;padding:10px 18px;border-radius:50px;background:rgba(255,255,255,.85);border:1px solid var(--line);font:700 .86rem 'Miriam Libre',sans-serif;color:var(--navy);box-shadow:0 6px 18px rgba(22,52,103,.07);transition:transform .3s var(--spring),box-shadow .3s,background .25s,color .25s}
+.fx-pill svg{width:16px;height:16px;color:var(--cy);transition:color .25s}
+.fx-pill:hover{transform:translateY(-3px);background:var(--navy);color:#fff;box-shadow:0 14px 30px rgba(22,52,103,.26)}
+.fx-pill:hover svg{color:var(--sun)}
+.fx-mc{--c:var(--cy);display:inline-flex;align-items:center;gap:7px;padding:6px 12px 6px 8px;border-radius:50px;background:#fff;color:var(--navy);font:700 .78rem Barlow,sans-serif;box-shadow:inset 0 0 0 1.5px var(--c),0 4px 12px rgba(22,52,103,.06);transition:transform .3s var(--spring),background .25s,color .25s}
+.fx-mc:hover,.fx-mc.on{background:var(--c);color:#fff;transform:translateY(-2px)}
+.fx-mc.big{font-size:.95rem;padding:8px 16px 8px 10px}
+.fx-mc.pick{cursor:pointer}
+.fx-mods{display:flex;flex-wrap:wrap;gap:6px;flex:1 1 320px;justify-content:flex-end}
+.fx-nb{--c:var(--cy);flex:none;width:36px;height:36px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:var(--c);color:#fff;font:700 .86rem 'Miriam Libre',sans-serif;box-shadow:0 6px 16px rgba(22,52,103,.2)}
+.fx-seg{display:inline-flex;padding:4px;border-radius:50px;background:#fff;border:1px solid var(--line);box-shadow:0 8px 24px rgba(22,52,103,.07)}
+.fx-seg-b{display:inline-flex;align-items:center;gap:8px;padding:9px 18px;border-radius:50px;font:700 .86rem 'Miriam Libre',sans-serif;color:var(--txt);transition:background .3s,color .3s,box-shadow .3s}
+.fx-seg-b svg{width:16px;height:16px}
+.fx-seg-b.on{background:var(--navy);color:#fff;box-shadow:0 8px 20px rgba(22,52,103,.3)}
+.fx-seg-b:not(.on):hover{background:rgba(22,52,103,.07)}
+
+/* ============ 4. ONGLETS ============ */
+.fx-tabs{flex:none;display:flex;gap:6px;overflow-x:auto;padding:5px;border-radius:50px;background:rgba(255,255,255,.8);border:1px solid var(--line);box-shadow:0 8px 26px rgba(22,52,103,.07);scrollbar-width:none;align-self:flex-start;max-width:100%}
+.fx-tabs::-webkit-scrollbar{display:none}
+.fx-tab{flex:none;display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:50px;font:700 .84rem 'Miriam Libre',sans-serif;color:var(--txt);white-space:nowrap;transition:background .3s,color .3s,box-shadow .3s,transform .3s var(--spring)}
+.fx-tab svg{width:16px;height:16px;flex:none}
+.fx-tab:hover{background:rgba(19,180,226,.1);color:var(--navy)}
+.fx-tab.on{color:#fff;background:var(--navy);box-shadow:0 8px 20px rgba(22,52,103,.3)}
+.fx-tab.on svg{color:var(--sun)}
+.fx-tabbody{overflow-y:auto;overflow-x:hidden;padding:4px 4px 10px;scrollbar-width:thin;animation:fxView .45s var(--ease) both}
+.fx-mh{align-items:center}
+.fx-mt{display:flex;align-items:center;gap:14px;min-width:0;flex:1 1 320px}
+.fx-mt small{display:block;font:700 .7rem Barlow,sans-serif;letter-spacing:.15em;text-transform:uppercase;color:var(--c,var(--cy))}
+.fx-mt h1{font:700 clamp(1.4rem,2.6vw,2.1rem)/1.1 'Miriam Libre',sans-serif;color:var(--navy);outline:none}
+.fx-pn{display:flex;gap:8px}
+.fx-pn a{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#fff;border:1px solid var(--line);box-shadow:0 6px 16px rgba(22,52,103,.08);transition:transform .3s var(--spring),background .25s,color .25s}
+.fx-pn a svg{width:18px;height:18px}
+.fx-pn a:hover{background:var(--c,var(--navy));color:#fff;transform:scale(1.1)}
+
+/* ============ 5. ACCUEIL ============ */
+.fx-home{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(14px,3vh,34px);padding:clamp(14px,3vh,34px) clamp(14px,2.4vw,36px);max-width:1280px;margin:0 auto}
+.fx-hh{text-align:center;display:flex;flex-direction:column;align-items:center}
+.fx-hh h1{font-size:clamp(1.7rem,4.4vw,3.5rem);max-width:20ch;margin:.7rem 0 .5rem}
+.fx-hh p{font-size:clamp(1rem,1.5vw,1.25rem);color:var(--txt)}
+.fx-doors{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(12px,2vw,28px);width:100%}
+.fx-door{--dc:var(--cy);position:relative;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;padding:clamp(18px,3.2vh,34px) 18px 22px;border-radius:1.8rem;background:rgba(255,255,255,.88);border:1px solid var(--line);box-shadow:var(--shadow);transition:transform .5s var(--spring),box-shadow .5s,border-color .4s;animation:fxUp .8s var(--ease) both;overflow:hidden;isolation:isolate}
+.fx-door.d1{--dc:var(--cy)}.fx-door.d2{--dc:var(--vi);animation-delay:.1s}.fx-door.d3{--dc:#2fb872;animation-delay:.2s}
+.fx-door::before{content:'';position:absolute;inset:0;z-index:-1;background:radial-gradient(circle at 50% 0%,color-mix(in srgb,var(--dc) 16%,transparent),transparent 62%);opacity:.7;transition:opacity .4s}
+.fx-door:hover{transform:translateY(-8px);box-shadow:var(--shadow-h);border-color:var(--dc)}
+.fx-door:hover::before{opacity:1}
+.fx-dc,.fx-world .fx-dc{position:relative;width:clamp(110px,20vh,168px);aspect-ratio:1;display:flex;align-items:center;justify-content:center;color:var(--dc,var(--wc,var(--cy)));flex:none}
+.fx-dr{position:absolute;inset:0;width:100%;height:100%}
+.fx-dr.a{animation:fxSpin 40s linear infinite}
+.fx-dr.b{animation:fxSpinR 22s linear infinite}
+.fx-door:hover .fx-dr.a,.fx-world:hover .fx-dr.a{animation-duration:8s}
+.fx-dico{position:relative;width:62%;aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#fff;box-shadow:0 12px 30px rgba(22,52,103,.14),inset 0 0 0 1px var(--line);transition:transform .5s var(--spring)}
+.fx-dico>svg{width:52%;height:52%}
+.fx-dico .fx-mw{width:100%;height:100%;animation:fxSpin 60s linear infinite}
+.fx-door:hover .fx-dico{transform:scale(1.08)}
+.fx-dt b{display:block;font:700 clamp(1.1rem,1.8vw,1.45rem)/1.2 'Miriam Libre',sans-serif;color:var(--navy)}
+.fx-dt small{display:block;margin-top:5px;color:var(--txt);font-size:.9rem;line-height:1.4}
+.fx-dgo{margin-top:auto;display:inline-flex;align-items:center;gap:8px;font:700 .85rem 'Miriam Libre',sans-serif;color:var(--dc,var(--wc,var(--cy)));padding:8px 16px;border-radius:50px;background:color-mix(in srgb,var(--dc,var(--wc,var(--cy))) 11%,#fff);transition:gap .3s,background .3s,color .3s}
+.fx-dgo svg{width:16px;height:16px;transition:transform .3s}
+.fx-door:hover .fx-dgo,.fx-world:hover .fx-dgo{background:var(--dc,var(--wc,var(--cy)));color:#fff}
+.fx-door:hover .fx-dgo svg,.fx-world:hover .fx-dgo svg{transform:translateX(4px)}
+.fx-hrow{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+.fx-micro{font-size:.72rem;color:#8191ad;text-align:center}
+.fx-micro a{text-decoration:underline}
+@media(max-width:860px){.fx-doors{grid-template-columns:1fr;max-width:460px}.fx-door{flex-direction:row;text-align:left;padding:14px 16px;gap:14px}.fx-dc{width:84px}.fx-dgo{display:none}.fx-hh h1{font-size:1.7rem}}
+
+/* ============ 6. MON ENJEU MÉTIER ============ */
+.fx-choose{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(14px,2.4vw,32px);align-content:center;padding:6px}
+.fx-world{--wc:var(--cy);position:relative;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;padding:clamp(18px,3vh,32px);border-radius:1.8rem;background:rgba(255,255,255,.9);border:1px solid var(--line);box-shadow:var(--shadow);transition:transform .5s var(--spring),box-shadow .5s,border-color .4s;overflow:hidden;isolation:isolate;animation:fxUp .7s var(--ease) both}
+.fx-world+.fx-world{animation-delay:.12s}
+.fx-world::before{content:'';position:absolute;inset:0;z-index:-1;background:radial-gradient(circle at 50% 0%,color-mix(in srgb,var(--wc) 18%,transparent),transparent 60%)}
+.fx-world:hover{transform:translateY(-8px);box-shadow:var(--shadow-h);border-color:var(--wc)}
+.fx-world .fx-dico>svg{color:var(--wc)}
+.fx-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
+.fx-chips i{--mc:var(--cy);font-style:normal;font:700 .72rem Barlow,sans-serif;padding:4px 10px;border-radius:50px;color:var(--navy);background:color-mix(in srgb,var(--mc) 14%,#fff);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--mc) 55%,transparent)}
+.fx-enj{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:clamp(16px,2.6vw,40px);align-items:center;height:100%;min-height:0}
+.fx-enj-w{display:flex;flex-direction:column;align-items:center;gap:12px;min-width:0;min-height:0}
+.fx-enj-w .pw{width:min(100%,64vh)}
+.fx-ctl{display:flex;align-items:center;gap:10px}
+.fx-ctl button{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#fff;border:1px solid var(--line);box-shadow:0 6px 16px rgba(22,52,103,.08);transition:transform .3s var(--spring),background .25s,color .25s}
+.fx-ctl button svg{width:18px;height:18px}
+.fx-ctl button:hover{background:var(--navy);color:#fff;transform:scale(1.1)}
+.fx-ctl .fx-ctl-p{width:auto;padding:0 20px;gap:8px;border-radius:50px;font:700 .85rem 'Miriam Libre',sans-serif;color:#fff;background:var(--grad);border:0;box-shadow:0 10px 24px rgba(107,81,237,.32);display:inline-flex}
+.fx-ctl .fx-ctl-p:hover{background:var(--grad);transform:translateY(-2px) scale(1)}
+.fx-ctl .fx-ctl-p[aria-pressed="true"]{background:var(--navy)}
+.fx-card{align-self:center;max-height:100%;overflow-y:auto;scrollbar-width:thin}
+.fx-sc{display:flex;flex-direction:column;gap:10px}
+.fx-sc-h{display:flex;align-items:center;gap:14px}
+.fx-sc-h small{display:block;font:700 .68rem Barlow,sans-serif;letter-spacing:.15em;text-transform:uppercase;color:var(--cy)}
+.fx-sc-h h3{font:700 clamp(1.1rem,1.7vw,1.4rem)/1.2 'Miriam Libre',sans-serif;color:var(--navy)}
+.fx-sc-n,.fx-sc-w,.fx-sc-hh{color:var(--txt);font-size:.94rem;line-height:1.55}
+.fx-sc-hh{font-weight:700;color:var(--navy)}
+.fx-sc-l{font:700 .68rem Barlow,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6b7c99;margin-top:4px}
+.fx-sc-u{display:grid;gap:8px;list-style:none;margin:0}
+.fx-sc-go{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.fx-sor{display:flex;flex-direction:column;gap:2px;padding:10px 14px;border-radius:.9rem;background:var(--gl);border-left:3px solid var(--sun)}
+.fx-sor span{font:700 .64rem Barlow,sans-serif;letter-spacing:.15em;text-transform:uppercase;color:#6b7c99}
+.fx-sor b{font-size:.92rem}
+.fx-hors{padding:12px 14px;border-radius:.9rem;background:rgba(255,207,99,.2);font-size:.9rem;color:var(--navy);font-weight:600}
+.fx-shot{position:relative;display:block;width:100%;border-radius:1rem;overflow:hidden;border:1px solid var(--line);box-shadow:0 12px 30px rgba(22,52,103,.12);transition:transform .4s var(--ease)}
+.fx-shot img{display:block;width:100%;height:auto;max-height:190px;object-fit:cover;object-position:top}
+.fx-shot span{position:absolute;right:10px;bottom:10px;display:inline-flex;gap:6px;align-items:center;padding:5px 11px;border-radius:50px;background:rgba(22,52,103,.85);color:#fff;font:700 .72rem Barlow,sans-serif}
+.fx-shot span svg{width:13px;height:13px}
+.fx-shot:hover{transform:scale(1.02)}
+.fx-read{flex:none;font-size:.82rem;color:var(--txt);max-width:90ch}
+@media(max-width:900px){.fx-enj{grid-template-columns:minmax(0,1fr);height:auto}.fx-enj-w .pw{width:min(100%,520px)}.fx-choose{grid-template-columns:1fr}}
+
+/* ============ 7. LA SOLUTION ============ */
+.fx-sol{height:100%}
+.fx-sol-cell{flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center}
+.fx-sol-row{flex:none;display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+.fx-vh-s{align-items:flex-end}
+
+/* ============ 8. FICHE MODULE : APERÇU (messages Esker) ============ */
+.fx-mod{--c:var(--cy)}
+.fx-ap{display:flex;flex-direction:column;gap:clamp(12px,2vh,22px);padding:2px}
+.fx-ap-l{display:grid;grid-template-columns:auto minmax(0,1fr);gap:clamp(16px,2.6vw,36px);align-items:center;padding:clamp(16px,2.6vh,28px);border-radius:1.8rem;background:linear-gradient(135deg,#fff 0%,color-mix(in srgb,var(--c) 9%,#fff) 100%);border:1px solid var(--line);box-shadow:var(--shadow);position:relative;overflow:hidden}
+.fx-ap-l::after{content:'';position:absolute;right:-90px;top:-90px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--c) 22%,transparent),transparent 65%);pointer-events:none}
+.fx-badge{position:relative;width:clamp(92px,15vh,150px);aspect-ratio:1;display:flex;align-items:center;justify-content:center;flex:none}
+.fx-badge>span{position:relative;width:70%;aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:clamp(1.8rem,5vh,3rem);background:var(--c,var(--cy));box-shadow:0 14px 34px color-mix(in srgb,var(--c,var(--cy)) 45%,transparent);animation:fxFloat 5s ease-in-out infinite}
+.fx-badge i{position:absolute;inset:0;border-radius:50%;border:2px dashed var(--c,var(--cy));opacity:.55}
+.fx-badge .r1{animation:fxSpin 24s linear infinite}
+.fx-badge .r2{inset:9%;border-style:solid;border-width:1.5px;opacity:.28;animation:fxPulse 3.4s ease-in-out infinite}
+.fx-badge.sm{width:52px;height:52px;display:inline-flex;border-radius:50%;background:var(--c,var(--cy));font-size:1.5rem;box-shadow:0 8px 20px color-mix(in srgb,var(--c,var(--cy)) 40%,transparent)}
+.fx-ap-t{position:relative;z-index:1;min-width:0}
+.fx-hook{font:700 clamp(1.35rem,2.8vw,2.3rem)/1.12 'Miriam Libre',sans-serif;color:var(--navy);letter-spacing:-.015em}
+.fx-hook::after{content:'';display:block;width:64px;height:5px;border-radius:5px;margin-top:12px;background:var(--c);animation:fxBar .9s .3s var(--ease) both;transform-origin:left}
+.fx-intro{margin-top:12px;color:var(--txt);font-size:clamp(.9rem,1.15vw,1.05rem);line-height:1.6;max-width:68ch}
+.fx-ap-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.fx-stats{display:flex;flex-wrap:wrap;gap:clamp(10px,1.6vw,22px);margin-top:20px}
+.fx-stats li{flex:1 1 140px;max-width:220px;padding:12px 16px;border-radius:1.1rem;background:rgba(255,255,255,.85);border:1px solid var(--line);box-shadow:0 8px 22px rgba(22,52,103,.06)}
+.fx-sn{display:flex;align-items:baseline;gap:3px}
+.fx-sn small{font:700 .9rem Barlow,sans-serif;color:var(--txt)}
+.fx-sn b{font:700 clamp(1.7rem,3.3vw,2.6rem)/1 'Miriam Libre',sans-serif;background:linear-gradient(120deg,var(--c),var(--vi));-webkit-background-clip:text;background-clip:text;color:transparent;font-variant-numeric:tabular-nums}
+.fx-sn em{font-style:normal;font:700 1rem 'Miriam Libre',sans-serif;color:var(--navy)}
+.fx-sl{display:block;margin-top:4px;font-size:.78rem;line-height:1.3;color:var(--txt)}
+.fx-why{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(10px,1.4vw,18px)}
+.fx-wc{--i:0;position:relative;padding:20px 18px 18px;border-radius:1.4rem;background:#fff;border:1px solid var(--line);box-shadow:0 10px 30px rgba(22,52,103,.07);overflow:hidden;animation:fxUp .7s var(--ease) both;animation-delay:calc(var(--i)*90ms + 120ms);transition:transform .45s var(--spring),box-shadow .45s,border-color .3s}
+.fx-wc::before{content:'';position:absolute;left:0;right:0;top:0;height:4px;background:linear-gradient(90deg,var(--c),var(--vi));transform:scaleX(.25);transform-origin:left;transition:transform .6s var(--ease)}
+.fx-wc::after{content:'';position:absolute;right:-30px;bottom:-30px;width:110px;height:110px;border-radius:50%;background:color-mix(in srgb,var(--c) 10%,transparent);transition:transform .6s var(--ease)}
+.fx-wc:hover{transform:translateY(-6px);box-shadow:var(--shadow-h);border-color:color-mix(in srgb,var(--c) 45%,transparent)}
+.fx-wc:hover::before{transform:scaleX(1)}
+.fx-wc:hover::after{transform:scale(2.2)}
+.fx-wic{position:relative;z-index:1;width:42px;height:42px;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#fff;background:linear-gradient(135deg,var(--c),var(--vi));box-shadow:0 8px 18px color-mix(in srgb,var(--c) 38%,transparent);margin-bottom:12px;transition:transform .5s var(--spring)}
+.fx-wic svg{width:21px;height:21px}
+.fx-wc:hover .fx-wic{transform:rotate(-8deg) scale(1.1)}
+.fx-wc h3{position:relative;z-index:1;font:700 1.02rem/1.25 'Miriam Libre',sans-serif;color:var(--navy);margin-bottom:6px}
+.fx-wc p{position:relative;z-index:1;font-size:.86rem;line-height:1.5;color:var(--txt)}
+.fx-src{font-size:.7rem;color:#8191ad;text-align:right}
+
+/* ---- Comment ça marche ---- */
+.fx-how{display:flex;flex-direction:column;gap:clamp(14px,2.4vh,26px);max-width:1100px;margin:0 auto;padding:6px 2px}
+.fx-hs{position:relative;display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:8px}
+.fx-hs>li:not(.fx-hl){position:relative;z-index:1}
+.fx-hl{position:absolute;left:calc(50%/var(--n));right:calc(50%/var(--n));top:22px;height:4px;border-radius:4px;background:rgba(22,52,103,.1);z-index:0}
+.fx-hl b{display:block;height:100%;width:0;border-radius:4px;background:linear-gradient(90deg,var(--c),var(--vi));transition:width .7s var(--ease);box-shadow:0 0 14px color-mix(in srgb,var(--c) 60%,transparent)}
+.fx-hb{width:100%;display:flex;flex-direction:column;align-items:center;gap:10px;padding:0 4px;text-align:center}
+.fx-hb i{font-style:normal;width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:700 1.05rem 'Miriam Libre',sans-serif;background:#fff;color:var(--txt);box-shadow:inset 0 0 0 2px rgba(22,52,103,.14),0 6px 16px rgba(22,52,103,.08);transition:transform .5s var(--spring),background .4s,color .4s,box-shadow .4s}
+.fx-hb span{font:700 .82rem/1.25 'Miriam Libre',sans-serif;color:var(--txt);transition:color .3s}
+.fx-hb.done i{background:color-mix(in srgb,var(--c) 18%,#fff);color:var(--navy);box-shadow:inset 0 0 0 2px var(--c)}
+.fx-hb.on i{background:var(--c);color:#fff;transform:scale(1.22);box-shadow:0 12px 26px color-mix(in srgb,var(--c) 50%,transparent);animation:fxGlow 2.4s infinite}
+.fx-hb.on span{color:var(--navy)}
+.fx-hb:hover i{transform:scale(1.12)}
+.fx-hd{min-height:150px;display:flex}
+.fx-hd-i{flex:1;display:flex;gap:clamp(14px,2vw,26px);align-items:flex-start;padding:clamp(18px,3vh,30px);border-radius:1.6rem;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);position:relative;overflow:hidden}
+.fx-hd-i::before{content:'';position:absolute;left:0;top:0;bottom:0;width:5px;background:linear-gradient(var(--c),var(--vi))}
+.fx-hn{font:700 clamp(2.6rem,6vw,4.6rem)/.9 'Miriam Libre',sans-serif;background:linear-gradient(160deg,var(--c),var(--vi));-webkit-background-clip:text;background-clip:text;color:transparent;flex:none;opacity:.9}
+.fx-hd h3{font:700 clamp(1.15rem,2vw,1.6rem)/1.2 'Miriam Libre',sans-serif;color:var(--navy);margin-bottom:8px}
+.fx-hd p{color:var(--txt);font-size:clamp(.92rem,1.2vw,1.05rem);line-height:1.6;max-width:70ch}
+.xin{animation:fxUp .6s var(--ease) both}
+.fx-hc{display:flex;justify-content:center;gap:10px}
+.fx-hc button{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#fff;border:1px solid var(--line);box-shadow:0 6px 16px rgba(22,52,103,.08);transition:transform .3s var(--spring),background .25s,color .25s}
+.fx-hc button svg{width:18px;height:18px}
+.fx-hc button:hover{background:var(--navy);color:#fff;transform:scale(1.1)}
+.fx-hc .fx-ctl-p{width:auto;padding:0 20px;gap:8px;border-radius:50px;font:700 .85rem 'Miriam Libre',sans-serif;color:#fff;background:var(--grad);border:0;display:inline-flex;box-shadow:0 10px 24px rgba(107,81,237,.32)}
+.fx-hc .fx-ctl-p:hover{background:var(--grad)}
+.fx-gau{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:clamp(12px,2.4vw,32px);padding:14px;border-radius:1.4rem;background:rgba(255,255,255,.8);border:1px solid var(--line)}
+.fx-g{position:relative;width:96px;text-align:center}
+.fx-g svg{width:80px;height:80px;transform:rotate(-90deg)}
+.fx-g circle{fill:none;stroke:var(--gl);stroke-width:7}
+.fx-g circle.a{stroke:var(--c);stroke-linecap:round;stroke-dasharray:var(--v,150) 201;animation:fxGauge 1.4s calc(var(--i)*.15s + .2s) var(--ease) both}
+.fx-g:nth-child(1){--v:157}.fx-g:nth-child(2){--v:128}.fx-g:nth-child(3){--v:172}.fx-g:nth-child(4){--v:141}
+.fx-g span{display:block;font:700 .74rem/1.2 Barlow,sans-serif;color:var(--navy);margin-top:2px}
+.fx-gau small{flex:1 0 100%;text-align:center;font-size:.72rem;color:#8191ad}
+
+/* ---- Vidéo ---- */
+.fx-vid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(240px,1fr);gap:clamp(14px,2vw,26px);align-items:start}
+.fx-vid-box{position:relative;aspect-ratio:16/9;border-radius:1.4rem;overflow:hidden;background:#0d1f3f;box-shadow:var(--shadow-h)}
+.fx-vid-box video{position:absolute;inset:0;width:100%;height:100%;background:#0d1f3f}
+.fx-cover{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px;background:linear-gradient(135deg,rgba(22,52,103,.9),rgba(107,81,237,.82)) center/cover;color:#fff;text-align:center;z-index:2}
+.fx-cover[hidden]{display:none}
+.fx-cover b{font:700 clamp(1rem,2vw,1.5rem)/1.2 'Miriam Libre',sans-serif;max-width:30ch}
+.fx-play{width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#fff;color:var(--vi);box-shadow:0 0 0 0 rgba(255,255,255,.6);animation:fxGlow 2.4s infinite;transition:transform .4s var(--spring)}
+.fx-play svg{width:28px;height:28px;margin-left:3px}
+.fx-cover:hover .fx-play{transform:scale(1.12)}
+.fx-vid-m{margin-top:10px;font-size:.88rem;color:var(--txt)}
+.fx-vid-m b{color:var(--navy)}
+.fx-vl{display:grid;gap:8px}
+.fx-vi{width:100%;display:flex;align-items:center;gap:12px;text-align:left;padding:10px 12px;border-radius:1rem;background:#fff;border:1px solid var(--line);transition:transform .3s var(--spring),border-color .25s,box-shadow .25s}
+.fx-vi i{font-style:normal;flex:none;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--gl);font:700 .8rem 'Miriam Libre',sans-serif}
+.fx-vi small{display:block;font:700 .66rem Barlow,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#6b7c99}
+.fx-vi b{font:700 .88rem/1.25 'Miriam Libre',sans-serif;color:var(--navy)}
+.fx-vi:hover{transform:translateX(4px);border-color:var(--cy)}
+.fx-vi.on{border-color:var(--c,var(--cy));box-shadow:0 10px 24px rgba(22,52,103,.12)}
+.fx-vi.on i{background:var(--c,var(--cy));color:#fff}
+.fx-chs{margin-top:14px}
+.fx-chs h4{font:700 .72rem Barlow,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6b7c99;margin-bottom:8px}
+.fx-chs ol{display:grid;gap:4px}
+.fx-chb{width:100%;display:flex;gap:10px;align-items:baseline;text-align:left;padding:7px 10px;border-radius:.7rem;font-size:.84rem;transition:background .2s}
+.fx-chb time{font:700 .74rem Barlow,sans-serif;color:var(--cy);font-variant-numeric:tabular-nums;flex:none}
+.fx-chb:hover{background:rgba(19,180,226,.1)}
+.fx-chb.on{background:var(--navy);color:#fff}
+.fx-chb.on time{color:var(--sun)}
+
+/* ---- Irritants, profils, parcours ---- */
+.fx-pzw{padding:2px}
+.fx-prof{display:flex;flex-direction:column;gap:clamp(12px,2vh,20px)}
+.fx-pers{display:flex;flex-wrap:wrap;gap:10px}
+.fx-pp{display:inline-flex;align-items:center;gap:10px;padding:8px 18px 8px 8px;border-radius:50px;background:#fff;border:1px solid var(--line);box-shadow:0 6px 18px rgba(22,52,103,.07);transition:transform .3s var(--spring),background .3s,color .3s}
+.fx-pp>span{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--gl);color:var(--cy);transition:background .3s,color .3s}
+.fx-pp>span svg{width:18px;height:18px}
+.fx-pp b{font:700 .88rem 'Miriam Libre',sans-serif}
+.fx-pp:hover{transform:translateY(-2px)}
+.fx-pp.on{background:var(--navy);color:#fff;box-shadow:0 10px 24px rgba(22,52,103,.3)}
+.fx-pp.on>span{background:var(--c,var(--cy));color:#fff}
+.fx-pc{padding:clamp(16px,2.6vh,28px);border-radius:1.6rem;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);position:relative;overflow:hidden}
+.fx-pc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:5px;background:linear-gradient(var(--c,var(--cy)),var(--vi))}
+.fx-pc blockquote{font:700 clamp(1.05rem,1.9vw,1.5rem)/1.35 'Miriam Libre',sans-serif;color:var(--navy);max-width:62ch}
+.fx-pg{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:16px}
+.fx-pg li{display:flex;flex-direction:column;gap:3px;padding:12px 14px;border-radius:1rem;background:var(--gl)}
+.fx-pg b{font:700 .88rem 'Miriam Libre',sans-serif;color:var(--navy)}
+.fx-pg span{font-size:.84rem;color:var(--txt);line-height:1.45}
+.fx-pst{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:14px}
+.fx-pst small{font:700 .66rem Barlow,sans-serif;letter-spacing:.15em;text-transform:uppercase;color:#6b7c99;margin-right:6px}
+.fx-pst i{font-style:normal;font:700 .74rem Barlow,sans-serif;padding:4px 11px;border-radius:50px;background:rgba(19,180,226,.12);color:var(--navy)}
+.fx-road h4{font:700 .72rem Barlow,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6b7c99;margin-bottom:10px}
+.fx-road ol{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;position:relative}
+.fx-road li{--i:0;position:relative;display:flex;flex-direction:column;gap:3px;padding:14px 14px 14px;border-radius:1.1rem;background:#fff;border:1px solid var(--line);animation:fxUp .6s var(--ease) both;animation-delay:calc(var(--i)*100ms)}
+.fx-road li i{position:absolute;top:-6px;left:14px;width:12px;height:12px;border-radius:50%;background:var(--cy);box-shadow:0 0 0 4px rgba(19,180,226,.2)}
+.fx-road b{font:700 .9rem 'Miriam Libre',sans-serif;margin-top:4px}
+.fx-road span{font-size:.82rem;color:var(--txt)}
+
+/* ---- Cas d'usage ---- */
+.fx-use{display:grid;gap:clamp(12px,2vw,22px)}
+.fx-use.has{grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);align-items:start}
+.fx-fig{border-radius:1.4rem;overflow:hidden;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow)}
+.fx-fig button{display:block;width:100%}
+.fx-fig img{display:block;width:100%;height:auto;transition:transform .6s var(--ease)}
+.fx-fig:hover img{transform:scale(1.03)}
+.fx-fig figcaption{padding:12px 16px;font-size:.84rem;color:var(--txt)}
+.fx-fig figcaption b{color:var(--navy)}
+.fx-adv{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.fx-ac{--i:0;position:relative;padding:18px;border-radius:1.3rem;background:#fff;border:1px solid var(--line);box-shadow:0 10px 26px rgba(22,52,103,.06);animation:fxUp .6s var(--ease) both;animation-delay:calc(var(--i)*90ms);transition:transform .4s var(--spring),box-shadow .4s}
+.fx-ac:hover{transform:translateY(-5px);box-shadow:var(--shadow-h)}
+.fx-ac i{font-style:normal;display:block;font:700 1.9rem/1 'Miriam Libre',sans-serif;background:linear-gradient(140deg,var(--c,var(--cy)),var(--vi));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:8px}
+.fx-ac h3{font:700 .98rem/1.25 'Miriam Libre',sans-serif;margin-bottom:5px}
+.fx-ac p{font-size:.85rem;line-height:1.5;color:var(--txt)}
+
+/* ---- Dans la suite ---- */
+.fx-su{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:clamp(12px,2vw,24px);align-items:start}
+.fx-su section{padding:clamp(14px,2.2vh,22px);border-radius:1.5rem;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow)}
+.fx-su h4{font:700 .74rem Barlow,sans-serif;letter-spacing:.15em;text-transform:uppercase;color:#6b7c99;margin-bottom:12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.fx-su h4 a{display:inline-flex;align-items:center;gap:6px;color:var(--cy);letter-spacing:.04em;text-transform:none;font-size:.8rem}
+.fx-su h4 a svg{width:14px;height:14px}
+.fx-rail{display:flex;flex-wrap:wrap;gap:8px}
+.fx-rail a{display:inline-flex;align-items:center;gap:8px;padding:6px 12px 6px 6px;border-radius:50px;background:var(--gl);font:700 .76rem Barlow,sans-serif;color:var(--txt);transition:background .25s,color .25s,transform .3s var(--spring)}
+.fx-rail i{font-style:normal;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#fff;font:700 .72rem 'Miriam Libre',sans-serif}
+.fx-rail a:hover{transform:translateY(-2px);background:rgba(19,180,226,.16)}
+.fx-rail li.on a{background:var(--c,var(--navy));color:#fff;box-shadow:0 8px 18px rgba(22,52,103,.25)}
+.fx-rail li.on i{background:rgba(255,255,255,.28);color:#fff}
+.fx-sor-l,.fx-cover-l{margin-top:12px;font-size:.84rem;color:var(--txt)}
+.fx-sor-l span{display:block;font:700 .64rem Barlow,sans-serif;letter-spacing:.15em;text-transform:uppercase;color:#6b7c99}
+.fx-sor-l b{color:var(--navy)}
+.fx-sl-list{display:grid;gap:8px}
+.fx-sy{--c:var(--cy);border-radius:1rem;background:var(--gl);overflow:hidden;transition:box-shadow .3s}
+.fx-sy.open{background:#fff;box-shadow:inset 0 0 0 1.5px var(--c),0 10px 24px rgba(22,52,103,.1)}
+.fx-sy-h{width:100%;display:flex;align-items:center;gap:12px;padding:11px 14px;text-align:left}
+.fx-sy-h>i{flex:none;width:10px;height:10px;border-radius:50%;background:var(--c);box-shadow:0 0 0 4px color-mix(in srgb,var(--c) 22%,transparent)}
+.fx-sy-h>span{flex:1;min-width:0}
+.fx-sy-h b{display:block;font:700 .9rem/1.25 'Miriam Libre',sans-serif;color:var(--navy)}
+.fx-sy-h small{font-size:.74rem;color:var(--txt)}
+.fx-sy-h>svg{width:16px;height:16px;flex:none;transition:transform .3s var(--ease);color:var(--txt)}
+.fx-sy.open .fx-sy-h>svg{transform:rotate(90deg)}
+.fx-sy-b{padding:2px 14px 14px 36px;font-size:.86rem;color:var(--txt);animation:fxUp .4s var(--ease) both}
+.fx-sy-b[hidden]{display:none}
+.fx-sy-b ul{display:grid;gap:5px;margin:8px 0 12px}
+.fx-sy-b li{position:relative;padding-left:16px}
+.fx-sy-b li::before{content:'';position:absolute;left:0;top:.5em;width:7px;height:7px;border-radius:50%;background:var(--c)}
+.fx-su-p{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0!important;background:none!important;border:0!important;box-shadow:none!important}
+.fx-su-p>div{padding:16px 18px;border-radius:1.3rem;font-size:.9rem;line-height:1.5}
+.fx-su-p small{display:block;font:700 .66rem Barlow,sans-serif;letter-spacing:.15em;text-transform:uppercase;margin-bottom:5px}
+.fx-su-p .solo{background:var(--gl);color:var(--txt)}
+.fx-su-p .suite{background:linear-gradient(120deg,var(--navy),#2b3f9a 60%,var(--vi));color:#fff}
+.fx-su-p .suite small{color:var(--sun)}
+.fx-su-p .solo small{color:#6b7c99}
+
+/* ---- Démo ---- */
+.fx-demo{display:flex;flex-direction:column;gap:12px;height:100%;min-height:420px}
+.fx-demo-h{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.fx-demo-h h3{font:700 1.1rem 'Miriam Libre',sans-serif}
+.fx-demo-h p{font-size:.86rem;color:var(--txt)}
+.fx-demo-f{flex:1;width:100%;min-height:380px;border:0;border-radius:1.2rem;background:#fff;box-shadow:var(--shadow-h)}
+
+/* ============ 9. SUITES : SYNERGIES, DUO, IA, BUDGET ============ */
+.fx-syn{height:100%;display:flex;flex-direction:column;gap:10px;min-height:0}
+.fx-syn-f{flex:none;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
+.fx-fchips{display:flex;flex-wrap:wrap;gap:6px}
+.fx-fc{--c:var(--navy);display:inline-flex;align-items:center;gap:7px;padding:7px 14px;border-radius:50px;background:#fff;border:1px solid var(--line);font:700 .78rem Barlow,sans-serif;color:var(--txt);transition:background .25s,color .25s,transform .3s var(--spring)}
+.fx-fc i{width:9px;height:9px;border-radius:50%;background:var(--c)}
+.fx-fc:hover{transform:translateY(-2px);color:var(--navy)}
+.fx-fc.on{background:var(--c);color:#fff;border-color:transparent;box-shadow:0 8px 18px color-mix(in srgb,var(--c) 40%,transparent)}
+.fx-fc.on i{background:#fff}
+.fx-sw{display:inline-flex;align-items:center;gap:10px;font-size:.82rem;font-weight:600;color:var(--txt);cursor:pointer}
+.fx-sw small{font-weight:500;color:#8191ad}
+.fx-sw input{position:absolute;opacity:0;width:1px;height:1px}
+.fx-sw-t{position:relative;width:42px;height:24px;border-radius:50px;background:rgba(22,52,103,.18);transition:background .3s;flex:none}
+.fx-sw-t::after{content:'';position:absolute;left:3px;top:3px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(22,52,103,.3);transition:transform .35s var(--spring)}
+.fx-sw input:checked+.fx-sw-t{background:var(--grad)}
+.fx-sw input:checked+.fx-sw-t::after{transform:translateX(18px)}
+.fx-sw input:focus-visible+.fx-sw-t{outline:3px solid var(--cy);outline-offset:2px}
+.fx-syn-b{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,.85fr);gap:clamp(12px,2vw,26px);align-items:stretch}
+.fx-chord{min-height:0;min-width:0;display:flex;align-items:center;justify-content:center;border-radius:1.8rem;background:radial-gradient(circle at 50% 50%,#fff 0%,rgba(255,255,255,.55) 70%);border:1px solid var(--line);box-shadow:var(--shadow);padding:6px}
+.fx-chord-svg{width:100%;height:100%;display:block;overflow:visible}
+.fx-nd{cursor:pointer;outline:none}
+.fx-nd .nd-halo{fill:var(--c);opacity:0;transition:opacity .3s}
+.fx-nd .nd-c{transition:transform .4s var(--spring);transform-box:fill-box;transform-origin:center;filter:drop-shadow(0 6px 10px rgba(22,52,103,.22))}
+.fx-nd:hover .nd-halo,.fx-nd:focus-visible .nd-halo{opacity:.2}
+.fx-nd:hover .nd-c,.fx-nd.on .nd-c{transform:scale(1.14)}
+.fx-nd.on .nd-halo{opacity:.3;animation:fxPulse 2.4s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.fx-chord-svg.has-mod .fx-nd:not(.on){opacity:.6}
+.fx-nd .nd-l{transition:fill .3s}
+.fx-nd:hover .nd-l{fill:var(--c)}
+.fx-orbit-r{transform-box:fill-box;transform-origin:center;animation:fxSpin 90s linear infinite}
+.fx-lk{cursor:pointer;outline:none;transition:opacity .35s}
+.fx-lk .lk-hit{fill:none;stroke:transparent;stroke-width:18}
+.fx-lk .lk{fill:none;stroke-width:2.6;stroke-linecap:round;stroke-dasharray:7 7;opacity:.85;animation:fxFlow 1.3s linear infinite;transition:stroke-width .25s,opacity .25s}
+.fx-lk.cfg .lk{stroke-dasharray:2 8;animation-duration:2.2s}
+.fx-lk:hover .lk,.fx-lk:focus-visible .lk{stroke-width:4.4;opacity:1}
+.fx-lk.on .lk{stroke-width:5;opacity:1;stroke-dasharray:none;animation:none;filter:drop-shadow(0 0 5px var(--c))}
+.fx-lk.dim{opacity:.1}
+.fx-chord-svg.has-sel .fx-lk:not(.on){opacity:.2}
+.fx-synp{min-height:0;overflow-y:auto;scrollbar-width:thin;padding:clamp(16px,2.4vh,26px);border-radius:1.8rem;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);position:relative}
+.fx-synp::before{content:'';position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--grad);border-radius:1.8rem 0 0 1.8rem}
+.fx-pi h3,.fx-pd h3{font:700 1.2rem/1.25 'Miriam Libre',sans-serif;color:var(--navy);margin:10px 0 8px}
+.fx-pi p,.fx-pd p,.fx-pl p{font-size:.9rem;line-height:1.55;color:var(--txt)}
+.fx-pd,.fx-pi,.fx-pl{animation:fxUp .5s var(--ease) both}
+.fx-pd{--c:var(--cy)}
+.fx-pd-h{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;align-items:center}
+.fx-fam{display:inline-flex;align-items:center;gap:7px;font:700 .72rem Barlow,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--c)}
+.fx-fam i{width:9px;height:9px;border-radius:50%;background:var(--c)}
+.fx-bd{font:700 .68rem Barlow,sans-serif;padding:4px 10px;border-radius:50px}
+.fx-bd.ok{background:rgba(126,239,160,.35);color:#13693a}
+.fx-bd.cfg{background:rgba(255,207,99,.4);color:#7a5600}
+.fx-ft{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:12px}
+.fx-ft>span{display:flex;color:var(--txt)}
+.fx-ft>span svg{width:18px;height:18px;animation:fxFloat 2s ease-in-out infinite}
+.fx-pd ul{display:grid;gap:7px;margin:12px 0 14px}
+.fx-pd li{position:relative;padding-left:18px;font-size:.88rem;color:var(--navy);font-weight:600;line-height:1.4}
+.fx-pd li::before{content:'';position:absolute;left:0;top:.45em;width:8px;height:8px;border-radius:50%;background:var(--c)}
+.fx-pl-h{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center;margin-bottom:8px}
+.fx-hint{font-size:.8rem!important;color:#8191ad!important;margin-top:8px}
+.fx-rows{display:grid;gap:6px;margin:12px 0}
+.fx-row{--c:var(--cy);width:100%;display:flex;align-items:center;gap:12px;text-align:left;padding:10px 12px;border-radius:.9rem;background:var(--gl);transition:transform .3s var(--spring),box-shadow .3s,background .3s}
+.fx-row>i{flex:none;width:10px;height:10px;border-radius:50%;background:var(--c)}
+.fx-row>span{flex:1;min-width:0}
+.fx-row b{display:block;font:700 .86rem/1.25 'Miriam Libre',sans-serif}
+.fx-row small{font-size:.74rem;color:var(--txt)}
+.fx-row svg{width:15px;height:15px;color:var(--txt)}
+.fx-row:hover{transform:translateX(4px);background:#fff;box-shadow:inset 0 0 0 1.5px var(--c)}
+.fx-leg{display:grid;gap:6px;margin:14px 0 8px}
+.fx-leg li{--c:var(--cy);display:flex;align-items:center;gap:10px;font-size:.86rem;font-weight:600}
+.fx-leg i{width:26px;height:4px;border-radius:4px;background:var(--c)}
+.fx-leg span{flex:1}
+.fx-leg b{font:700 .8rem 'Miriam Libre',sans-serif;padding:2px 9px;border-radius:50px;background:color-mix(in srgb,var(--c) 16%,#fff)}
+
+.fx-duo-sel{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.fx-duo{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:clamp(8px,1.4vw,18px);align-items:stretch}
+.fx-duo-c{--c:var(--cy);padding:clamp(16px,2.4vh,26px);border-radius:1.6rem;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);animation:fxUp .6s var(--ease) both}
+.fx-duo-c.suite{background:linear-gradient(150deg,var(--navy),#2b3f9a 62%,var(--vi));color:#fff;box-shadow:0 26px 60px rgba(43,63,154,.35);animation-delay:.12s}
+.fx-duo-c h3{display:flex;flex-direction:column;gap:2px;margin-bottom:12px}
+.fx-duo-c h3 span{font:700 1.2rem 'Miriam Libre',sans-serif}
+.fx-duo-c h3 small{font:600 .8rem Barlow,sans-serif;opacity:.7}
+.fx-duo-c ul{display:grid;gap:9px}
+.fx-duo-c li{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:.9rem;background:var(--gl)}
+.fx-duo-c.suite li{background:rgba(255,255,255,.12)}
+.fx-duo-c li b{font:700 .88rem 'Miriam Libre',sans-serif}
+.fx-duo-c li span{font-size:.82rem;line-height:1.45;opacity:.85}
+.fx-limit,.fx-upsell{margin-top:12px;padding:10px 12px;border-radius:.9rem;font-size:.84rem;font-weight:600}
+.fx-limit{background:rgba(239,126,126,.16);color:#8b2b2b}
+.fx-upsell{background:rgba(255,207,99,.9);color:#4a3600}
+.fx-duo-plus{align-self:center;width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:700 1.5rem 'Miriam Libre',sans-serif;color:#fff;background:var(--grad);box-shadow:0 10px 24px rgba(107,81,237,.4);animation:fxPulse 3s ease-in-out infinite}
+
+.fx-ai{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(16px,3vw,44px);align-items:center;min-height:100%}
+.fx-ai-orb{position:relative;width:min(100%,58vh);aspect-ratio:1;margin:0 auto}
+.fx-ai-orb .r1,.fx-ai-orb .r2{position:absolute;border-radius:50%;border:2px dashed rgba(19,180,226,.5)}
+.fx-ai-orb .r1{inset:8%;animation:fxSpin 40s linear infinite}
+.fx-ai-orb .r2{inset:22%;border-color:rgba(107,81,237,.45);animation:fxSpinR 28s linear infinite}
+.fx-ai-core{position:absolute;left:50%;top:50%;width:32%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#fff;text-align:center;background:var(--grad);box-shadow:0 0 0 12px rgba(107,81,237,.12),0 0 0 28px rgba(19,180,226,.08),0 20px 50px rgba(107,81,237,.45);animation:fxPulse 4s ease-in-out infinite}
+.fx-ai-core svg{width:34%;height:auto}
+.fx-ai-core b{font:700 clamp(.7rem,1.3vw,1rem) 'Miriam Libre',sans-serif}
+.fx-ai-n{position:absolute;width:clamp(36px,6.2vh,54px);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--c);box-shadow:0 8px 20px color-mix(in srgb,var(--c) 45%,transparent);font-size:clamp(1rem,2.6vh,1.5rem);transition:transform .4s var(--spring)}
+.fx-ai-n:hover{transform:translate(-50%,-50%) scale(1.25);z-index:2}
+.fx-ai-t{padding:clamp(18px,3vh,30px);border-radius:1.7rem;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow)}
+.fx-ai-t h3{font:700 clamp(1.15rem,2vw,1.6rem)/1.2 'Miriam Libre',sans-serif;margin-bottom:10px}
+.fx-ai-t p{color:var(--txt);line-height:1.6;font-size:.95rem}
+.fx-ai-t ul{display:grid;gap:8px;margin-top:14px}
+.fx-ai-t li{position:relative;padding-left:22px;font-size:.9rem;font-weight:600;color:var(--navy)}
+.fx-ai-t li::before{content:'';position:absolute;left:0;top:.35em;width:12px;height:12px;border-radius:50%;background:var(--grad)}
+
+.fx-bud{display:flex;flex-direction:column;gap:clamp(12px,2vh,20px);max-width:1100px;margin:0 auto}
+.fx-bud-r{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}
+.fx-bs{width:100%;display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 8px;border-radius:1.1rem;background:#fff;border:1px solid var(--line);text-align:center;transition:transform .3s var(--spring),background .3s,color .3s,box-shadow .3s}
+.fx-bs i{font-style:normal;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--gl);font:700 .82rem 'Miriam Libre',sans-serif}
+.fx-bs span{font:700 .8rem/1.2 'Miriam Libre',sans-serif}
+.fx-bs small{font-size:.68rem;color:#8191ad}
+.fx-bs:hover{transform:translateY(-3px)}
+.fx-bs.on{background:var(--navy);color:#fff;box-shadow:0 12px 26px rgba(22,52,103,.3)}
+.fx-bs.on i{background:var(--sun);color:var(--navy)}
+.fx-bs.on small{color:rgba(255,255,255,.7)}
+.fx-bud-b{padding:clamp(16px,2.4vh,26px);border-radius:1.6rem;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow)}
+.fx-bud-bar{display:flex;height:30px;border-radius:50px;overflow:hidden;background:var(--gl);box-shadow:inset 0 2px 6px rgba(22,52,103,.1)}
+.fx-bud-bar i{display:block;height:100%;width:0;transition:width .9s var(--ease)}
+.pre{--bc:var(--sun)}.eng{--bc:var(--vi)}.con{--bc:var(--cy)}
+.fx-bud-bar .pre{background:var(--sun)}.fx-bud-bar .eng{background:var(--vi)}.fx-bud-bar .con{background:var(--cy)}
+.fx-bud-k{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-top:16px}
+.fx-bud-k li{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:.9rem;background:var(--gl);position:relative}
+.fx-bud-k li i{position:absolute;right:12px;top:12px;width:10px;height:10px;border-radius:50%;background:var(--bc,#c5d0e0)}
+.fx-bud-k span{font:700 .68rem Barlow,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#6b7c99}
+.fx-bud-k b{font:700 1.3rem 'Miriam Libre',sans-serif;font-variant-numeric:tabular-nums}
+.fx-bud-x{display:flex;flex-wrap:wrap;gap:16px;margin-top:12px;font-size:.84rem;color:var(--txt)}
+.fx-bud-x b{color:var(--navy);margin-left:4px}
+.fx-bud-d{margin-top:12px;font-size:.92rem;line-height:1.55;color:var(--txt)}
+.fx-bud-d b{color:var(--navy)}
+
+/* ============ 10. FLUXYM ============ */
+.fx-apr{display:flex;flex-direction:column;gap:clamp(12px,2vh,22px)}
+.fx-mk{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.fx-mk li{padding:16px 18px;border-radius:1.4rem;background:#fff;border:1px solid var(--line);box-shadow:0 10px 28px rgba(22,52,103,.07);animation:fxUp .6s var(--ease) both}
+.fx-mk li:nth-child(2){animation-delay:.08s}.fx-mk li:nth-child(3){animation-delay:.16s}.fx-mk li:nth-child(4){animation-delay:.24s}
+.fx-mk .fx-sn b{background:linear-gradient(120deg,var(--cy),var(--vi));-webkit-background-clip:text;background-clip:text;color:transparent}
+.fx-pr{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.fx-pc2{--i:0;position:relative;padding:20px 18px;border-radius:1.4rem;background:#fff;border:1px solid var(--line);box-shadow:0 10px 28px rgba(22,52,103,.07);overflow:hidden;animation:fxUp .6s var(--ease) both;animation-delay:calc(var(--i)*90ms + 100ms);transition:transform .4s var(--spring),box-shadow .4s}
+.fx-pc2:hover{transform:translateY(-5px);box-shadow:var(--shadow-h)}
+.fx-pc2 i{font-style:normal;position:absolute;right:12px;top:4px;font:700 3.2rem/1 'Miriam Libre',sans-serif;color:rgba(19,180,226,.14)}
+.fx-pc2 h3{position:relative;font:700 1rem/1.25 'Miriam Libre',sans-serif;margin-bottom:6px;max-width:80%}
+.fx-pc2 p{position:relative;font-size:.86rem;line-height:1.5;color:var(--txt)}
+.fx-svc .fx-phs{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;font:700 .76rem Barlow,sans-serif;color:var(--txt)}
+.fx-phs li{--c:var(--cy);display:inline-flex;align-items:center;gap:6px}
+.fx-phs li i{width:10px;height:10px;border-radius:50%;background:var(--c)}
+.fx-val{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:clamp(14px,2.4vw,32px);align-items:center;min-height:100%}
+.fx-vc{display:grid;gap:8px}
+.fx-vb2{--i:0;display:flex;align-items:center;gap:14px;text-align:left;padding:12px 16px;border-radius:1.2rem;background:#fff;border:1px solid var(--line);font:700 .95rem 'Miriam Libre',sans-serif;animation:fxUp .5s var(--ease) both;animation-delay:calc(var(--i)*70ms);transition:transform .35s var(--spring),background .3s,color .3s,box-shadow .3s}
+.fx-vb2>span i{font-style:normal;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--gl);font-size:.82rem;transition:background .3s,color .3s}
+.fx-vb2:hover{transform:translateX(5px)}
+.fx-vb2.on{background:var(--navy);color:#fff;box-shadow:0 14px 30px rgba(22,52,103,.3);transform:translateX(8px)}
+.fx-vb2.on>span i{background:var(--sun);color:var(--navy)}
+.fx-val .fx-vd{padding:clamp(20px,3.4vh,38px);border-radius:1.8rem;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);position:relative;overflow:hidden}
+.fx-val .fx-vd::before{content:'';position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--grad)}
+.fx-val .fx-vd h3{font:700 clamp(1.2rem,2.2vw,1.8rem)/1.2 'Miriam Libre',sans-serif;margin:6px 0 10px}
+.fx-val .fx-vd p{color:var(--txt);line-height:1.65;font-size:clamp(.92rem,1.2vw,1.05rem)}
+.fx-pl2{display:flex;flex-direction:column;gap:clamp(12px,2vh,20px)}
+.fx-act{display:flex;flex-wrap:wrap;gap:8px}
+.fx-ab{display:inline-flex;align-items:center;gap:10px;padding:8px 18px 8px 8px;border-radius:50px;background:#fff;border:1px solid var(--line);font:700 .86rem 'Miriam Libre',sans-serif;transition:transform .3s var(--spring),background .3s,color .3s}
+.fx-ab i{font-style:normal;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--gl);font-size:.78rem}
+.fx-ab:hover{transform:translateY(-2px)}
+.fx-ab.on{background:var(--navy);color:#fff;box-shadow:0 10px 24px rgba(22,52,103,.3)}
+.fx-ab.on i{background:var(--sun);color:var(--navy)}
+.fx-pl2 .fx-ad{padding:clamp(16px,2.6vh,28px);border-radius:1.6rem;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow)}
+.fx-pl2 .fx-ad h3{font:700 clamp(1.1rem,1.8vw,1.5rem) 'Miriam Libre',sans-serif;margin-bottom:12px}
+.fx-ad2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fx-ad2>div{padding:14px 16px;border-radius:1.1rem;font-size:.9rem;line-height:1.5}
+.fx-ad2 small{display:block;font:700 .66rem Barlow,sans-serif;letter-spacing:.15em;text-transform:uppercase;margin-bottom:4px}
+.fx-ad2 .ok{background:rgba(126,239,160,.25)}.fx-ad2 .ok small{color:#13693a}
+.fx-ad2 .ko{background:rgba(239,126,126,.16)}.fx-ad2 .ko small{color:#8b2b2b}
+.fx-plc{position:relative;padding:clamp(16px,2.6vh,26px);border-radius:1.6rem;color:#fff;background:linear-gradient(120deg,var(--navy),#2b3f9a 58%,var(--vi));box-shadow:0 22px 50px rgba(43,63,154,.35);overflow:hidden}
+.fx-plc::after{content:'';position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(255,207,99,.35),transparent 65%)}
+.fx-plc-k{display:block;font:700 .68rem Barlow,sans-serif;letter-spacing:.17em;text-transform:uppercase;color:var(--sun);margin-bottom:6px}
+.fx-plc p{position:relative;z-index:1;font:700 clamp(1rem,1.7vw,1.35rem)/1.4 'Miriam Libre',sans-serif}
+.fx-plc small{position:relative;z-index:1;display:block;margin-top:8px;opacity:.75;font-size:.78rem}
+
+/* ============ 11. VISITE GUIDÉE, VISIONNEUSE, ERREUR ============ */
+.fx-tour{position:fixed;left:50%;bottom:18px;z-index:500;width:min(460px,calc(100vw - 24px));transform:translate(-50%,30px);opacity:0;visibility:hidden;padding:16px 18px;border-radius:1.4rem;background:rgba(22,52,103,.96);color:#fff;box-shadow:0 26px 70px rgba(10,20,50,.5);backdrop-filter:blur(10px);transition:transform .5s var(--spring),opacity .35s,visibility .35s}
+.fx-tour.on{transform:translate(-50%,0);opacity:1;visibility:visible}
+.fx-tour-i small{font:700 .66rem Barlow,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--sun)}
+.fx-tour-i b{display:block;font:700 1.1rem 'Miriam Libre',sans-serif;margin:3px 0 4px}
+.fx-tour-i p{font-size:.86rem;line-height:1.5;opacity:.88}
+.fx-tour-dots{display:flex;gap:6px;margin:12px 0}
+.fx-tour-dots i{height:5px;flex:1;border-radius:5px;background:rgba(255,255,255,.2);transition:background .3s}
+.fx-tour-dots i.done{background:rgba(255,255,255,.55)}.fx-tour-dots i.on{background:var(--sun)}
+.fx-tour-b{display:flex;justify-content:flex-end;gap:8px}
+.fx-tour .fx-btn{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.25)}
+.fx-tour .fx-btn.pri{background:var(--grad);border-color:transparent}
+.fx-tour .fx-btn.ghost{background:transparent}
+.tour-hl{position:relative;z-index:2;outline:3px solid var(--sun);outline-offset:6px;border-radius:1.4rem;animation:fxGlow 2s infinite;box-shadow:0 0 0 8px rgba(255,207,99,.18)}
+.fx-lb{position:fixed;inset:0;z-index:700;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(10,20,50,.86);backdrop-filter:blur(6px);animation:fxView .3s both;cursor:zoom-out}
+.fx-lb img{max-width:100%;max-height:100%;border-radius:1rem;box-shadow:0 30px 90px rgba(0,0,0,.5)}
+.fx-lb button{position:absolute;right:18px;top:14px;width:44px;height:44px;border-radius:50%;background:#fff;color:var(--navy);font-size:1.6rem;line-height:1}
+.fx-err{max-width:560px;margin:12vh auto;padding:28px;border-radius:1.6rem;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);text-align:center;display:grid;gap:12px;justify-items:center}
+
+/* ============ 12. ADAPTATION ============ */
+@media(max-width:1100px){
+  .fx-why{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .fx-syn-b{grid-template-columns:minmax(0,1fr) minmax(250px,.7fr)}
+}
+@media(max-width:900px){
+  body{overflow:auto}
+  .fx-app{position:static;margin-top:var(--hdr);overflow:visible}
+  .fx-view{position:static;overflow:visible;min-height:calc(100dvh - var(--hdr))}
+  .fx-page{height:auto;min-height:calc(100dvh - var(--hdr))}
+  .fx-tabbody{overflow:visible}
+  .fx-vb{min-height:0}
+  .fx-ap-l{grid-template-columns:1fr;text-align:left}
+  .fx-badge{width:84px}
+  .fx-vid,.fx-su,.fx-use.has,.fx-val,.fx-ai{grid-template-columns:minmax(0,1fr)}
+  .fx-syn{height:auto}
+  .fx-syn-b{grid-template-columns:minmax(0,1fr)}
+  .fx-chord{height:min(94vw,560px)}
+  .fx-synp{max-height:none}
+  .fx-duo{grid-template-columns:minmax(0,1fr)}
+  .fx-duo-plus{justify-self:center}
+  .fx-ai-orb{width:min(100%,420px)}
+  .fx-sol{height:auto}
+  .fx-sol-cell{min-height:min(100vw,640px)}
+  .fx-su-p,.fx-ad2{grid-template-columns:1fr}
+  .fx-demo{height:auto}
+  .fx-hb span{font-size:.68rem}
+  .fx-hb i{width:38px;height:38px}
+  .fx-hl{top:19px}
+  .fx-tour{bottom:84px}
+}
+@media(max-width:560px){
+  .fx-why{grid-template-columns:1fr}
+  .fx-tab span{font-size:.78rem}
+  .fx-tab{padding:8px 12px}
+  .fx-stats li{flex-basis:100%;max-width:none}
+}
+
+/* ============ 13. MOUVEMENT RÉDUIT ============ */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+}
