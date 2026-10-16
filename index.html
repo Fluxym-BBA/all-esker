@@ -15,7 +15,7 @@
 <link rel="stylesheet" href="css/base.css">
 <link rel="stylesheet" href="css/module.css">
 <link rel="stylesheet" href="css/suites.css">
-  <link rel="stylesheet" href="css/o2c-enrich.css">
+  <link rel="stylesheet" href="css/o2c-xp.css">
 </head>
 <body>
 
@@ -65,6 +65,7 @@
         <div class="hnav-dd-menu" id="hnavDdMenu" hidden></div>
       </div>
       <a href="demo/index.html" class="hnav-demo" target="_blank" style="color:var(--cy,#13b4e2);font-weight:700">✨ Démo interactive</a>
+      <a href="#services">Nos services</a>
       <a href="https://www.fluxym.com/expertise/" target="_blank" rel="noopener">Notre expertise</a>
     </nav>
     <a class="btn btn-blue" href="#contact">Contact</a>
@@ -191,7 +192,7 @@
 <script src="js/data.js"></script>
 <script src="js/wheel.js"></script>
   <script src="js/o2c-data.js"></script>
-  <script src="js/fluxym-services.js"></script>
+  <script src="js/o2c-xp.js"></script>
   <script src="js/panel.js"></script>
 <script src="js/module-data.js"></script>
 <script src="js/module.js"></script>
@@ -201,10 +202,8 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-      const c = document.getElementById("fluxymServicesContainer");
-      if (c && typeof renderFluxymServicesHTML === "function") {
-        c.innerHTML = renderFluxymServicesHTML(); if (typeof bindFluxymServicesEvents === "function") bindFluxymServicesEvents();
-      }
+      var c = document.getElementById("fluxymServicesContainer");
+      if (c && window.o2xServicesHTML) { c.innerHTML = window.o2xServicesHTML(); window.o2xMountServices(c); }
     });
   </script>
 </body>
