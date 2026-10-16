@@ -18,12 +18,16 @@ Exprimées par Bruno :
 
 1. Une vue tient dans la fenêtre. Pas de petite zone à ascenseur interne, pas de défilement de la page. Priorité du moment : l'ergonomie des interactions entre modules.
 2. Le plein écran de l'espace Synergies fonctionne et couvre toute la fenêtre.
+3. Dans l'espace Synergies, un clic sur un module le sélectionne et montre l'ensemble de ses interactions avec les autres modules. Il n'ouvre plus la page du module (comportement actuel à corriger : `navGoModule` dans `js/fx-syn.js`).
+4. Par défaut, toutes les synergies sont affichées (22). Les synergies majeures (10) restent un filtre optionnel (aujourd'hui le défaut est « majeures », `NAV.scope = "core"`).
+5. L'ergonomie de l'espace Synergies est à repenser du point de vue de l'expérience utilisateur : une refonte, pas une rustine. Exprimé le 16 octobre 2026.
 
 Déduites du code et de l'historique, à confirmer par Bruno :
 
-3. La navigation entre modules reste possible à tout moment depuis la roue et le widget flottant.
-4. Le plein écran se quitte par le bouton et par Échap (comportement actuel : si une synergie est sélectionnée, le premier appui la désélectionne).
-5. Tailles de fenêtre visées : 1512x790 (référence de calibrage de la roue, commit `b21a03a`), 1440x900, 1280x720, 1920x1080.
+6. La navigation entre modules reste possible à tout moment depuis la roue et le widget flottant.
+7. Le plein écran se quitte par le bouton et par Échap (comportement actuel : si une synergie est sélectionnée, le premier appui la désélectionne).
+8. Tailles de fenêtre visées : 1512x790 (référence de calibrage de la roue, commit `b21a03a`), 1440x900, 1280x720, 1920x1080.
+9. L'accès à la fiche d'un module reste possible par un bouton explicite (par exemple dans le panneau de détail), puisque le clic sur le module ne navigue plus.
 
 Question ouverte à trancher : la vue « Exploration » de l'espace Synergies (liste détaillée des fiches) peut-elle défiler, puisqu'une liste longue est faite pour ça ? Tant que ce n'est pas tranché, le test ne vérifie que la vue Schéma, ouverte par défaut.
 
@@ -32,6 +36,7 @@ Question ouverte à trancher : la vue « Exploration » de l'espace Synergies (l
 - Le schéma d'origine est conservé : modules alignés, flux en arcs, pastilles de code, barre IA.
 - La mécanique d'origine est conservée : console de filtres, sélection d'un ou plusieurs modules avec déverrouillage, typologies, périmètre majeures ou toutes, sens amont et aval, survol, tiroir de détail, studio « Seul vs En synergie », exploration, plein écran.
 - La géométrie du schéma ne change pas sans accord. On change l'usage et l'affichage, pas le dessin.
+- Question ouverte : Bruno a demandé le retour du schéma d'origine (livraisons L26 et L27) puis une refonte de l'expérience d'usage (16 octobre 2026). Garder le dessin d'origine avec un mode « focus » sur le module sélectionné, ou changer de modèle d'interaction ? À trancher avec les références visuelles que Bruno choisira.
 
 ## 4. Contenu et charte
 
