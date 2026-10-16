@@ -409,27 +409,55 @@ img,svg{max-width:100%}
 .fx-sw input:checked+.fx-sw-t{background:var(--grad)}
 .fx-sw input:checked+.fx-sw-t::after{transform:translateX(18px)}
 .fx-sw input:focus-visible+.fx-sw-t{outline:3px solid var(--cy);outline-offset:2px}
-.fx-syn-b{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,.85fr);gap:clamp(12px,2vw,26px);align-items:stretch}
-.fx-chord{min-height:0;min-width:0;display:flex;align-items:center;justify-content:center;border-radius:1.8rem;background:radial-gradient(circle at 50% 50%,#fff 0%,rgba(255,255,255,.55) 70%);border:1px solid var(--line);box-shadow:var(--shadow);padding:6px}
-.fx-chord-svg{width:100%;height:100%;display:block;overflow:visible}
-.fx-nd{cursor:pointer;outline:none}
-.fx-nd .nd-halo{fill:var(--c);opacity:0;transition:opacity .3s}
-.fx-nd .nd-c{transition:transform .4s var(--spring);transform-box:fill-box;transform-origin:center;filter:drop-shadow(0 6px 10px rgba(22,52,103,.22))}
-.fx-nd:hover .nd-halo,.fx-nd:focus-visible .nd-halo{opacity:.2}
-.fx-nd:hover .nd-c,.fx-nd.on .nd-c{transform:scale(1.14)}
-.fx-nd.on .nd-halo{opacity:.3;animation:fxPulse 2.4s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
-.fx-chord-svg.has-mod .fx-nd:not(.on){opacity:.6}
-.fx-nd .nd-l{transition:fill .3s}
-.fx-nd:hover .nd-l{fill:var(--c)}
-.fx-orbit-r{transform-box:fill-box;transform-origin:center;animation:fxSpin 90s linear infinite}
-.fx-lk{cursor:pointer;outline:none;transition:opacity .35s}
-.fx-lk .lk-hit{fill:none;stroke:transparent;stroke-width:18}
-.fx-lk .lk{fill:none;stroke-width:2.6;stroke-linecap:round;stroke-dasharray:7 7;opacity:.85;animation:fxFlow 1.3s linear infinite;transition:stroke-width .25s,opacity .25s}
-.fx-lk.cfg .lk{stroke-dasharray:2 8;animation-duration:2.2s}
-.fx-lk:hover .lk,.fx-lk:focus-visible .lk{stroke-width:4.4;opacity:1}
-.fx-lk.on .lk{stroke-width:5;opacity:1;stroke-dasharray:none;animation:none;filter:drop-shadow(0 0 5px var(--c))}
-.fx-lk.dim{opacity:.1}
-.fx-chord-svg.has-sel .fx-lk:not(.on){opacity:.2}
+.fx-syn-b{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(290px,340px);gap:clamp(12px,2vw,26px);align-items:stretch}
+.fx-chord{position:relative;min-height:0;min-width:0;display:flex;align-items:center;justify-content:center;border-radius:1.8rem;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);padding:8px 6px;overflow:hidden}
+.fx-chord::before{content:'';position:absolute;inset:0;border-radius:inherit;background-image:radial-gradient(rgba(22,52,103,.065) 1px,transparent 1.3px);background-size:26px 26px;pointer-events:none}
+.fx-cnt{font:700 .78rem Barlow,sans-serif;color:var(--cy);padding:5px 12px;border-radius:50px;background:rgba(19,180,226,.1);white-space:nowrap}
+.fx-gh{font:700 .66rem Barlow,sans-serif;letter-spacing:.15em;text-transform:uppercase;color:#6b7c99;margin:14px 0 6px}
+/* schéma de flux : mêmes formes et mêmes animations que l'ancienne version */
+.nv-svg{position:relative;display:block;width:100%;height:100%;overflow:visible}
+.nv-syn .nv-hit{fill:none;stroke:transparent;stroke-width:18;cursor:pointer;pointer-events:stroke}
+.nv-syn .nv-base{fill:none;stroke-width:2.5;opacity:.52;transition:opacity .3s,stroke-width .3s}
+.nv-syn.cfg .nv-base{stroke-dasharray:6 6;opacity:.42}
+.nv-syn .nv-flow{fill:none;stroke-width:2.8;stroke-dasharray:3 13;stroke-linecap:round;opacity:.85;animation:nvFlow 1.6s linear infinite;pointer-events:none}
+@keyframes nvFlow{to{stroke-dashoffset:-32}}
+.nv-badge{cursor:pointer;outline:none}
+.nv-badge .nv-bpill{fill:#fff;stroke:var(--fc);stroke-width:2.2;transition:all .26s cubic-bezier(.34,1.46,.64,1);transform-box:fill-box;transform-origin:center;filter:drop-shadow(0 4px 10px rgba(22,52,103,.1))}
+.nv-badge .nv-bcode{font:800 10.2px Barlow,sans-serif;letter-spacing:.03em;fill:var(--fc);text-anchor:middle;pointer-events:none;transition:fill .26s}
+.nv-badge .nv-bplus{fill:color-mix(in srgb,var(--fc) 14%,#fff);stroke:var(--fc);stroke-width:1.4;transition:all .26s}
+.nv-badge .nv-bplus-t{font:800 11px Barlow,sans-serif;fill:var(--fc);text-anchor:middle;pointer-events:none;transition:fill .26s}
+.nv-badge:hover .nv-bpill,.nv-badge.lit .nv-bpill,.nv-badge.on .nv-bpill,.nv-badge:focus-visible .nv-bpill{fill:var(--fc);transform:scale(1.12)}
+.nv-badge:hover .nv-bcode,.nv-badge.lit .nv-bcode,.nv-badge.on .nv-bcode,.nv-badge:focus-visible .nv-bcode{fill:#fff}
+.nv-badge:hover .nv-bplus,.nv-badge.lit .nv-bplus,.nv-badge.on .nv-bplus{fill:#fff;stroke:#fff}
+.nv-badge:hover .nv-bplus-t,.nv-badge.lit .nv-bplus-t,.nv-badge.on .nv-bplus-t{fill:var(--fc)}
+.nv-node{cursor:pointer;outline:none;animation:nvNodeIn .7s var(--d) cubic-bezier(.34,1.46,.64,1) both}
+@keyframes nvNodeIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.nv-node .nv-glow{fill:var(--c);opacity:0;filter:blur(13px);transition:opacity .35s}
+.nv-node .nv-orbit{fill:none;stroke:var(--c);stroke-width:1.6;stroke-dasharray:7 9;opacity:.38;transform-box:fill-box;transform-origin:center;animation:nvOrbit 18s var(--od,0s) linear infinite;transition:opacity .3s,stroke-width .3s}
+@keyframes nvOrbit{to{transform:rotate(360deg)}}
+.nv-node .nv-disc{fill:#fff;stroke:var(--c);stroke-width:3;transition:all .35s;filter:drop-shadow(0 10px 18px rgba(22,52,103,.12))}
+.nv-node .nv-tint{fill:var(--c);opacity:.08;transition:opacity .35s}
+.nv-node .nv-num{font:800 9.5px 'Miriam Libre',sans-serif;fill:var(--c);text-anchor:middle;letter-spacing:.06em}
+.nv-node .nv-ico{font-size:25px;text-anchor:middle}
+.nv-node .nv-nm{font:700 12px 'Miriam Libre',sans-serif;fill:var(--navy);text-anchor:middle}
+.nv-node .nv-nm.sm{font-size:10.8px}
+.nv-node:hover .nv-glow,.nv-node.lit .nv-glow,.nv-node.fmod-on .nv-glow,.nv-node:focus-visible .nv-glow{opacity:.42}
+.nv-node:hover .nv-orbit,.nv-node.lit .nv-orbit,.nv-node.fmod-on .nv-orbit{opacity:.9;stroke-width:2.3;animation-duration:6s}
+.nv-node:hover .nv-disc,.nv-node.fmod-on .nv-disc,.nv-node:focus-visible .nv-disc{stroke-width:4.5}
+.nv-node:hover .nv-tint,.nv-node.lit .nv-tint,.nv-node.fmod-on .nv-tint{opacity:.18}
+.nv-ai{cursor:pointer;outline:none}
+.nv-ai rect{fill:rgba(18,163,125,.08);stroke:rgba(18,163,125,.35);stroke-dasharray:5 6;transition:fill .3s}
+.nv-ai text{font:700 13px Barlow,sans-serif;fill:#0e7d60;text-anchor:middle;letter-spacing:.04em;pointer-events:none}
+.nv-ai:hover rect,.nv-ai:focus-visible rect{fill:rgba(18,163,125,.16)}
+.nv-aidot{fill:#12a37d;animation:nvBlink 2.4s var(--d) ease-in-out infinite}
+@keyframes nvBlink{50%{opacity:.25}}
+.fx-chord.nv-hl .nv-syn:not(.lit),.fx-chord.nv-hl .nv-badge:not(.lit){opacity:.11}
+.fx-chord.nv-hl .nv-node:not(.lit){opacity:.32}
+.nv-syn.lit .nv-base{opacity:1;stroke-width:4}
+.nv-syn.lit .nv-flow{animation-duration:.7s;stroke-width:4}
+.nv-syn,.nv-badge,.nv-node{transition:opacity .28s}
+.nv-syn.off,.nv-badge.off{display:none!important}
+@media(prefers-reduced-motion:reduce){.nv-node,.nv-node .nv-orbit,.nv-syn .nv-flow,.nv-aidot{animation:none}}
 .fx-synp{min-height:0;overflow-y:auto;scrollbar-width:thin;padding:clamp(16px,2.4vh,26px);border-radius:1.8rem;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);position:relative}
 .fx-synp::before{content:'';position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--grad);border-radius:1.8rem 0 0 1.8rem}
 .fx-pi h3,.fx-pd h3{font:700 1.2rem/1.25 'Miriam Libre',sans-serif;color:var(--navy);margin:10px 0 8px}
@@ -591,7 +619,7 @@ img,svg{max-width:100%}
 /* ============ 12. ADAPTATION ============ */
 @media(max-width:1100px){
   .fx-why{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .fx-syn-b{grid-template-columns:minmax(0,1fr) minmax(250px,.7fr)}
+  .fx-syn-b{grid-template-columns:minmax(0,1fr) minmax(250px,300px)}
 }
 @media(max-width:900px){
   body{overflow:auto}
@@ -605,7 +633,8 @@ img,svg{max-width:100%}
   .fx-vid,.fx-su,.fx-use.has,.fx-val,.fx-ai{grid-template-columns:minmax(0,1fr)}
   .fx-syn{height:auto}
   .fx-syn-b{grid-template-columns:minmax(0,1fr)}
-  .fx-chord{height:min(94vw,560px)}
+  .fx-chord{overflow-x:auto;justify-content:flex-start}
+  .nv-svg{min-width:860px;height:auto}
   .fx-synp{max-height:none}
   .fx-duo{grid-template-columns:minmax(0,1fr)}
   .fx-duo-plus{justify-self:center}
