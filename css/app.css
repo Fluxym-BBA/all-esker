@@ -587,4 +587,8 @@ body.t-syn .fx-vt p{display:none}
 .nv-work .nv-svg{width:100%;height:auto;min-width:0}
 .nv-work.nv-fs{padding:16px clamp(14px,2.4vw,36px) 40px;gap:14px}
 .nv-work.nv-fs .nv-svg{min-width:0}
+/* plein écran : la zone devient une colonne de hauteur fixe, ses enfants ne doivent pas être écrasés (le schéma était rogné), on défile dans la zone */
+.nv-work.nv-fs>*{flex-shrink:0}
+/* plein écran : l'application passe au-dessus du bandeau (z-index 300) et de la bulle Esker (z-index 380), qui la recouvraient */
+body.nv-fs-lock .fx-app{z-index:1200}
 @media(max-width:900px){.nv-work .nv-svg{min-width:880px}.nv-work .nv-stage-drawer{position:static;margin:10px 6px;max-height:none}}

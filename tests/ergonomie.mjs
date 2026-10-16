@@ -76,8 +76,15 @@ function mesurerPleinEcran() {
   const couvre = Math.round(r.x) <= 1 && Math.round(r.y) <= 1
     && Math.round(r.width) >= innerWidth - 2 && Math.round(r.height) >= innerHeight - 2;
   const rect = [Math.round(r.x), Math.round(r.y), Math.round(r.width), Math.round(r.height)];
+  // le schéma ne doit pas être écrasé : sa zone doit au moins contenir tout le dessin
+  const schema = document.getElementById('nvSvg'), scene = document.querySelector('.nv-stage');
+  const schemaRogne = !!(schema && scene && scene.getBoundingClientRect().height + 1 < schema.getBoundingClientRect().height);
+  // le bandeau du haut doit être recouvert : l'élément au point (centre, 5 px) est dans la zone plein écran
+  const dessus = document.elementFromPoint(Math.round(innerWidth / 2), 5);
+  const bandeauRecouvert = !!(dessus && zone.contains(dessus));
   bouton.click();
-  return { couvre, rect, fenetre: [innerWidth, innerHeight] };
+  const sorti = !zone.classList.contains('nv-fs') && !document.body.classList.contains('nv-fs-lock');
+  return { couvre, rect, fenetre: [innerWidth, innerHeight], schemaRogne, bandeauRecouvert, sorti };
 }
 
 const lancement = await trouverNavigateur();
@@ -105,7 +112,12 @@ for (const [largeur, hauteur] of VIEWPORTS) {
       const pe = await page.evaluate(mesurerPleinEcran);
       verifications++;
       if (pe.absent) echecs.push(`${etiquette} : bouton ou zone de plein écran introuvable`);
-      else if (!pe.couvre) echecs.push(`${etiquette} : plein écran ne couvre pas la fenêtre (zone ${pe.rect.join(',')} pour une fenêtre ${pe.fenetre.join('x')})`);
+      else {
+        if (!pe.couvre) echecs.push(`${etiquette} : plein écran ne couvre pas la fenêtre (zone ${pe.rect.join(',')} pour une fenêtre ${pe.fenetre.join('x')})`);
+        if (pe.schemaRogne) echecs.push(`${etiquette} : plein écran, le schéma est rogné (zone plus basse que le dessin)`);
+        if (!pe.bandeauRecouvert) echecs.push(`${etiquette} : plein écran, le bandeau du haut reste par-dessus`);
+        if (!pe.sorti) echecs.push(`${etiquette} : le plein écran ne se referme pas`);
+      }
     }
   }
 
