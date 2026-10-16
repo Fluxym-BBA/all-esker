@@ -393,105 +393,6 @@ img,svg{max-width:100%}
 .fx-demo-f{flex:1;width:100%;min-height:380px;border:0;border-radius:1.2rem;background:#fff;box-shadow:var(--shadow-h)}
 
 /* ============ 9. SUITES : SYNERGIES, DUO, IA, BUDGET ============ */
-.fx-syn{height:100%;display:flex;flex-direction:column;gap:10px;min-height:0}
-.fx-syn-f{flex:none;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
-.fx-fchips{display:flex;flex-wrap:wrap;gap:6px}
-.fx-fc{--c:var(--navy);display:inline-flex;align-items:center;gap:7px;padding:7px 14px;border-radius:50px;background:#fff;border:1px solid var(--line);font:700 .78rem Barlow,sans-serif;color:var(--txt);transition:background .25s,color .25s,transform .3s var(--spring)}
-.fx-fc i{width:9px;height:9px;border-radius:50%;background:var(--c)}
-.fx-fc:hover{transform:translateY(-2px);color:var(--navy)}
-.fx-fc.on{background:var(--c);color:#fff;border-color:transparent;box-shadow:0 8px 18px color-mix(in srgb,var(--c) 40%,transparent)}
-.fx-fc.on i{background:#fff}
-.fx-sw{display:inline-flex;align-items:center;gap:10px;font-size:.82rem;font-weight:600;color:var(--txt);cursor:pointer}
-.fx-sw small{font-weight:500;color:#8191ad}
-.fx-sw input{position:absolute;opacity:0;width:1px;height:1px}
-.fx-sw-t{position:relative;width:42px;height:24px;border-radius:50px;background:rgba(22,52,103,.18);transition:background .3s;flex:none}
-.fx-sw-t::after{content:'';position:absolute;left:3px;top:3px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(22,52,103,.3);transition:transform .35s var(--spring)}
-.fx-sw input:checked+.fx-sw-t{background:var(--grad)}
-.fx-sw input:checked+.fx-sw-t::after{transform:translateX(18px)}
-.fx-sw input:focus-visible+.fx-sw-t{outline:3px solid var(--cy);outline-offset:2px}
-.fx-syn-b{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(290px,340px);gap:clamp(12px,2vw,26px);align-items:stretch}
-.fx-chord{position:relative;min-height:0;min-width:0;display:flex;align-items:center;justify-content:center;border-radius:1.8rem;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);padding:8px 6px;overflow:hidden}
-.fx-chord::before{content:'';position:absolute;inset:0;border-radius:inherit;background-image:radial-gradient(rgba(22,52,103,.065) 1px,transparent 1.3px);background-size:26px 26px;pointer-events:none}
-.fx-cnt{font:700 .78rem Barlow,sans-serif;color:var(--cy);padding:5px 12px;border-radius:50px;background:rgba(19,180,226,.1);white-space:nowrap}
-.fx-gh{font:700 .66rem Barlow,sans-serif;letter-spacing:.15em;text-transform:uppercase;color:#6b7c99;margin:14px 0 6px}
-/* schéma de flux : mêmes formes et mêmes animations que l'ancienne version */
-.nv-svg{position:relative;display:block;width:100%;height:100%;overflow:visible}
-.nv-syn .nv-hit{fill:none;stroke:transparent;stroke-width:18;cursor:pointer;pointer-events:stroke}
-.nv-syn .nv-base{fill:none;stroke-width:2.5;opacity:.52;transition:opacity .3s,stroke-width .3s}
-.nv-syn.cfg .nv-base{stroke-dasharray:6 6;opacity:.42}
-.nv-syn .nv-flow{fill:none;stroke-width:2.8;stroke-dasharray:3 13;stroke-linecap:round;opacity:.85;animation:nvFlow 1.6s linear infinite;pointer-events:none}
-@keyframes nvFlow{to{stroke-dashoffset:-32}}
-.nv-badge{cursor:pointer;outline:none}
-.nv-badge .nv-bpill{fill:#fff;stroke:var(--fc);stroke-width:2.2;transition:all .26s cubic-bezier(.34,1.46,.64,1);transform-box:fill-box;transform-origin:center;filter:drop-shadow(0 4px 10px rgba(22,52,103,.1))}
-.nv-badge .nv-bcode{font:800 10.2px Barlow,sans-serif;letter-spacing:.03em;fill:var(--fc);text-anchor:middle;pointer-events:none;transition:fill .26s}
-.nv-badge .nv-bplus{fill:color-mix(in srgb,var(--fc) 14%,#fff);stroke:var(--fc);stroke-width:1.4;transition:all .26s}
-.nv-badge .nv-bplus-t{font:800 11px Barlow,sans-serif;fill:var(--fc);text-anchor:middle;pointer-events:none;transition:fill .26s}
-.nv-badge:hover .nv-bpill,.nv-badge.lit .nv-bpill,.nv-badge.on .nv-bpill,.nv-badge:focus-visible .nv-bpill{fill:var(--fc);transform:scale(1.12)}
-.nv-badge:hover .nv-bcode,.nv-badge.lit .nv-bcode,.nv-badge.on .nv-bcode,.nv-badge:focus-visible .nv-bcode{fill:#fff}
-.nv-badge:hover .nv-bplus,.nv-badge.lit .nv-bplus,.nv-badge.on .nv-bplus{fill:#fff;stroke:#fff}
-.nv-badge:hover .nv-bplus-t,.nv-badge.lit .nv-bplus-t,.nv-badge.on .nv-bplus-t{fill:var(--fc)}
-.nv-node{cursor:pointer;outline:none;animation:nvNodeIn .7s var(--d) cubic-bezier(.34,1.46,.64,1) both}
-@keyframes nvNodeIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
-.nv-node .nv-glow{fill:var(--c);opacity:0;filter:blur(13px);transition:opacity .35s}
-.nv-node .nv-orbit{fill:none;stroke:var(--c);stroke-width:1.6;stroke-dasharray:7 9;opacity:.38;transform-box:fill-box;transform-origin:center;animation:nvOrbit 18s var(--od,0s) linear infinite;transition:opacity .3s,stroke-width .3s}
-@keyframes nvOrbit{to{transform:rotate(360deg)}}
-.nv-node .nv-disc{fill:#fff;stroke:var(--c);stroke-width:3;transition:all .35s;filter:drop-shadow(0 10px 18px rgba(22,52,103,.12))}
-.nv-node .nv-tint{fill:var(--c);opacity:.08;transition:opacity .35s}
-.nv-node .nv-num{font:800 9.5px 'Miriam Libre',sans-serif;fill:var(--c);text-anchor:middle;letter-spacing:.06em}
-.nv-node .nv-ico{font-size:25px;text-anchor:middle}
-.nv-node .nv-nm{font:700 12px 'Miriam Libre',sans-serif;fill:var(--navy);text-anchor:middle}
-.nv-node .nv-nm.sm{font-size:10.8px}
-.nv-node:hover .nv-glow,.nv-node.lit .nv-glow,.nv-node.fmod-on .nv-glow,.nv-node:focus-visible .nv-glow{opacity:.42}
-.nv-node:hover .nv-orbit,.nv-node.lit .nv-orbit,.nv-node.fmod-on .nv-orbit{opacity:.9;stroke-width:2.3;animation-duration:6s}
-.nv-node:hover .nv-disc,.nv-node.fmod-on .nv-disc,.nv-node:focus-visible .nv-disc{stroke-width:4.5}
-.nv-node:hover .nv-tint,.nv-node.lit .nv-tint,.nv-node.fmod-on .nv-tint{opacity:.18}
-.nv-ai{cursor:pointer;outline:none}
-.nv-ai rect{fill:rgba(18,163,125,.08);stroke:rgba(18,163,125,.35);stroke-dasharray:5 6;transition:fill .3s}
-.nv-ai text{font:700 13px Barlow,sans-serif;fill:#0e7d60;text-anchor:middle;letter-spacing:.04em;pointer-events:none}
-.nv-ai:hover rect,.nv-ai:focus-visible rect{fill:rgba(18,163,125,.16)}
-.nv-aidot{fill:#12a37d;animation:nvBlink 2.4s var(--d) ease-in-out infinite}
-@keyframes nvBlink{50%{opacity:.25}}
-.fx-chord.nv-hl .nv-syn:not(.lit),.fx-chord.nv-hl .nv-badge:not(.lit){opacity:.11}
-.fx-chord.nv-hl .nv-node:not(.lit){opacity:.32}
-.nv-syn.lit .nv-base{opacity:1;stroke-width:4}
-.nv-syn.lit .nv-flow{animation-duration:.7s;stroke-width:4}
-.nv-syn,.nv-badge,.nv-node{transition:opacity .28s}
-.nv-syn.off,.nv-badge.off{display:none!important}
-@media(prefers-reduced-motion:reduce){.nv-node,.nv-node .nv-orbit,.nv-syn .nv-flow,.nv-aidot{animation:none}}
-.fx-synp{min-height:0;overflow-y:auto;scrollbar-width:thin;padding:clamp(16px,2.4vh,26px);border-radius:1.8rem;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);position:relative}
-.fx-synp::before{content:'';position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--grad);border-radius:1.8rem 0 0 1.8rem}
-.fx-pi h3,.fx-pd h3{font:700 1.2rem/1.25 'Miriam Libre',sans-serif;color:var(--navy);margin:10px 0 8px}
-.fx-pi p,.fx-pd p,.fx-pl p{font-size:.9rem;line-height:1.55;color:var(--txt)}
-.fx-pd,.fx-pi,.fx-pl{animation:fxUp .5s var(--ease) both}
-.fx-pd{--c:var(--cy)}
-.fx-pd-h{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;align-items:center}
-.fx-fam{display:inline-flex;align-items:center;gap:7px;font:700 .72rem Barlow,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--c)}
-.fx-fam i{width:9px;height:9px;border-radius:50%;background:var(--c)}
-.fx-bd{font:700 .68rem Barlow,sans-serif;padding:4px 10px;border-radius:50px}
-.fx-bd.ok{background:rgba(126,239,160,.35);color:#13693a}
-.fx-bd.cfg{background:rgba(255,207,99,.4);color:#7a5600}
-.fx-ft{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:12px}
-.fx-ft>span{display:flex;color:var(--txt)}
-.fx-ft>span svg{width:18px;height:18px;animation:fxFloat 2s ease-in-out infinite}
-.fx-pd ul{display:grid;gap:7px;margin:12px 0 14px}
-.fx-pd li{position:relative;padding-left:18px;font-size:.88rem;color:var(--navy);font-weight:600;line-height:1.4}
-.fx-pd li::before{content:'';position:absolute;left:0;top:.45em;width:8px;height:8px;border-radius:50%;background:var(--c)}
-.fx-pl-h{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center;margin-bottom:8px}
-.fx-hint{font-size:.8rem!important;color:#8191ad!important;margin-top:8px}
-.fx-rows{display:grid;gap:6px;margin:12px 0}
-.fx-row{--c:var(--cy);width:100%;display:flex;align-items:center;gap:12px;text-align:left;padding:10px 12px;border-radius:.9rem;background:var(--gl);transition:transform .3s var(--spring),box-shadow .3s,background .3s}
-.fx-row>i{flex:none;width:10px;height:10px;border-radius:50%;background:var(--c)}
-.fx-row>span{flex:1;min-width:0}
-.fx-row b{display:block;font:700 .86rem/1.25 'Miriam Libre',sans-serif}
-.fx-row small{font-size:.74rem;color:var(--txt)}
-.fx-row svg{width:15px;height:15px;color:var(--txt)}
-.fx-row:hover{transform:translateX(4px);background:#fff;box-shadow:inset 0 0 0 1.5px var(--c)}
-.fx-leg{display:grid;gap:6px;margin:14px 0 8px}
-.fx-leg li{--c:var(--cy);display:flex;align-items:center;gap:10px;font-size:.86rem;font-weight:600}
-.fx-leg i{width:26px;height:4px;border-radius:4px;background:var(--c)}
-.fx-leg span{flex:1}
-.fx-leg b{font:700 .8rem 'Miriam Libre',sans-serif;padding:2px 9px;border-radius:50px;background:color-mix(in srgb,var(--c) 16%,#fff)}
-
 .fx-duo-sel{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
 .fx-duo{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:clamp(8px,1.4vw,18px);align-items:stretch}
 .fx-duo-c{--c:var(--cy);padding:clamp(16px,2.4vh,26px);border-radius:1.6rem;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);animation:fxUp .6s var(--ease) both}
@@ -619,7 +520,6 @@ img,svg{max-width:100%}
 /* ============ 12. ADAPTATION ============ */
 @media(max-width:1100px){
   .fx-why{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .fx-syn-b{grid-template-columns:minmax(0,1fr) minmax(250px,300px)}
 }
 @media(max-width:900px){
   body{overflow:auto}
@@ -631,11 +531,6 @@ img,svg{max-width:100%}
   .fx-ap-l{grid-template-columns:1fr;text-align:left}
   .fx-badge{width:84px}
   .fx-vid,.fx-su,.fx-use.has,.fx-val,.fx-ai{grid-template-columns:minmax(0,1fr)}
-  .fx-syn{height:auto}
-  .fx-syn-b{grid-template-columns:minmax(0,1fr)}
-  .fx-chord{overflow-x:auto;justify-content:flex-start}
-  .nv-svg{min-width:860px;height:auto}
-  .fx-synp{max-height:none}
   .fx-duo{grid-template-columns:minmax(0,1fr)}
   .fx-duo-plus{justify-self:center}
   .fx-ai-orb{width:min(100%,420px)}
@@ -659,3 +554,37 @@ img,svg{max-width:100%}
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
 }
+
+/* ============ 14. ESPACE SYNERGIES (mécanique d'origine, voir syn.css) ============
+   Rien n'est retiré : console multi-filtres, périmètre, sens, survol, tiroir, studio, exploration, plein écran.
+   On change seulement la présentation : trois vues d'un même espace, schéma pleine largeur, tiroir en surimpression. */
+body.t-syn .fx-vt p{display:none}
+.nv-work{display:flex;flex-direction:column;gap:12px;min-width:0}
+.nv-subnav{align-self:flex-start;display:inline-flex;gap:4px;padding:4px;border-radius:50px;background:#fff;border:1px solid var(--line);box-shadow:0 8px 22px rgba(22,52,103,.07);max-width:100%;overflow-x:auto;scrollbar-width:none}
+.nv-subnav button{position:relative;flex:none;display:inline-flex;align-items:center;gap:8px;padding:8px 16px 8px 8px;border-radius:50px;font:700 .84rem 'Miriam Libre',sans-serif;color:var(--txt);white-space:nowrap;transition:background .3s,color .3s,box-shadow .3s}
+.nv-subnav button b{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--gl);font-size:.74rem;transition:background .3s,color .3s}
+.nv-subnav button:hover{background:rgba(19,180,226,.1);color:var(--navy)}
+.nv-subnav button.on{background:var(--navy);color:#fff;box-shadow:0 8px 20px rgba(22,52,103,.3)}
+.nv-subnav button.on b{background:var(--sun);color:var(--navy)}
+.nv-subnav button i{position:absolute;right:8px;top:6px;width:8px;height:8px;border-radius:50%;background:var(--green);animation:ping 2.4s infinite}
+.nv-work[data-sv=schema] #nvPitch,.nv-work[data-sv=schema] #nvExploreSec,
+.nv-work[data-sv=pitch] .nv-stage,.nv-work[data-sv=pitch] .nv-qbar,.nv-work[data-sv=pitch] #nvExploreSec,
+.nv-work[data-sv=explore] .nv-stage,.nv-work[data-sv=explore] .nv-qbar,.nv-work[data-sv=explore] #nvPitch{display:none!important}
+.nv-work .nv-console{margin:0;padding:12px 16px;gap:9px;border-radius:1.2rem}
+.nv-work .nv-stage{position:relative;margin:0;border-radius:1.6rem;overflow:hidden}
+.nv-work .nv-qbar{margin-top:0}
+/* tiroir de détail : en surimpression au bas du schéma, le schéma ne bouge plus */
+.nv-work .nv-stage-drawer{position:absolute;left:14px;right:14px;bottom:14px;margin:0;max-height:58%;overflow-y:auto;z-index:6;border-radius:1.2rem;box-shadow:0 22px 60px rgba(22,52,103,.3)}
+.nv-work .nv-stage-drawer[hidden]{display:none}
+/* lisibilité : géométrie inchangée, libellés plus grands */
+.nv-work .nv-svg .nv-nm{font-size:13.6px}
+.nv-work .nv-svg .nv-nm.sm{font-size:12px}
+.nv-work .nv-svg .nv-num{font-size:10.6px}
+.nv-work .nv-svg .nv-bcode{font-size:11.6px}
+.nv-work .nv-svg .nv-bplus-t{font-size:12px}
+.nv-work .nv-svg .nv-ai text{font-size:14.5px}
+.nv-work .nv-scroll{overflow-x:auto;overflow-y:hidden}
+.nv-work .nv-svg{width:100%;height:auto;min-width:0}
+.nv-work.nv-fs{padding:16px clamp(14px,2.4vw,36px) 40px;gap:14px}
+.nv-work.nv-fs .nv-svg{min-width:0}
+@media(max-width:900px){.nv-work .nv-svg{min-width:880px}.nv-work .nv-stage-drawer{position:static;margin:10px 6px;max-height:none}}
