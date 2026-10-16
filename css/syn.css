@@ -1,7 +1,7 @@
 /* =========================================================================
-   NAVIGATION PAR NIVEAUX (SPA 3 NIVEAUX) :
-   Header 3 niveaux · Console multi-filtres · Schéma SVG dynamique avec
-   pilules + et tiroir SPA · Studio Standalone vs Synergie · Exploration détaillée
+   ESPACE SYNERGIES : UN UNIVERS PLEIN CADRE
+   Canevas zoomable et déplaçable, commandes flottantes, fiche flottante,
+   mini-carte, surimpression « Seul vs en synergie ». Voir js/fx-syn.js.
    ========================================================================= */
 
 /* Navigation 3 niveaux dans l'en-tête principal (.hnav) */
@@ -18,102 +18,43 @@
 .hnav-dd-item:hover{background:#f0f6f8}
 .hnav-dd-item em{margin-left:auto;font:800 .68rem Barlow,sans-serif;font-style:normal;color:#6b7d99;background:#eef3f7;padding:2px 6px;border-radius:50px}
 
-.suitesec{display:none;scroll-margin-top:calc(var(--hdr-h) + 8px);position:relative}
+.suitesec{display:none;position:relative}
 .suitesec.nv-on{display:block}
-.suitesec.nv-full{padding:34px 0 70px;background:linear-gradient(180deg,#f0f6f8 0%,#fff 70%)}
-.suitesec.nv-compact{padding:18px 0 8px;background:#fff}
-.suitesec.nv-wait .nv-node,.suitesec.nv-wait .nv-pill.on{visibility:hidden}
-
-/* fil d'Ariane et en-tête */
-.nv-top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
-.nv-top-acts{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
-.nv-crumb{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font:600 .9rem Barlow,sans-serif;color:#7a8aa6}
-.nv-crumb button{border:0;background:none;cursor:pointer;font:700 .9rem Barlow,sans-serif;color:var(--blue);padding:4px 2px;border-bottom:2px solid transparent;transition:border-color .25s,color .25s}
-.nv-crumb button:hover{color:var(--dark-blue);border-color:var(--blue)}
-.nv-crumb b{font:700 .9rem Barlow,sans-serif;color:var(--dark-blue)}
-.nv-crumb i{font-style:normal;color:#b5c0d1}
-.nv-back,.nv-switch-suite{border:1px solid rgba(22,52,103,.14);background:#fff;color:var(--dark-blue);border-radius:50px;padding:8px 16px;font:700 .84rem Barlow,sans-serif;cursor:pointer;box-shadow:0 4px 14px rgba(22,52,103,.06);transition:all .3s cubic-bezier(.23,1,.32,1)}
-.nv-switch-suite{background:#f0f6f8;color:var(--blue);border-color:rgba(19,180,226,.3)}
-.nv-back:hover,.nv-switch-suite:hover{background:var(--dark-blue);color:#fff;border-color:var(--dark-blue);transform:translateY(-1px)}
-.nv-head{margin:24px 0 14px}
 .nv-k{display:inline-flex;align-items:center;gap:8px;font:800 .7rem Barlow,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--blue)}
 .nv-k i{width:7px;height:7px;border-radius:50%;background:var(--blue);box-shadow:0 0 0 4px rgba(19,180,226,.18)}
-.nv-head h2{font:700 clamp(1.7rem,3.2vw,2.6rem)/1.15 'Miriam Libre',sans-serif;margin:10px 0;letter-spacing:-.01em}
-.nv-head h2 em,.nv-chain h3 em{font-style:normal;background:linear-gradient(90deg,var(--blue),var(--purple-rain));-webkit-background-clip:text;background-clip:text;color:transparent}
-.nv-head p{color:#4a5d7e;max-width:82ch;font-size:1.01rem;line-height:1.5}
 
-/* mode plein écran de l'espace Synergies */
+/* =========================================================================
+   1. LE CADRE DE L'UNIVERS
+   ========================================================================= */
+.nv-work{position:relative;width:100%;height:100%;min-height:340px;border-radius:1.6rem;overflow:hidden;touch-action:none;
+  border:1px solid rgba(22,52,103,.09);box-shadow:0 22px 60px rgba(22,52,103,.08);
+  background:radial-gradient(circle at 16% 10%,rgba(19,180,226,.12),transparent 46%),
+             radial-gradient(circle at 88% 88%,rgba(107,81,237,.10),transparent 48%),
+             linear-gradient(180deg,#fcfefe 0%,#eff6fa 100%)}
+/* trame de points : elle suit la caméra, l'espace paraît infini */
+.nv-work::before{content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:radial-gradient(rgba(22,52,103,.085) 1px,transparent 1.4px);
+  background-size:var(--gs,26px) var(--gs,26px);background-position:var(--gx,0) var(--gy,0)}
+.nv-sky{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab;touch-action:none;overflow:visible;
+  -webkit-user-select:none;user-select:none}
+.nv-sky.nv-grab{cursor:grabbing}
+.nv-void{pointer-events:all}
+
+/* plein écran : l'univers couvre la fenêtre, sans défilement */
 body.nv-fs-lock{overflow:hidden}
-.nv-work.nv-fs{position:fixed;inset:0;z-index:1200;background:linear-gradient(180deg,#f0f6f8 0%,#fff 85%);overflow-y:auto;overflow-x:hidden;padding:20px clamp(18px,3vw,42px) 64px;box-sizing:border-box}
+.nv-work.nv-fs{position:fixed;inset:0;z-index:1200;border-radius:0;border:0;height:100vh;height:100dvh;overflow:hidden}
 
 /* =========================================================================
-   CONSOLE DE FILTRES ERGONOMIQUE (3 CATÉGORIES TITRÉES)
+   2. LE DESSIN (géométrie d'origine, inchangée)
    ========================================================================= */
-.nv-console{background:#fff;border:1px solid rgba(22,52,103,.1);border-radius:22px;padding:14px 18px;margin:18px 0 16px;box-shadow:0 12px 34px rgba(22,52,103,.06);display:flex;flex-direction:column;gap:12px}
-.nv-crow{display:grid;grid-template-columns:215px minmax(0,1fr);gap:14px;align-items:center;padding-bottom:11px;border-bottom:1px dashed rgba(22,52,103,.09)}
-.nv-crow:last-child{padding-bottom:0;border-bottom:0}
-.nv-clbl{display:flex;align-items:center;gap:10px}
-.nv-cnum{width:24px;height:24px;border-radius:50%;background:rgba(19,180,226,.14);color:var(--blue);font:800 .75rem Barlow,sans-serif;display:inline-flex;align-items:center;justify-content:center;flex:none}
-.nv-clbl strong{display:block;font:800 .8rem Barlow,sans-serif;color:var(--dark-blue);letter-spacing:.02em;line-height:1.15}
-.nv-clbl small{display:block;font-size:.71rem;color:#7a8aa6;margin-top:1px}
-.nv-cbody{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
-.nv-cbody--split{justify-content:space-between;gap:10px 16px}
-.nv-cgrp{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
-.nv-cgrp--right{margin-left:auto}
-.nv-sub-lbl{font:700 .74rem Barlow,sans-serif;color:#5b6d8c}
-
-/* Ligne 1 : Pastilles modules (multi-sélection) + case de déverrouillage */
-.nv-mods-chips{display:flex;flex-wrap:wrap;gap:6px}
-.nv-mchip{display:inline-flex;align-items:center;gap:6px;border:1.5px solid rgba(22,52,103,.12);background:#f9fbfd;border-radius:50px;padding:5px 12px;font:600 .79rem Barlow,sans-serif;color:var(--dark-blue);cursor:pointer;transition:all .22s}
-.nv-mchip em{font:800 .68rem Barlow,sans-serif;font-style:normal;color:#fff;background:var(--c,var(--blue));padding:2px 7px;border-radius:50px}
-.nv-mchip b{font:700 .8rem Barlow,sans-serif}
-.nv-mchip span{font-size:.72rem;opacity:.7}
-.nv-mchip:hover{border-color:var(--c,var(--blue));background:#fff;transform:translateY(-1px)}
-.nv-mchip.on{background:var(--c,var(--dark-blue));color:#fff;border-color:var(--c,var(--dark-blue));box-shadow:0 6px 16px rgba(22,52,103,.16)}
-.nv-mchip.on em{background:rgba(255,255,255,.22);color:#fff}
-.nv-mchip.on span{color:#fff;opacity:.92}
-
-.nv-unlock-box{display:inline-flex;align-items:center;gap:7px;background:#fff8e6;border:1px solid #f5d488;color:#6e4e06;border-radius:50px;padding:5px 12px;font:700 .75rem Barlow,sans-serif;cursor:pointer;user-select:none}
-.nv-unlock-box input{accent-color:var(--dark-blue);width:14px;height:14px;cursor:pointer}
-
-/* Ligne 2 : Typologies de synergies */
-.nv-fams{display:flex;flex-wrap:wrap;gap:7px}
-.nv-fam{display:inline-flex;align-items:center;gap:7px;border:1.5px solid rgba(22,52,103,.11);background:#f9fbfd;border-radius:50px;padding:6px 13px;font:700 .79rem Barlow,sans-serif;color:var(--dark-blue);cursor:pointer;transition:all .25s cubic-bezier(.34,1.46,.64,1)}
-.nv-fam i{width:9px;height:9px;border-radius:50%;background:var(--fc)}
-.nv-fam:hover{transform:translateY(-1px);border-color:var(--fc,var(--blue));background:#fff}
-.nv-fam.on{background:var(--dark-blue);color:#fff;border-color:var(--dark-blue)}
-
-/* Ligne 3 : Périmètre, Studio, Réinitialiser et Plein écran */
-.nv-scope{display:inline-flex;padding:3px;border-radius:50px;background:#f0f6f8;border:1px solid rgba(22,52,103,.1)}
-.nv-scope-btn{border:0;background:none;cursor:pointer;padding:6px 13px;border-radius:50px;font:700 .78rem Barlow,sans-serif;color:var(--dark-blue);transition:all .22s;white-space:nowrap}
-.nv-scope-btn.on{background:var(--blue);color:#fff;box-shadow:0 3px 10px rgba(19,180,226,.28)}
-.nv-cmp-btn,.nv-fs-btn,.nv-reset-btn{border:1.5px solid rgba(22,52,103,.14);background:#fff;color:var(--dark-blue);border-radius:50px;padding:7px 14px;font:700 .79rem Barlow,sans-serif;cursor:pointer;transition:all .22s;white-space:nowrap}
-.nv-cmp-btn:hover,.nv-fs-btn:hover,.nv-reset-btn:hover{border-color:var(--blue);transform:translateY(-1px)}
-.nv-cmp-btn.on{background:var(--purple-rain,#6b51ed);color:#fff;border-color:var(--purple-rain,#6b51ed);box-shadow:0 6px 16px rgba(107,81,237,.25)}
-.nv-reset-btn{background:#fff5f5;border-color:rgba(212,25,32,.25);color:#b91c1c}
-.nv-reset-btn:hover{background:#d41920;color:#fff;border-color:#d41920}
-.nv-fs-btn.on{background:#d41920;color:#fff;border-color:#d41920}
-.nv-vis-cnt{font:700 .76rem Barlow,sans-serif;color:#5b6d8c;background:#f0f6f8;padding:5px 11px;border-radius:50px;white-space:nowrap}
-
-/* =========================================================================
-   SCHÉMA DE FLUX SVG (SANS ROGNAGE, DYNAMIQUE ORBITALE, PILULES +, TIROIR SPA)
-   ========================================================================= */
-.nv-stage{position:relative;background:#fff;border:1px solid rgba(22,52,103,.09);border-radius:24px;box-shadow:0 24px 70px rgba(22,52,103,.08);padding:12px 12px 10px;overflow:visible}
-.nv-stage::before{content:'';position:absolute;inset:0;border-radius:24px;background-image:radial-gradient(rgba(22,52,103,.065) 1px,transparent 1.3px);background-size:26px 26px;pointer-events:none}
-.nv-stage-bar{position:relative;z-index:2;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:4px 10px 8px;border-bottom:1px solid rgba(22,52,103,.06)}
-.nv-stage-hint{font-size:.8rem;color:#5b6d8c}
-.nv-stage-hint b{color:var(--dark-blue)}
-.nv-clear-syn{border:0;background:var(--dark-blue);color:#fff;border-radius:50px;padding:5px 13px;font:700 .76rem Barlow,sans-serif;cursor:pointer;box-shadow:0 4px 12px rgba(22,52,103,.2);transition:background .2s}
-.nv-clear-syn:hover{background:#d41920}
-
-.nv-scroll{position:relative;overflow-x:auto;overflow-y:visible}
-.nv-svg{display:block;width:100%;min-width:860px;height:auto;overflow:visible}
 .nv-syn .nv-hit{fill:none;stroke:transparent;stroke-width:18;cursor:pointer;pointer-events:stroke}
 .nv-syn .nv-base{fill:none;stroke-width:2.5;opacity:.52;transition:opacity .3s,stroke-width .3s}
 .nv-syn .nv-flow{fill:none;stroke-width:2.8;stroke-dasharray:3 13;stroke-linecap:round;opacity:.85;animation:nvFlow 1.6s linear infinite;pointer-events:none}
 @keyframes nvFlow{to{stroke-dashoffset:-32}}
+.nv-comet{offset-rotate:0deg;animation:nvComet 2.4s linear infinite;pointer-events:none;filter:drop-shadow(0 0 7px rgba(19,180,226,.75))}
+@keyframes nvComet{from{offset-distance:0%}to{offset-distance:100%}}
 
-/* Pilules de flux avec bouton + intégré */
+/* pastilles de code avec bouton + intégré */
 .nv-badge{cursor:pointer;outline:none}
 .nv-badge .nv-bpill{fill:#fff;stroke:var(--fc);stroke-width:2.2;transition:all .26s cubic-bezier(.34,1.46,.64,1);transform-box:fill-box;transform-origin:center;filter:drop-shadow(0 4px 10px rgba(22,52,103,.1))}
 .nv-badge .nv-bcode{font:800 10.2px Barlow,sans-serif;letter-spacing:.03em;fill:var(--fc);text-anchor:middle;pointer-events:none;transition:fill .26s}
@@ -124,7 +65,7 @@ body.nv-fs-lock{overflow:hidden}
 .nv-badge:hover .nv-bplus,.nv-badge.lit .nv-bplus,.nv-badge.on .nv-bplus{fill:#fff;stroke:#fff}
 .nv-badge:hover .nv-bplus-t,.nv-badge.lit .nv-bplus-t,.nv-badge.on .nv-bplus-t{fill:var(--fc)}
 
-/* Modules du schéma avec anneau orbital dynamique et compteur */
+/* modules : anneau orbital, compteur d'interactions */
 .nv-node{cursor:pointer;outline:none;animation:nvNodeIn .7s var(--d) cubic-bezier(.34,1.46,.64,1) both}
 @keyframes nvNodeIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 .nv-node .nv-glow{fill:var(--c);opacity:0;filter:blur(13px);transition:opacity .35s}
@@ -136,10 +77,15 @@ body.nv-fs-lock{overflow:hidden}
 .nv-node .nv-ico{font-size:25px;text-anchor:middle}
 .nv-node .nv-nm{font:700 12px 'Miriam Libre',sans-serif;fill:var(--dark-blue);text-anchor:middle}
 .nv-node .nv-nm.sm{font-size:10.8px}
-.nv-node:hover .nv-glow,.nv-node.lit .nv-glow,.nv-node.fmod-on .nv-glow,.nv-node:focus-visible .nv-glow{opacity:.42}
-.nv-node:hover .nv-orbit,.nv-node.lit .nv-orbit,.nv-node.fmod-on .nv-orbit{opacity:.9;stroke-width:2.3;animation-duration:6s}
-.nv-node:hover .nv-disc,.nv-node.fmod-on .nv-disc,.nv-node:focus-visible .nv-disc{stroke-width:4.5}
-.nv-node:hover .nv-tint,.nv-node.lit .nv-tint,.nv-node.fmod-on .nv-tint{opacity:.18}
+.nv-node:hover .nv-glow,.nv-node.lit .nv-glow,.nv-node:focus-visible .nv-glow{opacity:.42}
+.nv-node:hover .nv-orbit,.nv-node.lit .nv-orbit{opacity:.9;stroke-width:2.3;animation-duration:6s}
+.nv-node:hover .nv-disc,.nv-node:focus-visible .nv-disc{stroke-width:4.5}
+.nv-node:hover .nv-tint,.nv-node.lit .nv-tint{opacity:.18}
+/* module sélectionné : il domine la scène */
+.nv-node.sel .nv-glow{opacity:.58}
+.nv-node.sel .nv-orbit{opacity:1;stroke-width:2.8;animation-duration:5s}
+.nv-node.sel .nv-disc{stroke-width:5.5}
+.nv-node.sel .nv-tint{opacity:.22}
 
 .nv-ai{cursor:pointer;outline:none}
 .nv-ai rect{fill:rgba(18,163,125,.08);stroke:rgba(18,163,125,.35);stroke-dasharray:5 6;transition:fill .3s}
@@ -148,205 +94,196 @@ body.nv-fs-lock{overflow:hidden}
 .nv-aidot{fill:#12a37d;animation:nvBlink 2.4s var(--d) ease-in-out infinite}
 @keyframes nvBlink{50%{opacity:.25}}
 
-/* mise en lumière */
-.suitesec.nv-hl .nv-syn:not(.lit),.suitesec.nv-hl .nv-badge:not(.lit){opacity:.11}
-.suitesec.nv-hl .nv-node:not(.lit){opacity:.32}
-.suitesec.nv-hl .nv-card:not(.lit),.suitesec.nv-hl .nv-qpill:not(.lit){opacity:.42}
-.nv-syn.lit .nv-base{opacity:1;stroke-width:4}
-.nv-syn.lit .nv-flow{animation-duration:.7s;stroke-width:4}
-.nv-syn,.nv-badge,.nv-node,.nv-card,.nv-qpill{transition:opacity .28s}
-.nv-syn.off,.nv-badge.off,.nv-qpill.off,.nv-card.off,.nv-drow.off{display:none!important}
+/* focus et contexte : ce qui n'est pas concerné s'efface sans disparaître */
+.nv-work.nv-hl .nv-syn:not(.lit),.nv-work.nv-hl .nv-badge:not(.lit){opacity:.08}
+.nv-work.nv-hl .nv-node:not(.lit){opacity:.26}
+.nv-work.nv-hl .nv-ai{opacity:.3}
+.nv-syn.lit .nv-base{opacity:1;stroke-width:4.4}
+.nv-syn.lit .nv-flow{animation-duration:.7s;stroke-width:4.4;stroke-dasharray:3 11}
+.nv-syn,.nv-badge,.nv-node,.nv-ai{transition:opacity .3s}
+.nv-syn.off,.nv-badge.off{display:none!important}
+.nv-fsyn.off{display:none!important}
 
-/* Message lorsque 2 modules sélectionnés n'ont pas de lien direct */
-.nv-empty-pair{position:relative;z-index:3;margin:10px 8px 4px;padding:12px 16px;border-radius:14px;background:#fff8e6;border:1px solid #f5d488;color:#6e4e06;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;font-size:.86rem}
-.nv-unlock-cta{border:0;background:var(--dark-blue);color:#fff;border-radius:50px;padding:7px 14px;font:700 .78rem Barlow,sans-serif;cursor:pointer}
-.nv-unlock-cta:hover{background:var(--blue)}
+/* =========================================================================
+   3. COMMANDES FLOTTANTES (HUD)
+   ========================================================================= */
+.nv-hud{position:absolute;z-index:14;display:flex;gap:8px;pointer-events:none}
+.nv-hud>*{pointer-events:auto}
+.nv-hud-tl{top:12px;left:12px;align-items:center}
+.nv-hud-tr{top:12px;right:12px;align-items:center}
+/* décalé à gauche pour laisser passer la bulle Esker flottante, qui n'existe plus en plein écran */
+.nv-hud-bl{bottom:12px;left:78px;flex-wrap:wrap;align-items:center;max-width:calc(100% - 262px)}
+.nv-work.nv-fs .nv-hud-bl{left:12px;max-width:calc(100% - 196px)}
+.nv-hud-br{bottom:12px;right:12px}
 
-/* Tiroir SPA de détail intégré directement dans le bas du cadre du schéma */
-.nv-stage-drawer{position:relative;z-index:4;margin:10px 6px 4px}
-.nv-dcard-top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-bottom:4px}
-.nv-dcard-close{border:1px solid rgba(22,52,103,.16);background:#f7fafc;color:var(--dark-blue);border-radius:50px;padding:5px 12px;font:700 .76rem Barlow,sans-serif;cursor:pointer;transition:all .2s}
-.nv-dcard-close:hover{background:#d41920;color:#fff;border-color:#d41920}
+.nv-glass,.nv-ctx,.nv-cntbox,.nv-ib,.nv-zoom,.nv-scope,.nv-fams,.nv-searchbox,.nv-mini{
+  background:rgba(255,255,255,.88);-webkit-backdrop-filter:blur(12px) saturate(1.4);backdrop-filter:blur(12px) saturate(1.4);
+  border:1px solid rgba(22,52,103,.12);box-shadow:0 8px 24px rgba(22,52,103,.1)}
 
-/* Infobulle adaptative (.below pour les arcs hauts afin de n'être jamais coupée) */
-.nv-tip{position:absolute;z-index:35;transform:translate(-50%,calc(-100% - 18px));max-width:330px;width:max-content;background:var(--dark-blue);color:#fff;border-radius:14px;padding:12px 15px;box-shadow:0 18px 40px rgba(22,52,103,.32);pointer-events:none;animation:nvTip .22s cubic-bezier(.23,1,.32,1)}
+.nv-ctx{display:inline-flex;align-items:baseline;gap:8px;border-radius:50px;padding:6px 14px}
+.nv-ctx b{font:700 .88rem 'Miriam Libre',sans-serif;color:var(--dark-blue)}
+.nv-ctx em{font:700 .72rem Barlow,sans-serif;font-style:normal;color:var(--blue);text-transform:uppercase;letter-spacing:.09em}
+.nv-cntbox{display:inline-flex;align-items:center;gap:5px;border-radius:50px;padding:6px 12px;font:600 .74rem Barlow,sans-serif;color:#5b6d8c}
+.nv-cntbox i{font-style:normal;font-weight:800;color:var(--dark-blue)}
+
+.nv-ib{width:32px;height:32px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;
+  font:700 1rem Barlow,sans-serif;color:var(--dark-blue);cursor:pointer;transition:all .22s;flex:none;line-height:1}
+.nv-ib:hover{background:var(--dark-blue);color:#fff;border-color:var(--dark-blue);transform:translateY(-1px)}
+.nv-ib.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+.nv-ib-fs.on{background:#d41920;border-color:#d41920;color:#fff}
+.nv-zoom{display:inline-flex;align-items:center;gap:2px;border-radius:50px;padding:2px}
+.nv-zoom .nv-ib{border:0;background:none;box-shadow:none;width:28px;height:28px}
+.nv-zoom .nv-ib:hover{background:var(--dark-blue);color:#fff}
+.nv-zoom i{font:800 .72rem Barlow,sans-serif;font-style:normal;color:#5b6d8c;min-width:42px;text-align:center}
+
+/* périmètre : toutes par défaut, majeures en option */
+.nv-scope{display:inline-flex;padding:3px;border-radius:50px}
+.nv-scope-btn{border:0;background:none;cursor:pointer;padding:5px 12px;border-radius:50px;font:700 .76rem Barlow,sans-serif;color:var(--dark-blue);transition:all .22s;white-space:nowrap}
+.nv-scope-btn.on{background:var(--blue);color:#fff;box-shadow:0 3px 10px rgba(19,180,226,.3)}
+
+/* typologies */
+.nv-fams{display:inline-flex;flex-wrap:wrap;gap:3px;padding:3px;border-radius:50px}
+.nv-fam{display:inline-flex;align-items:center;gap:6px;border:0;background:none;border-radius:50px;padding:5px 11px;font:700 .75rem Barlow,sans-serif;color:var(--dark-blue);cursor:pointer;transition:all .22s;white-space:nowrap}
+.nv-fam i{width:9px;height:9px;border-radius:50%;background:var(--fc);flex:none}
+.nv-fam:hover{background:rgba(19,180,226,.12)}
+.nv-fam.on{background:var(--dark-blue);color:#fff}
+.nv-fam.on i{box-shadow:0 0 0 2px rgba(255,255,255,.45)}
+
+.nv-searchbox{display:inline-flex;align-items:center;gap:4px;border-radius:50px;padding:2px}
+.nv-searchbox .nv-ib{border:0;background:none;box-shadow:none;width:28px;height:28px;font-size:1.05rem}
+.nv-search-in{border:0;background:none;outline:none;font:600 .78rem Barlow,sans-serif;color:var(--dark-blue);width:170px;padding:4px 10px 4px 0}
+.nv-search-in[hidden]{display:none}
+
+/* mini-carte : le filet, on ne se perd pas */
+.nv-mini{width:136px;height:79px;border-radius:12px;overflow:hidden;cursor:pointer;padding:0}
+.nv-mini svg{display:block;width:100%;height:100%}
+.nv-mini-world{fill:rgba(19,180,226,.07);stroke:rgba(22,52,103,.16);stroke-width:5}
+.nv-mini-vp{fill:rgba(19,180,226,.14);stroke:var(--dark-blue);stroke-width:2;vector-effect:non-scaling-stroke}
+
+.nv-hint{position:absolute;z-index:13;left:50%;top:15px;transform:translateX(-50%);margin:0;max-width:52%;text-align:center;
+  font:600 .74rem Barlow,sans-serif;color:#6b7d99;background:rgba(255,255,255,.76);border:1px solid rgba(22,52,103,.08);
+  border-radius:50px;padding:5px 15px;pointer-events:none;transition:opacity .35s}
+.nv-work.nv-hl .nv-hint{opacity:0}
+
+/* =========================================================================
+   4. FICHE FLOTTANTE (module sélectionné ou synergie sélectionnée)
+   ========================================================================= */
+.nv-float{position:absolute;z-index:20;top:56px;right:12px;width:min(368px,38%);max-height:calc(100% - 104px);display:flex}
+.nv-float[hidden]{display:none}
+.nv-fcard{width:100%;min-height:0;display:flex;flex-direction:column;gap:7px;border-radius:1.2rem;padding:13px 15px;
+  background:rgba(255,255,255,.97);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  border:1px solid rgba(22,52,103,.12);border-top:4px solid var(--c,var(--fc,#13b4e2));
+  box-shadow:0 26px 64px rgba(22,52,103,.24);animation:nvPop .34s cubic-bezier(.34,1.46,.64,1)}
+@keyframes nvPop{from{opacity:0;transform:translateY(10px) scale(.985)}}
+.nv-fhead{display:flex;align-items:flex-start;gap:9px}
+.nv-fico{font-size:1.5rem;width:40px;height:40px;border-radius:12px;background:color-mix(in srgb,var(--c) 14%,#fff);display:inline-flex;align-items:center;justify-content:center;flex:none}
+.nv-fttl{flex:1 1 auto;min-width:0}
+.nv-fttl em{display:block;font:800 .66rem Barlow,sans-serif;font-style:normal;letter-spacing:.08em;text-transform:uppercase;color:#6b7d99;margin-bottom:2px}
+.nv-fttl>b{display:block;font:700 1.02rem/1.2 'Miriam Libre',sans-serif;color:var(--dark-blue)}
+.nv-fcode{display:inline-block;font:800 .68rem Barlow,sans-serif;color:#fff;background:var(--fc);border-radius:50px;padding:1px 7px;letter-spacing:.03em}
+.nv-fx{flex:none;width:26px;height:26px;border-radius:50%;border:1px solid rgba(22,52,103,.14);background:#f7fafc;color:var(--dark-blue);font:700 .8rem Barlow,sans-serif;cursor:pointer;transition:all .2s}
+.nv-fx:hover{background:#d41920;color:#fff;border-color:#d41920}
+.nv-frole{margin:0;font-size:.82rem;color:#4a5d7e;line-height:1.4}
+.nv-fcount{margin:0;font:600 .78rem Barlow,sans-serif;color:#5b6d8c}
+.nv-fcount b{font-weight:800;color:var(--dark-blue)}
+.nv-fpath{margin:0;font:700 .78rem Barlow,sans-serif;color:var(--dark-blue)}
+.nv-fpath i{font-style:normal;color:var(--fc)}
+.nv-fp{margin:0;font-size:.85rem;color:#4a5d7e;line-height:1.45}
+.nv-ful{list-style:none;margin:0;padding:0;display:grid;gap:5px}
+.nv-ful li{position:relative;padding-left:18px;font-size:.82rem;color:var(--dark-blue);line-height:1.4}
+.nv-ful li::before{content:'';position:absolute;left:0;top:.42em;width:10px;height:10px;border-radius:50%;background:var(--fc);opacity:.85;box-shadow:inset 0 0 0 2.5px #fff}
+.nv-fnote{margin:0;padding:8px 11px;border-radius:10px;background:#fff8e6;color:#7a5a12;font-size:.79rem;line-height:1.4}
+.nv-fempty{margin:0;font-size:.82rem;color:#7a8aa6;font-style:italic}
+
+.nv-flist{flex:1 1 auto;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:8px;scrollbar-width:thin;margin:0 -4px;padding:0 4px}
+.nv-fgrp{display:flex;flex-direction:column;gap:4px}
+.nv-fgrp small{font:800 .66rem Barlow,sans-serif;text-transform:uppercase;letter-spacing:.06em;color:#0978a6}
+/* pastilles de codes : le détail est sur le schéma, la fiche n'en est que l'index */
+.nv-fchips{display:flex;flex-wrap:wrap;gap:4px}
+.nv-fsyn{display:inline-flex;align-items:center;gap:5px;border:1px solid rgba(22,52,103,.12);border-left:3px solid var(--fc);
+  background:#f9fbfd;border-radius:8px;padding:3px 8px 3px 6px;cursor:pointer;font-family:Barlow,sans-serif;transition:all .18s}
+.nv-fsyn em{font:800 .69rem Barlow,sans-serif;font-style:normal;color:var(--fc);letter-spacing:.02em}
+.nv-fsyn i{font:800 .64rem Barlow,sans-serif;font-style:normal;color:#fff;background:#8494ad;border-radius:50px;padding:1px 5px}
+.nv-fsyn:hover{background:#fff;border-color:var(--fc);transform:translateY(-1px);box-shadow:0 4px 10px rgba(22,52,103,.1)}
+.nv-fsyn.lit{background:var(--fc);border-color:var(--fc)}
+.nv-fsyn.lit em{color:#fff}
+.nv-fsyn.lit i{background:rgba(255,255,255,.3)}
+.nv-ftip{margin:2px 0 0;font:600 .71rem Barlow,sans-serif;color:#8494ad;line-height:1.35}
+
+.nv-fpicks{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding-top:4px;border-top:1px dashed rgba(22,52,103,.12)}
+.nv-fpicks small{width:100%;font:800 .66rem Barlow,sans-serif;text-transform:uppercase;letter-spacing:.06em;color:#6b7d99}
+.nv-fpick{display:inline-flex;align-items:center;gap:5px;border:1px solid rgba(22,52,103,.14);background:#f9fbfd;border-radius:50px;padding:4px 11px;font:700 .75rem Barlow,sans-serif;color:var(--dark-blue);cursor:pointer;transition:all .2s}
+.nv-fpick:hover{background:var(--c);color:#fff;border-color:var(--c)}
+.nv-facts{display:flex;flex-wrap:wrap;gap:7px;padding-top:4px}
+.nv-fbtn{display:inline-flex;align-items:center;gap:7px;border-radius:50px;padding:8px 14px;font:700 .79rem Barlow,sans-serif;cursor:pointer;transition:all .26s;border:1px solid transparent}
+.nv-fbtn.solid{background:var(--dark-blue);color:#fff}
+.nv-fbtn.solid:hover{background:var(--c,var(--blue));transform:translateY(-2px)}
+.nv-fbtn.ghost{background:#fff;color:var(--dark-blue);border-color:rgba(22,52,103,.16)}
+.nv-fbtn.ghost:hover{border-color:var(--purple-rain,#6b51ed);color:var(--purple-rain,#6b51ed)}
+
+/* infobulle de survol */
+.nv-tip{position:absolute;z-index:30;transform:translate(-50%,calc(-100% - 16px));max-width:320px;width:max-content;background:var(--dark-blue);color:#fff;border-radius:14px;padding:11px 14px;box-shadow:0 18px 40px rgba(22,52,103,.32);pointer-events:none;animation:nvTip .22s cubic-bezier(.23,1,.32,1)}
 .nv-tip::after{content:'';position:absolute;left:50%;bottom:-6px;width:12px;height:12px;margin-left:-6px;background:var(--dark-blue);transform:rotate(45deg)}
-.nv-tip.below{transform:translate(-50%,20px)}
+.nv-tip.below{transform:translate(-50%,18px)}
 .nv-tip.below::after{bottom:auto;top:-6px}
 .nv-tip em{display:block;font:800 .66rem Barlow,sans-serif;letter-spacing:.1em;text-transform:uppercase;font-style:normal;color:#8fe6ff;margin-bottom:3px}
-.nv-tip b{display:block;font:700 .96rem 'Miriam Libre',sans-serif;margin-bottom:4px}
-.nv-tip span{display:block;font-size:.83rem;opacity:.9;line-height:1.4}
-.nv-tip-cta{display:block;margin-top:6px;padding-top:5px;border-top:1px solid rgba(255,255,255,.15);font-size:.73rem;color:#8fe6ff}
+.nv-tip b{display:block;font:700 .92rem 'Miriam Libre',sans-serif;margin-bottom:4px}
+.nv-tip span{display:block;font-size:.81rem;opacity:.9;line-height:1.4}
+.nv-tip-cta{display:block;margin-top:6px;padding-top:5px;border-top:1px solid rgba(255,255,255,.15);font-size:.72rem;color:#8fe6ff}
 @keyframes nvTip{from{opacity:0;margin-top:6px}}
 
-/* Barre de pastilles rapides sous le schéma (.nv-qbar) */
-.nv-qbar{background:rgba(255,255,255,.86);border:1px solid rgba(22,52,103,.08);border-radius:18px;padding:12px 16px;margin-top:12px}
-.nv-qbar-head{font:700 .78rem Barlow,sans-serif;color:var(--dark-blue);margin-bottom:8px}
-.nv-qbar-head em{font-weight:500;font-style:normal;color:#6b7d99}
-.nv-qpills{display:flex;flex-wrap:wrap;gap:6px}
-.nv-qpill{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(22,52,103,.11);border-left:3.5px solid var(--fc);background:#fff;border-radius:50px;padding:5px 11px;font:600 .76rem Barlow,sans-serif;color:var(--dark-blue);cursor:pointer;transition:all .2s}
-.nv-qpill em{font:800 .7rem Barlow,sans-serif;font-style:normal;color:var(--fc)}
-.nv-qpill i{font:800 .78rem Barlow,sans-serif;font-style:normal;width:16px;height:16px;border-radius:50%;background:color-mix(in srgb,var(--fc) 14%,#fff);color:var(--fc);display:inline-flex;align-items:center;justify-content:center}
-.nv-qpill:hover{transform:translateY(-1px);border-color:var(--fc);box-shadow:0 4px 12px rgba(22,52,103,.08)}
-.nv-qpill.on{background:var(--dark-blue);color:#fff;border-color:var(--dark-blue)}
-.nv-qpill.on em{color:#8fe6ff}
-.nv-qpill.on i{background:#fff;color:var(--dark-blue)}
-
 /* =========================================================================
-   STUDIO STANDALONE VS EN SYNERGIE (REFONTE VISUELLE & ERGONOMIQUE)
+   5. SURIMPRESSION « SEUL VS EN SYNERGIE »
    ========================================================================= */
-.nv-studio{margin-top:18px;background:#fff;border:1.5px solid rgba(22,52,103,.12);border-top:5px solid var(--c,var(--blue));border-radius:22px;padding:22px 24px;box-shadow:0 20px 54px rgba(22,52,103,.09);animation:nvPop .35s cubic-bezier(.34,1.46,.64,1)}
-.nv-studio-bar{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:16px}
-.nv-studio-title h4{font:700 1.25rem 'Miriam Libre',sans-serif;color:var(--dark-blue);margin:6px 0 0}
-.nv-studio-top-acts{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
-.nv-fdirs{display:inline-flex;background:#f0f6f8;border:1px solid rgba(22,52,103,.1);border-radius:50px;padding:3px}
-.nv-fdir{border:0;background:none;cursor:pointer;padding:5px 11px;border-radius:50px;font:700 .76rem Barlow,sans-serif;color:var(--dark-blue)}
-.nv-fdir.on{background:var(--dark-blue);color:#fff}
-.nv-cmp-close{border:1px solid rgba(22,52,103,.15);background:#f7fafc;border-radius:50px;padding:7px 14px;font:700 .78rem Barlow,sans-serif;color:var(--dark-blue);cursor:pointer}
-.nv-cmp-close:hover{background:#d41920;color:#fff;border-color:#d41920}
+.nv-sheet{position:absolute;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;padding:14px;
+  background:rgba(236,243,247,.74);-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);animation:nvFade .25s}
+.nv-sheet[hidden]{display:none}
+@keyframes nvFade{from{opacity:0}}
+.nv-sheet-box{width:min(1120px,100%);max-height:100%;overflow-y:auto;scrollbar-width:thin;display:flex;flex-direction:column;gap:12px;
+  background:#fff;border:1px solid rgba(22,52,103,.12);border-top:5px solid var(--c,var(--blue));border-radius:1.4rem;
+  padding:16px 20px 18px;box-shadow:0 30px 80px rgba(22,52,103,.3);animation:nvPop .3s cubic-bezier(.34,1.46,.64,1)}
+.nv-sheet-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+.nv-sheet-head h4{font:700 1.14rem 'Miriam Libre',sans-serif;color:var(--dark-blue);margin:6px 0 0}
+.nv-sheet-foot{display:flex;flex-wrap:wrap;gap:8px}
 
-/* Onglets modules du Studio */
-.nv-st-tabs{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:8px;margin-bottom:18px}
-.nv-st-tab{display:flex;align-items:center;gap:9px;text-align:left;border:1.5px solid rgba(22,52,103,.1);background:#f8fbfd;border-radius:14px;padding:9px 11px;cursor:pointer;font-family:Barlow,sans-serif;transition:all .22s}
-.nv-st-tab .nv-st-ico{font-size:1.25rem;width:34px;height:34px;border-radius:10px;background:color-mix(in srgb,var(--c) 14%,#fff);display:inline-flex;align-items:center;justify-content:center;flex:none}
-.nv-st-tab b{display:block;font:700 .84rem 'Miriam Libre',sans-serif;color:var(--dark-blue)}
-.nv-st-tab small{display:block;font-size:.7rem;color:#6b7d99;line-height:1.2}
-.nv-st-tab:hover{border-color:var(--c);background:#fff;transform:translateY(-2px)}
-.nv-st-tab.on{background:#fff;border-color:var(--c);box-shadow:0 10px 24px rgba(22,52,103,.1),inset 0 -3px 0 var(--c)}
+.nv-st-tabs{display:flex;flex-wrap:wrap;gap:5px}
+.nv-st-tab{display:inline-flex;align-items:center;gap:6px;border:1.5px solid rgba(22,52,103,.1);background:#f8fbfd;border-radius:50px;padding:4px 11px 4px 5px;cursor:pointer;font-family:Barlow,sans-serif;transition:all .2s}
+.nv-st-tab .nv-st-ico{font-size:1rem;width:24px;height:24px;border-radius:50%;background:color-mix(in srgb,var(--c) 15%,#fff);display:inline-flex;align-items:center;justify-content:center;flex:none}
+.nv-st-tab b{font:800 .74rem Barlow,sans-serif;color:var(--dark-blue)}
+.nv-st-tab:hover{border-color:var(--c);background:#fff}
+.nv-st-tab.on{background:var(--c);border-color:var(--c)}
+.nv-st-tab.on b{color:#fff}
+.nv-st-tab.on .nv-st-ico{background:rgba(255,255,255,.3)}
 
-/* Duel Côte à Côte : Standalone vs Synergie */
-.nv-st-duel{display:grid;grid-template-columns:minmax(0,1fr) 74px minmax(0,1.15fr);gap:14px;align-items:stretch}
-.nv-st-side{border-radius:18px;padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.nv-st-duel{display:grid;grid-template-columns:minmax(0,1fr) 68px minmax(0,1.15fr);gap:12px;align-items:stretch}
+.nv-st-side{border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
 .nv-st-side.solo{background:#f8fafc;border:1px solid rgba(22,52,103,.1)}
 .nv-st-side.syn{background:linear-gradient(145deg,#f0f9ff 0%,#eef6ff 100%);border:1.5px solid rgba(19,180,226,.35)}
-.nv-st-shead h5{font:700 1.02rem 'Miriam Libre',sans-serif;color:var(--dark-blue);margin:6px 0 0}
-.nv-st-badge{display:inline-block;font:800 .68rem Barlow,sans-serif;letter-spacing:.08em;text-transform:uppercase;padding:3px 10px;border-radius:50px}
+.nv-st-shead h5{font:700 .96rem 'Miriam Libre',sans-serif;color:var(--dark-blue);margin:5px 0 0}
+.nv-st-badge{display:inline-block;font:800 .66rem Barlow,sans-serif;letter-spacing:.08em;text-transform:uppercase;padding:3px 10px;border-radius:50px}
 .nv-st-badge.solo{background:#e2e8f0;color:#1e293b}
 .nv-st-badge.syn{background:var(--blue);color:#fff}
-.nv-st-list{list-style:none;margin:0;padding:0;display:grid;gap:9px}
-.nv-st-list li{background:#fff;border:1px solid rgba(22,52,103,.07);border-radius:12px;padding:10px 13px;font-size:.86rem;color:var(--dark-blue);line-height:1.45;box-shadow:0 2px 8px rgba(22,52,103,.03)}
-.nv-st-list li b{display:block;font:800 .86rem Barlow,sans-serif;color:var(--dark-blue);margin-bottom:2px}
-.nv-st-list li span{color:#4a5d7e;font-size:.83rem}
-.nv-st-limit{margin-top:auto;background:#fff8e6;border:1px dashed #e6b84d;border-radius:11px;padding:9px 12px;font-size:.8rem;color:#7a5a12;line-height:1.4}
-.nv-st-upsell{margin-top:auto;background:#eef0ff;border:1px solid rgba(107,81,237,.3);border-radius:11px;padding:10px 13px;font-size:.82rem;color:#3b2d8a;line-height:1.45}
-
+.nv-st-list{list-style:none;margin:0;padding:0;display:grid;gap:7px}
+.nv-st-list li{background:#fff;border:1px solid rgba(22,52,103,.07);border-radius:11px;padding:8px 12px;font-size:.83rem;color:var(--dark-blue);line-height:1.42}
+.nv-st-list li b{display:block;font:800 .83rem Barlow,sans-serif;color:var(--dark-blue);margin-bottom:2px}
+.nv-st-list li span{color:#4a5d7e;font-size:.81rem}
+.nv-st-limit{margin-top:auto;background:#fff8e6;border:1px dashed #e6b84d;border-radius:11px;padding:8px 11px;font-size:.78rem;color:#7a5a12;line-height:1.4}
+.nv-st-upsell{margin-top:auto;background:#eef0ff;border:1px solid rgba(107,81,237,.3);border-radius:11px;padding:9px 12px;font-size:.8rem;color:#3b2d8a;line-height:1.42}
 .nv-st-bridge{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center}
-.nv-st-bcircle{width:52px;height:52px;border-radius:50%;color:#fff;font:800 1.05rem 'Miriam Libre',sans-serif;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 24px rgba(22,52,103,.2)}
-.nv-st-bridge span{font:800 .68rem/1.2 Barlow,sans-serif;text-transform:uppercase;letter-spacing:.06em;color:#5b6d8c}
-
-.nv-st-flows{display:flex;flex-direction:column;gap:8px;padding-top:4px}
-.nv-st-fgrp small{display:block;font:800 .7rem Barlow,sans-serif;text-transform:uppercase;letter-spacing:.05em;color:#0978a6;margin-bottom:4px}
+.nv-st-bcircle{width:48px;height:48px;border-radius:50%;color:#fff;font:800 1rem 'Miriam Libre',sans-serif;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 24px rgba(22,52,103,.2)}
+.nv-st-bridge span{font:800 .66rem/1.2 Barlow,sans-serif;text-transform:uppercase;letter-spacing:.06em;color:#5b6d8c}
+.nv-st-flows{display:flex;flex-direction:column;gap:7px;padding-top:2px}
+.nv-st-fgrp small{display:block;font:800 .68rem Barlow,sans-serif;text-transform:uppercase;letter-spacing:.05em;color:#0978a6;margin-bottom:4px}
 .nv-st-fpills{display:flex;flex-wrap:wrap;gap:5px}
-.nv-st-pill{display:inline-flex;align-items:center;gap:5px;border:1px solid rgba(22,52,103,.12);background:#fff;border-radius:50px;padding:3px 9px;font:600 .73rem Barlow,sans-serif;color:var(--dark-blue);cursor:pointer;transition:all .18s}
-.nv-st-pill em{font:800 .67rem Barlow,sans-serif;font-style:normal;color:#fff;background:var(--fc);padding:1px 6px;border-radius:50px}
+.nv-st-pill{display:inline-flex;align-items:center;gap:5px;border:1px solid rgba(22,52,103,.12);background:#fff;border-radius:50px;padding:3px 9px;font:600 .72rem Barlow,sans-serif;color:var(--dark-blue);cursor:pointer;transition:all .18s}
+.nv-st-pill em{font:800 .66rem Barlow,sans-serif;font-style:normal;color:#fff;background:var(--fc);padding:1px 6px;border-radius:50px}
 .nv-st-pill:hover{border-color:var(--fc);transform:translateY(-1px)}
-
-/* =========================================================================
-   SECTION INFÉRIEURE : EXPLORATION DÉTAILLÉE DE L'ENSEMBLE DES SYNERGIES
-   ========================================================================= */
-.nv-explore{margin-top:28px;background:#fff;border:1px solid rgba(22,52,103,.09);border-radius:24px;padding:24px clamp(18px,3vw,30px);box-shadow:0 18px 54px rgba(22,52,103,.06)}
-.nv-explore-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;padding-bottom:16px;border-bottom:1px solid rgba(22,52,103,.08);margin-bottom:18px}
-.nv-explore-head h3{font:700 clamp(1.3rem,2.3vw,1.75rem)/1.2 'Miriam Libre',sans-serif;color:var(--dark-blue);margin:6px 0}
-.nv-explore-head p{color:#4a5d7e;font-size:.92rem;max-width:68ch;margin:0}
-.nv-explore-tools{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
-.nv-search-in{border:1.5px solid rgba(22,52,103,.14);background:#f8fbfd;border-radius:50px;padding:8px 15px;font:600 .82rem Barlow,sans-serif;color:var(--dark-blue);min-width:260px;outline:none;transition:border-color .2s,background .2s}
-.nv-search-in:focus{border-color:var(--blue);background:#fff}
-
-.nv-view{position:relative;display:inline-grid;grid-template-columns:1fr 1fr;padding:4px;border-radius:50px;background:#f0f6f8;border:1px solid rgba(22,52,103,.1)}
-.nv-view i{position:absolute;top:4px;bottom:4px;left:4px;width:calc(50% - 4px);border-radius:50px;background:var(--dark-blue);transition:transform .5s cubic-bezier(.34,1.46,.64,1)}
-.nv-view.r i{transform:translateX(100%)}
-.nv-view button{position:relative;z-index:1;border:0;background:none;cursor:pointer;padding:7px 14px;font:700 .8rem Barlow,sans-serif;color:var(--dark-blue);transition:color .3s;white-space:nowrap}
-.nv-view button.on{color:#fff}
-
-/* Cartes de synergies enrichies */
-.nv-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:16px}
-.nv-card{display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;border:1px solid rgba(22,52,103,.1);border-left:4px solid var(--fc);background:#f9fbfd;border-radius:14px;padding:13px 15px;cursor:pointer;font-family:Barlow,sans-serif;transition:all .26s cubic-bezier(.34,1.46,.64,1)}
-.nv-card-top{display:flex;align-items:center;justify-content:space-between;width:100%;gap:8px}
-.nv-card em{font:800 .72rem Barlow,sans-serif;font-style:normal;color:#fff;background:var(--fc);border-radius:50px;padding:3px 9px;flex:none;letter-spacing:.03em}
-.nv-card b{display:block;font:700 .95rem/1.25 'Miriam Libre',sans-serif;color:var(--dark-blue)}
-.nv-card-route{font:700 .75rem Barlow,sans-serif;color:#5b6d8c}
-.nv-card-p{font-size:.82rem;color:#4a5d7e;line-height:1.4;margin:2px 0 0}
-.nv-card:hover,.nv-card.lit{background:#fff;transform:translateY(-3px);box-shadow:0 12px 26px rgba(22,52,103,.1)}
-.nv-card.on{background:#f2f8ff;box-shadow:0 0 0 2px var(--fc)}
-
-/* Fiche détail complète */
-.nv-detail{margin-bottom:14px}
-.nv-detail-empty{border:1px dashed rgba(22,52,103,.18);border-radius:14px;padding:13px 16px;color:#6b7d99;font-size:.86rem;text-align:center;background:#f9fbfd}
-.nv-dcard{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:22px;background:#fff;border:1.5px solid rgba(22,52,103,.12);border-top:4px solid var(--fc);border-radius:18px;padding:20px 22px;box-shadow:0 18px 50px rgba(22,52,103,.12);animation:nvPop .35s cubic-bezier(.34,1.46,.64,1)}
-@keyframes nvPop{from{opacity:0;transform:translateY(10px) scale(.985)}}
-.nv-tag{display:inline-flex;align-items:center;gap:8px;font:700 .74rem Barlow,sans-serif;color:#5b6d8c}
-.nv-tag em{font-style:normal;color:#fff;background:var(--fc);border-radius:50px;padding:2px 9px}
-.nv-dcard h3{font:700 1.28rem/1.2 'Miriam Libre',sans-serif;margin:8px 0 6px;color:var(--dark-blue)}
-.nv-dcard p{color:#4a5d7e;font-size:.93rem}
-.nv-dpath{margin-top:8px;font-weight:700;color:var(--dark-blue)!important;font-size:.88rem!important}
-.nv-dpath i{font-style:normal;color:var(--fc,var(--blue))}
-.nv-dcard ul,.nv-drow ul{list-style:none;display:grid;gap:7px}
-.nv-dcard li,.nv-drow li{position:relative;padding-left:22px;font-size:.9rem;color:var(--dark-blue);line-height:1.45}
-.nv-dcard li::before,.nv-drow li::before{content:'';position:absolute;left:0;top:.45em;width:12px;height:12px;border-radius:50%;background:var(--fc);opacity:.85;box-shadow:inset 0 0 0 3px #fff}
-.nv-note{margin-top:10px;padding:10px 12px;border-radius:10px;background:#fff8e6;color:#7a5a12!important;font-size:.84rem!important}
-.nv-gos{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
-.nv-go{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:50px;padding:9px 16px;background:var(--dark-blue);color:#fff;font:700 .82rem Barlow,sans-serif;cursor:pointer;transition:all .3s}
-.nv-go:hover{background:var(--c);transform:translateY(-2px)}
 .nv-st{font-style:normal;font-weight:800;font-size:.68rem;letter-spacing:.03em;padding:2px 8px;border-radius:50px}
 .nv-st.ok{background:#e3f9ec;color:#167a45}.nv-st.cfg{background:#eef0ff;color:#4a3bb0}.nv-st.soon{background:#fff3d6;color:#8a6200}
 
-/* Vue « tout le détail » */
-.nv-det{display:grid;gap:22px;margin-top:6px}
-.nv-dgroup h4{display:flex;align-items:center;gap:10px;font:700 1.05rem 'Miriam Libre',sans-serif;margin-bottom:10px}
-.nv-dgroup h4 i{width:12px;height:12px;border-radius:50%;background:var(--fc)}
-.nv-drow{background:#f9fbfd;border:1px solid rgba(22,52,103,.1);border-left:4px solid var(--fc);border-radius:12px;padding:14px 16px;margin-bottom:10px}
-.nv-drow header{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:4px}
-.nv-drow header em{font:800 .74rem Barlow,sans-serif;font-style:normal;color:#fff;background:var(--fc);border-radius:50px;padding:2px 9px}
-.nv-drow header b{font:700 1rem 'Miriam Libre',sans-serif}
-.nv-drow p{color:#4a5d7e;font-size:.92rem;margin-bottom:8px}
-
-/* Chaîne engagement, charge, trésorerie */
-.nv-chain{margin-top:34px;background:#fff;border:1px solid rgba(22,52,103,.08);border-radius:24px;box-shadow:0 24px 70px rgba(22,52,103,.08);padding:28px clamp(18px,3vw,34px)}
-.nv-chain h3{font:700 clamp(1.3rem,2.4vw,1.9rem)/1.2 'Miriam Libre',sans-serif;margin:8px 0}
-.nv-chain-h p{color:#4a5d7e;max-width:72ch}
-.nv-scope-fin{display:grid;grid-template-columns:5fr 1fr;gap:10px;margin:22px 0 8px;font:800 .7rem Barlow,sans-serif;letter-spacing:.08em;text-transform:uppercase}
-.nv-scope-fin span{padding:7px 10px;border-radius:10px;text-align:center}
-.nv-scope-fin .es{background:rgba(19,180,226,.1);color:#0b7fa2;border:1px dashed rgba(19,180,226,.5)}
-.nv-scope-fin .erp{background:rgba(126,239,160,.18);color:#167a45;border:1px dashed rgba(22,122,69,.4)}
-.nv-fsteps{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;position:relative}
-.nv-fstep{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;border:1px solid rgba(22,52,103,.1);border-radius:12px;padding:10px;background:#f7fafc;cursor:pointer;font-family:Barlow,sans-serif;transition:all .35s cubic-bezier(.34,1.46,.64,1)}
-.nv-fstep em{font:800 .72rem Barlow,sans-serif;font-style:normal;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#fff;border:2px solid rgba(22,52,103,.2);color:var(--dark-blue);margin-bottom:4px;transition:all .3s}
-.nv-fstep b{font:700 .86rem/1.2 'Miriam Libre',sans-serif;color:var(--dark-blue)}
-.nv-fstep small{font-size:.74rem;color:#7a8aa6}
-.nv-fstep.done em{background:var(--blue);border-color:var(--blue);color:#fff}
-.nv-fstep.on{background:#fff;border-color:var(--blue);box-shadow:0 12px 28px rgba(19,180,226,.2);transform:translateY(-4px)}
-.nv-fstep.on em{background:var(--dark-blue);border-color:var(--dark-blue);color:#fff;transform:scale(1.15)}
-.nv-fstep.erp.on{border-color:#2fbf71;box-shadow:0 12px 28px rgba(47,191,113,.22)}
-.nv-fbody{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:26px;margin-top:18px;align-items:start}
-.nv-flab{display:flex;justify-content:space-between;align-items:baseline;font-size:.86rem;color:#5b6d8c;margin-bottom:6px}
-.nv-flab b{font:700 .95rem 'Miriam Libre',sans-serif;color:var(--dark-blue)}
-.nv-flab span.still{animation:nvStill 1.2s ease-in-out 2}
-@keyframes nvStill{50%{color:#167a45;text-shadow:0 0 12px rgba(47,191,113,.5)}}
-.nv-flab.cash{margin-top:20px}
-.nv-fbar{position:relative;display:flex;height:22px;border-radius:12px;background:repeating-linear-gradient(135deg,#eef3f7 0 6px,#f7fafc 6px 12px);overflow:hidden;box-shadow:inset 0 0 0 1px rgba(22,52,103,.08)}
-.nv-fbar i{display:block;height:100%;width:0;transition:width .9s cubic-bezier(.34,1.2,.64,1)}
-.nv-fbar .con{background:linear-gradient(90deg,#163467,#2b4c8a)}
-.nv-fbar .eng{background:linear-gradient(90deg,#13b4e2,#4fcdf0)}
-.nv-fbar .pre{background:repeating-linear-gradient(135deg,#a7e6f6 0 5px,#d4f3fb 5px 10px)}
-.nv-fleg{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;font-size:.8rem;color:#5b6d8c}
-.nv-fleg span::before{content:'';display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
-.nv-fleg .con::before{background:#163467}.nv-fleg .eng::before{background:#13b4e2}.nv-fleg .pre::before{background:#a7e6f6}.nv-fleg .dis::before{background:#e3e9ef}
-.nv-fleg b{color:var(--dark-blue)}
-.nv-ffnp{margin-top:10px;display:inline-block;padding:6px 12px;border-radius:50px;background:#fff3d6;color:#8a6200;font-size:.82rem;animation:nvPop .4s}
-.nv-fcash{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:12px;border:1px dashed rgba(22,122,69,.35);background:#f6fdf8;color:#4a5d7e;font-size:.88rem;transition:all .4s}
-.nv-fcash i{width:14px;height:14px;border-radius:50%;background:#cfd8e2;transition:all .4s}
-.nv-fcash.on{background:#e3f9ec;border-style:solid}
-.nv-fcash.on i{background:#2fbf71;box-shadow:0 0 0 6px rgba(47,191,113,.2)}
-.nv-ftxt{background:linear-gradient(160deg,#163467,#22408a);color:#fff;border-radius:18px;padding:20px 22px;min-height:100%}
-.nv-fk{font:800 .7rem Barlow,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#8fe6ff}
-.nv-ftxt h4{font:700 1.3rem 'Miriam Libre',sans-serif;margin:6px 0 8px}
-.nv-ftxt p{font-size:.95rem;opacity:.9;min-height:4.5em}
-.nv-fnav{display:flex;gap:8px;margin-top:14px}
-.nv-fb{border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.08);color:#fff;border-radius:50px;min-width:40px;height:40px;padding:0 14px;font:700 .95rem Barlow,sans-serif;cursor:pointer;transition:all .3s}
-.nv-fb:hover{background:#fff;color:var(--dark-blue)}
-.nv-fb.play.on{background:var(--blue);border-color:var(--blue)}
-
-/* rail de suite (niveau 2) */
+/* =========================================================================
+   6. RESTE DE L'ESPACE SUITES (rail, vol des modules, roue)
+   ========================================================================= */
 .nv-rail{display:flex;gap:8px;overflow-x:auto;padding:12px 2px 10px;scrollbar-width:thin}
 .nv-pill{flex:1 0 150px;display:flex;align-items:center;gap:10px;text-align:left;border:1px solid rgba(22,52,103,.1);background:#fff;border-radius:14px;padding:9px 12px;cursor:pointer;font-family:Barlow,sans-serif;position:relative;overflow:hidden;animation:nvNodeIn .5s var(--d) cubic-bezier(.34,1.46,.64,1) both;transition:all .3s cubic-bezier(.34,1.46,.64,1)}
 .nv-pill::after{content:'';position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--c);transform:scaleX(0);transform-origin:left;transition:transform .4s}
@@ -359,36 +296,45 @@ body.nv-fs-lock{overflow:hidden}
 .nv-pill.on{border-color:var(--c);box-shadow:0 10px 26px rgba(22,52,103,.12);background:#fbfdff}
 .nv-pill.soon{opacity:.7}
 
-/* vol des modules et voile */
 .nv-ghost{position:fixed;z-index:900;width:68px;height:68px;border-radius:50%;background:#fff;border:3px solid var(--c);box-shadow:0 14px 34px rgba(22,52,103,.25),0 0 0 8px color-mix(in srgb,var(--c) 18%,transparent);display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;will-change:transform}
 .nv-ghost span{font-size:24px;line-height:1}
 .nv-ghost b{position:absolute;top:100%;margin-top:6px;white-space:nowrap;font:700 .78rem Barlow,sans-serif;color:var(--dark-blue);background:#fff;border-radius:50px;padding:2px 8px;box-shadow:0 4px 12px rgba(22,52,103,.15)}
 .nv-veil{position:fixed;inset:0;z-index:850;background:radial-gradient(circle at 50% 45%,rgba(240,246,248,.75),rgba(240,246,248,.97));opacity:0;pointer-events:none;transition:opacity .35s cubic-bezier(.23,1,.32,1)}
 .nv-veil.on{opacity:1}
-/* la roue annonce la suite choisie avant le départ des modules */
 #bigWheel.nv-pick .seg{transition:opacity .25s,filter .25s,transform .35s cubic-bezier(.34,1.46,.64,1)}
 #bigWheel.nv-pick-S2P .seg:not([data-suite="S2P"]),#bigWheel.nv-pick-O2C .seg:not([data-suite="O2C"]){opacity:.15;filter:saturate(.2)}
 #bigWheel.nv-pick-S2P .seg[data-suite="S2P"],#bigWheel.nv-pick-O2C .seg[data-suite="O2C"]{transform:translate(var(--tx),var(--ty))}
-/* étiquettes de suite cliquables sur la roue */
 .suitegrp{cursor:pointer;outline:none}
 .suitegrp .suitehint{opacity:0;transition:opacity .3s}
 .suitegrp:hover .suitehint,.suitegrp:focus-visible .suitehint{opacity:1}
 .suitegrp:hover .suitearc-base,.suitegrp:focus-visible .suitearc-base{stroke-width:5.2;opacity:1}
 .suitegrp:focus-visible .suitelab text{fill:var(--blue)}
 
+/* =========================================================================
+   7. ADAPTATION
+   ========================================================================= */
+@media(max-width:1180px){
+  .nv-fam span{display:none}
+  .nv-fam{padding:5px 8px}
+  .nv-fam.on span{display:inline}
+  .nv-hint{display:none}
+}
 @media(max-width:980px){
-  .nv-crow{grid-template-columns:1fr;gap:8px}
+  .nv-float{width:min(340px,54%)}
   .nv-st-duel{grid-template-columns:1fr}
   .nv-st-bridge{flex-direction:row;padding:4px 0}
-  .nv-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .nv-dcard,.nv-fbody{grid-template-columns:1fr}
-  .nv-fsteps{grid-template-columns:repeat(3,minmax(0,1fr))}
-  .nv-scope-fin{grid-template-columns:1fr}
+  .nv-mini{width:120px;height:70px}
 }
-@media(max-width:640px){
-  .nv-cards{grid-template-columns:1fr}
-  .nv-fsteps{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .nv-pill{flex-basis:130px}
+@media(max-width:900px){
+  .nv-work{height:76vh;min-height:420px}
   .hnav-dd-menu{grid-template-columns:1fr}
 }
-@media(prefers-reduced-motion:reduce){.nv-node,.nv-pill,.nv-node .nv-orbit{animation:none}.nv-syn .nv-flow,.nv-aidot{animation:none}}
+@media(max-width:640px){
+  .nv-float{top:52px;left:10px;right:10px;width:auto;max-height:52%}
+  .nv-hud-bl{max-width:calc(100% - 24px)}
+  .nv-hud-br{display:none}
+  .nv-pill{flex-basis:130px}
+}
+@media(prefers-reduced-motion:reduce){
+  .nv-node,.nv-pill,.nv-node .nv-orbit,.nv-syn .nv-flow,.nv-aidot,.nv-comet{animation:none}
+}

@@ -2,7 +2,7 @@
 
 Exigences non négociables du projet. Toute modification doit les respecter. Si une exigence change, on modifie ce fichier d'abord, avec l'accord de Bruno.
 
-Dernière mesure de l'état réel : 16 octobre 2026, commit `e3ecd8f`.
+Dernière mesure de l'état réel : 17 octobre 2026, branche `claude/synergies-ux`.
 
 ## 1. Nature du projet
 
@@ -21,22 +21,32 @@ Exprimées par Bruno :
 3. Dans l'espace Synergies, un clic sur un module le sélectionne et montre l'ensemble de ses interactions avec les autres modules. Il n'ouvre plus la page du module (comportement actuel à corriger : `navGoModule` dans `js/fx-syn.js`).
 4. Par défaut, toutes les synergies sont affichées (22). Les synergies majeures (10) restent un filtre optionnel (aujourd'hui le défaut est « majeures », `NAV.scope = "core"`).
 5. L'ergonomie de l'espace Synergies est à repenser du point de vue de l'expérience utilisateur : une refonte, pas une rustine. Exprimé le 16 octobre 2026.
+6. L'espace Synergies est un univers plein cadre. Le canevas occupe tout le cadre disponible, et toute la fenêtre en plein écran. Les filtres et les commandes flottent dans cet univers : il n'y a plus de console ni de sections empilées autour du schéma. Exprimé le 17 octobre 2026.
+7. On se déplace et on zoome librement dans cet univers (molette, glisser, pincement). Les zooms sont fluides et on ne doit jamais se sentir bridé ni voir de barre de défilement. En contrepartie, on ne doit jamais s'y perdre : mini-carte et bouton de recentrage sont toujours accessibles. Exprimé le 17 octobre 2026.
 
 Déduites du code et de l'historique, à confirmer par Bruno :
 
-6. La navigation entre modules reste possible à tout moment depuis la roue et le widget flottant.
-7. Le plein écran se quitte par le bouton et par Échap (comportement actuel : si une synergie est sélectionnée, le premier appui la désélectionne).
-8. Tailles de fenêtre visées : 1512x790 (référence de calibrage de la roue, commit `b21a03a`), 1440x900, 1280x720, 1920x1080.
-9. L'accès à la fiche d'un module reste possible par un bouton explicite (par exemple dans le panneau de détail), puisque le clic sur le module ne navigue plus.
+8. La navigation entre modules reste possible à tout moment depuis la roue et le widget flottant. L'en-tête de la page suite est réduit au fil d'Ariane sur l'onglet Synergies pour laisser la place à l'univers : le titre et la rangée de pastilles de modules y sont masqués.
+9. Échap referme d'abord ce qui est ouvert dans l'univers (surimpression, puis sélection, puis plein écran) et ne remonte d'un niveau de navigation que si rien n'est ouvert.
+10. Tailles de fenêtre visées : 1512x790 (référence de calibrage de la roue, commit `b21a03a`), 1440x900, 1280x720, 1920x1080.
+11. L'accès à la fiche d'un module se fait par un bouton explicite de la fiche flottante, puisque le clic sur le module ne navigue plus.
 
-Question ouverte à trancher : la vue « Exploration » de l'espace Synergies (liste détaillée des fiches) peut-elle défiler, puisqu'une liste longue est faite pour ça ? Tant que ce n'est pas tranché, le test ne vérifie que la vue Schéma, ouverte par défaut.
+Question tranchée le 17 octobre 2026 : la liste « Exploration détaillée » n'existe plus. Chaque synergie se lit en la sélectionnant dans l'univers, sa fiche s'affiche en carte flottante. Il n'y a donc plus de liste longue à faire défiler.
 
 ## 3. Synergies
 
-- Le schéma d'origine est conservé : modules alignés, flux en arcs, pastilles de code, barre IA.
-- La mécanique d'origine est conservée : console de filtres, sélection d'un ou plusieurs modules avec déverrouillage, typologies, périmètre majeures ou toutes, sens amont et aval, survol, tiroir de détail, studio « Seul vs En synergie », exploration, plein écran.
-- La géométrie du schéma ne change pas sans accord. On change l'usage et l'affichage, pas le dessin.
-- Question ouverte : Bruno a demandé le retour du schéma d'origine (livraisons L26 et L27) puis une refonte de l'expérience d'usage (16 octobre 2026). Garder le dessin d'origine avec un mode « focus » sur le module sélectionné, ou changer de modèle d'interaction ? À trancher avec les références visuelles que Bruno choisira.
+- Le dessin d'origine est conservé au pixel près : modules alignés, flux en arcs, pastilles de code, barre IA. La géométrie ne change pas sans accord (`navGeom` dans `js/fx-syn.js`).
+- Modèle d'interaction retenu le 17 octobre 2026 : le schéma d'origine dans un univers zoomable, avec un mode focus sur le module sélectionné. Écartés : vue en étoile, matrice, roue d'accords, placement par forces (un placement physique déplacerait les modules à chaque ouverture, alors qu'on doit retrouver le même schéma).
+- Ce que fait l'espace :
+  - tout est affiché par défaut, les 22 synergies ;
+  - clic sur un module : la caméra cadre son voisinage, toutes ses interactions s'allument avec des comètes animées, le reste s'estompe, sa fiche s'ouvre en carte flottante ;
+  - un module sélectionné montre l'ensemble de ses interactions, y compris celles hors périmètre « majeures » ;
+  - clic sur un flux ou sa pastille : la caméra cadre le flux et ses deux modules, sa fiche complète s'affiche ;
+  - clic dans le vide, bouton de recentrage ou Échap : retour à la vue d'ensemble ;
+  - commandes flottantes : périmètre (toutes ou majeures), typologies, recherche, réinitialisation, zoom, recentrage, plein écran, mini-carte ;
+  - « Seul vs En synergie » (le studio) devient une surimpression, ouverte depuis la fiche d'un module.
+- Supprimés par la refonte : la console de filtres en trois lignes, les onglets Schéma / Seul vs synergie / Exploration, la barre de pastilles rapides, le tiroir de détail, la liste d'exploration, le filtre par modules multiples avec déverrouillage (on sélectionne un module en cliquant dessus).
+- La surimpression « Seul vs En synergie » peut défiler quand son contenu est long : c'est une fenêtre ouverte à la demande, pas la vue par défaut. Le test ne la couvre pas.
 
 ## 4. Contenu et charte
 
@@ -60,6 +70,8 @@ Non corrigée pour l'instant, à traiter sur validation de Bruno.
 - 19 fichiers CSS et JS ne sont plus chargés par `index.html` : `css/base.css`, `css/main.css`, `css/module.css`, `css/o2c-enrich.css`, `css/o2c-xp.css`, `css/s2p.css`, `css/suites.css`, `css/synergy-agent.css`, `css/xp.css`, `js/app.js`, `js/fluxym-services.js`, `js/main.js`, `js/module.js`, `js/o2c-xp.js`, `js/panel.js`, `js/s2p.js`, `js/suites.js`, `js/synergy-agent.js`, `js/xp.js`. Un envoi de fichiers par l'interface GitHub ne supprime rien : les « à supprimer » des anciens manifestes n'ont jamais été appliqués.
 - À la racine du dépôt, des copies de fichiers de `demo/` ne sont chargées ni par le site ni par la démo. `step1.html` à `step11.html`, `esker-fonts.css` et `steps-data.js` sont identiques à leurs copies de `demo/`. `in-place-states.js`, `player.js`, `player.css`, `step-enhancer.js` et `step-enhancer.css` diffèrent de leurs copies de `demo/` : ne rien supprimer avant d'avoir déterminé la version de référence.
 - `README.md` est périmé (il décrit l'ancienne page unique).
+- Ajouté le 17 octobre 2026 : la refonte de l'espace Synergies a retiré beaucoup de balisage. Les règles CSS devenues inutiles ont été supprimées de `css/syn.css` dans le même mouvement, après vérification qu'aucun fichier chargé n'y fait plus référence. À revérifier si d'anciens fichiers sont remis en service.
+- La trame de fond suit la caméra au moyen des variables CSS `--gs`, `--gx` et `--gy` posées par le script. Si l'effet pose problème sur une machine lente, il se désactive en retirant `.nv-work::before` dans `css/syn.css`.
 
 ## 7. Lancer le test d'ergonomie
 
@@ -77,4 +89,14 @@ npm install
 node ergonomie.mjs http://127.0.0.1:8123/
 ```
 
-Le test ouvre un vrai navigateur, parcourt Accueil, La solution et Synergies (S2P et O2C) aux tailles de la section 2, et échoue (code de sortie 1) si une zone interne défile, si le plein écran ne couvre pas la fenêtre ou si une erreur JavaScript survient. Il lit `CHROME_PATH` si défini, sinon utilise le Chrome installé sur la machine.
+Le test ouvre un vrai navigateur, parcourt Accueil, La solution et Synergies (S2P et O2C) aux tailles de la section 2, et échoue (code de sortie 1) si l'un de ces points lâche :
+
+- une zone interne défile, ou la page défile ;
+- le canevas ne remplit pas son cadre, ou le schéma n'y est pas visible ;
+- toutes les synergies ne sont pas affichées par défaut ;
+- un clic sur un module ne le sélectionne pas, quitte l'espace Synergies, n'ouvre pas sa fiche, laisse la fiche déborder du cadre, ou n'allume pas toutes ses interactions ;
+- la sélection fait apparaître un défilement ;
+- le plein écran ne couvre pas la fenêtre, laisse le bandeau par-dessus, ne remplit pas la zone, ou ne se referme pas ;
+- une erreur JavaScript survient.
+
+Il lit `CHROME_PATH` si défini, sinon utilise le Chrome installé sur la machine. Dernière exécution : 17 octobre 2026, 52 vérifications, 0 échec.
