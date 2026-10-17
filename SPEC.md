@@ -30,6 +30,7 @@ Déduites du code et de l'historique, à confirmer par Bruno :
 9. Échap referme d'abord ce qui est ouvert dans l'univers (surimpression, puis sélection, puis plein écran) et ne remonte d'un niveau de navigation que si rien n'est ouvert.
 10. Tailles de fenêtre visées : 1512x790 (référence de calibrage de la roue, commit `b21a03a`), 1440x900, 1280x720, 1920x1080.
 11. L'accès à la fiche d'un module se fait par un bouton explicite de la fiche flottante, puisque le clic sur le module ne navigue plus.
+12. L'aperçu d'un module tient sur un écran sans défilement et sans texte coupé : le test mesure la hauteur réelle de chaque texte, pas seulement la présence d'ascenseurs. Exprimé le 17 octobre 2026 (« les visualisations sont très pauvres »).
 
 Question tranchée le 17 octobre 2026 : la liste « Exploration détaillée » n'existe plus. Chaque synergie se lit en la sélectionnant dans l'univers, sa fiche s'affiche en carte flottante. Il n'y a donc plus de liste longue à faire défiler.
 
@@ -90,8 +91,14 @@ Reste à traiter :
 - La trame de fond suit la caméra au moyen des variables CSS `--gs`, `--gx` et `--gy` posées
   par le script. Si l'effet pose problème sur une machine lente, il se désactive en retirant
   `.nv-work::before` dans `css/syn.css`.
-- Les fiches produits des modules ne sont pas encore alignées sur les fiches solution
-  officielles d'Esker (gabarit : promesse, quatre bénéfices, cinq étapes, fonctionnalités).
+- Les 13 modules ont désormais leur entrée dans `js/fiches.js`, alignée sur le gabarit des
+  fiches solution Esker : promesse, quatre bénéfices, étapes du fonctionnement. Le quatrième
+  bloc du gabarit, les fonctionnalités, garde son onglet et sa roue.
+- Pour `ap`, les titres des cinq étapes sont ceux de la fiche officielle ; les descriptions
+  d'une ligne sont une mise en français de ma main, à relire par Bruno.
+- Les fiches mémo IA (S2P et O2C) fournies le 17 octobre ne sont pas encore exploitées :
+  elles décrivent l'IA étage par étage du cycle et mériteraient leur propre écran plutôt
+  que d'être diluées dans les fiches modules.
 
 ## 7. Lancer le test d'ergonomie
 

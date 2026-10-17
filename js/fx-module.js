@@ -23,8 +23,9 @@
   }
 
   function tabsFor(c) {
-    const F = fiche(c), t = [{k: "apercu", l: "Aperçu", i: "spark"}];
-    if (F.how && !c.pains) t.push({k: "how", l: "Comment ça marche", i: "sync"});
+    const t = [{k: "apercu", l: "Aperçu", i: "spark"}];
+    /* le déroulé des étapes n'a plus d'onglet à lui : il est sur l'aperçu, à droite,
+       là où il y avait un grand vide. C'est le bloc « Fonctionnement » des fiches Esker. */
     if (c.hasWheel) t.push({k: "fonct", l: "Fonctionnalités", i: "layers"});
     if (c.videos.length) t.push({k: "video", l: "Vidéo", i: "play"});
     if (c.pains) t.push({k: "irritants", l: "Irritants effacés", i: "shield"});
@@ -35,27 +36,86 @@
     return t;
   }
 
-  /* ---------- Aperçu ---------- */
+  /* ---------- Aperçu : la fiche Esker tient sur un écran ----------
+     Gauche : la promesse, puis les quatre bénéfices (« Pourquoi automatiser »).
+     Droite : le déroulé des étapes (« Fonctionnement »), qui avance tout seul.
+     Les quatre blocs de la fiche solution sont ainsi visibles d'un coup d'œil,
+     le quatrième (« Fonctionnalités ») gardant son onglet et sa roue. */
   function apercu(c, tabs) {
     const F = fiche(c), st = stats(c, F), has = k => tabs.some(t => t.k === k);
+    const etapes = (F.how && F.how.length) ? F.how : null;
     return `<div class="fx-ap" style="--c:${c.color}">
       <div class="fx-ap-l">
         <div class="fx-badge" aria-hidden="true"><i class="r1"></i><i class="r2"></i><span>${c.icon}</span></div>
         <div class="fx-ap-t">
           <h2 class="fx-hook">${E(F.hook)}</h2>
           <p class="fx-intro">${E(F.intro)}</p>
+        </div>
+        <div class="fx-ap-r">
+          ${st.length ? `<ul class="fx-stats">${st.map(s => `<li><span class="fx-sn">${s.pre ? `<small>${E(s.pre)}</small>` : ""}<b data-count="${E(s.n)}">0</b><em>${E(s.p)}</em></span><span class="fx-sl">${E(s.l)}</span></li>`).join("")}</ul>` : ""}
           <div class="fx-ap-cta">
             ${has("video") ? `<button type="button" class="fx-btn pri" data-tab-go="video">${FX.ic("play", 2)}Voir la vidéo</button>` : ""}
-            ${has("how") ? `<button type="button" class="fx-btn${has("video") ? "" : " pri"}" data-tab-go="how">Comment ça marche${FX.arrow}</button>` : ""}
-            ${has("fonct") && !has("how") ? `<button type="button" class="fx-btn${has("video") ? "" : " pri"}" data-tab-go="fonct">Les fonctionnalités${FX.arrow}</button>` : ""}
+            ${has("fonct") ? `<button type="button" class="fx-btn${has("video") ? "" : " pri"}" data-tab-go="fonct">Les fonctionnalités${FX.arrow}</button>` : ""}
             ${has("demo") ? `<button type="button" class="fx-btn" data-tab-go="demo">Démo interactive${FX.arrow}</button>` : ""}
           </div>
-          ${st.length ? `<ul class="fx-stats">${st.map(s => `<li><span class="fx-sn">${s.pre ? `<small>${E(s.pre)}</small>` : ""}<b data-count="${E(s.n)}">0</b><em>${E(s.p)}</em></span><span class="fx-sl">${E(s.l)}</span></li>`).join("")}</ul>` : ""}
         </div>
       </div>
       <div class="fx-why">${F.why.map((w, i) => `<article class="fx-wc" style="--i:${i}"><span class="fx-wic">${FX.ic(w.ic || "check", 1.9)}</span><h3>${E(w.t)}</h3><p>${E(w.d)}</p></article>`).join("")}</div>
+      ${etapes ? `<aside class="fx-flow" aria-label="Fonctionnement, étape par étape">
+        <header class="fx-flow-h">
+          <span class="fx-flow-k">${FX.ic("sync", 1.9)}Fonctionnement</span>
+          <h3>${etapes.length} étapes, de bout en bout</h3>
+        </header>
+        <ol class="fx-flow-l">${etapes.map((s, i) => `<li>
+          <button type="button" class="fx-fb${i ? "" : " on"}" data-i="${i}" aria-expanded="${i ? "false" : "true"}">
+            <i>${num(i + 1)}</i>
+            <span class="fx-fb-t">${E(s.t)}</span>
+            <span class="fx-fb-d">${E(s.d)}</span>
+          </button></li>`).join("")}</ol>
+        <div class="fx-flow-c">
+          <button type="button" class="fx-fplay" data-fplay aria-pressed="false">${FX.ic("play", 2)}<span>Dérouler</span></button>
+        </div>
+      </aside>` : ""}
       <p class="fx-src">Source : ${E(F.src)}</p>
     </div>`;
+  }
+
+  /* le déroulé avance seul à l'ouverture ; un clic reprend la main */
+  function mountApercu(el, c, reg) {
+    const btns = el.querySelectorAll(".fx-fb");
+    if (!btns.length) return;
+    const n = btns.length, play = el.querySelector("[data-fplay]");
+    let cur = 0, timer = null;
+    const set = i => {
+      cur = (i + n) % n;
+      Array.prototype.forEach.call(btns, (b, k) => {
+        b.classList.toggle("on", k === cur);
+        b.classList.toggle("done", k < cur);
+        b.setAttribute("aria-expanded", k === cur ? "true" : "false");
+      });
+    };
+    const stop = () => {
+      clearInterval(timer); timer = null;
+      if (!play) return;
+      play.setAttribute("aria-pressed", "false");
+      play.querySelector("span").textContent = "Dérouler";
+    };
+    const go = () => {
+      if (timer) { stop(); return; }
+      play.setAttribute("aria-pressed", "true");
+      play.querySelector("span").textContent = "Pause";
+      if (cur >= n - 1) set(0);
+      timer = setInterval(() => { if (cur >= n - 1) { stop(); return; } set(cur + 1); }, 3200);
+    };
+    el.addEventListener("click", e => {
+      const b = e.target.closest(".fx-fb");
+      if (b) { stop(); set(+b.getAttribute("data-i")); return; }
+      if (e.target.closest("[data-fplay]")) go();
+    });
+    el.addEventListener("mouseover", e => { const b = e.target.closest(".fx-fb"); if (b && !timer) set(+b.getAttribute("data-i")); });
+    set(0);
+    if (!FX.reduce() && play) setTimeout(() => { if (document.body.contains(el) && !timer && cur === 0) go(); }, 1100);
+    reg(stop);
   }
 
   /* ---------- Comment ça marche : étapes animées ---------- */
@@ -101,5 +161,5 @@
     reg(stop);
   }
 
-  FX.moduleParts = {fiche, stats, tabsFor, apercu, how, mountHow, num};
+  FX.moduleParts = {fiche, stats, tabsFor, apercu, mountApercu, how, mountHow, num};
 })();

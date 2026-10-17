@@ -31,6 +31,20 @@ const ROUTES = [
   { hash: '#/suite/o2c/syn', nom: 'Synergies O2C', univers: true },
 ];
 
+// Les 13 fiches modules : l'aperçu doit tenir sans défilement et sans texte coupé.
+const MODULES = ['so', 'sm', 'ctm', 'pr', 'ap', 'em', 'crm', 'cim', 'om', 'id', 'ca', 'cd', 'com'];
+
+// Un texte coupé en plein milieu d'une ligne se voit : on le mesure au lieu de s'y fier à l'œil.
+function mesurerApercu() {
+  const coupe = e => e && e.scrollHeight > e.clientHeight + 1 ? e.scrollHeight - e.clientHeight : 0;
+  return {
+    etapes: document.querySelectorAll('.fx-fb').length,
+    source: !!document.querySelector('.fx-src'),
+    textesCoupes: Array.prototype.map.call(document.querySelectorAll('.fx-wc p, .fx-intro, .fx-fb.on .fx-fb-d'),
+      (e, i) => coupe(e) ? (e.className || 'texte') + ' n°' + (i + 1) + ' : ' + coupe(e) + ' px' : null).filter(Boolean),
+  };
+}
+
 async function trouverNavigateur() {
   if (process.env.CHROME_PATH) return { executablePath: process.env.CHROME_PATH, args: ['--no-sandbox'] };
   const candidats = [
@@ -201,6 +215,21 @@ for (const [largeur, hauteur] of VIEWPORTS) {
       if (!pe.bandeauRecouvert) echecs.push(`${etiquette} : plein écran, le bandeau du haut reste par-dessus`);
       if (!pe.sorti) echecs.push(`${etiquette} : le plein écran ne se referme pas`);
     }
+  }
+
+  for (const id of MODULES) {
+    const etiquette = `${largeur}x${hauteur} | Module ${id}`;
+    await page.goto(BASE + '#/m/' + id, { waitUntil: 'domcontentloaded' });
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    await pause(1200);
+
+    const zones = await page.evaluate(mesurerDefilements);
+    const a = await page.evaluate(mesurerApercu);
+    verifications += 2;
+    if (zones.length) echecs.push(`${etiquette} : défilement interne : ${zones.join(' ; ')}`);
+    if (!a.etapes) echecs.push(`${etiquette} : le déroulé des étapes est absent de l'aperçu`);
+    if (!a.source) echecs.push(`${etiquette} : la mention de la fiche source est absente`);
+    if (a.textesCoupes.length) echecs.push(`${etiquette} : texte coupé : ${a.textesCoupes.join(' ; ')}`);
   }
 
   verifications++;
