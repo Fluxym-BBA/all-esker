@@ -63,15 +63,35 @@ Question tranchée le 17 octobre 2026 : la liste « Exploration détaillée » n
 - Les dépôts de référence de Bruno restent en lecture seule. Seul `all-esker` est modifié.
 - Les messages de commit disent ce qui a changé et comment ça a été vérifié.
 
-## 6. Dette connue (mesurée le 16 octobre 2026)
+## 6. Dette connue
 
-Non corrigée pour l'instant, à traiter sur validation de Bruno.
+Le ménage du 17 octobre 2026 a supprimé 39 fichiers morts, soit environ 17 Mo : les
+19 fichiers de `css/` et `js/` que `index.html` ne chargeait plus, et les 20 copies de
+fichiers de `demo/` restées à la racine. Ces copies étaient cassées par construction :
+`step1.html` à `step11.html` appellent `../css/esker-fonts.css`, chemin qui ne pointe
+nulle part depuis la racine. Un envoi de fichiers par l'interface GitHub ne supprime rien,
+c'est ainsi qu'elles s'étaient accumulées.
 
-- 19 fichiers CSS et JS ne sont plus chargés par `index.html` : `css/base.css`, `css/main.css`, `css/module.css`, `css/o2c-enrich.css`, `css/o2c-xp.css`, `css/s2p.css`, `css/suites.css`, `css/synergy-agent.css`, `css/xp.css`, `js/app.js`, `js/fluxym-services.js`, `js/main.js`, `js/module.js`, `js/o2c-xp.js`, `js/panel.js`, `js/s2p.js`, `js/suites.js`, `js/synergy-agent.js`, `js/xp.js`. Un envoi de fichiers par l'interface GitHub ne supprime rien : les « à supprimer » des anciens manifestes n'ont jamais été appliqués.
-- À la racine du dépôt, des copies de fichiers de `demo/` ne sont chargées ni par le site ni par la démo. `step1.html` à `step11.html`, `esker-fonts.css` et `steps-data.js` sont identiques à leurs copies de `demo/`. `in-place-states.js`, `player.js`, `player.css`, `step-enhancer.js` et `step-enhancer.css` diffèrent de leurs copies de `demo/` : ne rien supprimer avant d'avoir déterminé la version de référence.
-- `README.md` est périmé (il décrit l'ancienne page unique).
-- Ajouté le 17 octobre 2026 : la refonte de l'espace Synergies a retiré beaucoup de balisage. Les règles CSS devenues inutiles ont été supprimées de `css/syn.css` dans le même mouvement, après vérification qu'aucun fichier chargé n'y fait plus référence. À revérifier si d'anciens fichiers sont remis en service.
-- La trame de fond suit la caméra au moyen des variables CSS `--gs`, `--gx` et `--gy` posées par le script. Si l'effet pose problème sur une machine lente, il se désactive en retirant `.nv-work::before` dans `css/syn.css`.
+Vérifications faites avant suppression, à refaire si de nouveaux fichiers sont ajoutés :
+
+- aucun `@import` dans les CSS chargés ;
+- aucun chargement dynamique de script, de feuille de style ou de `fetch` dans les JS chargés ;
+- les étapes de `demo/steps/` sont chargées dynamiquement par `demo/js/player.js` depuis la
+  liste de `demo/js/steps-data.js` : elles sont utilisées et ne doivent pas être supprimées ;
+- `demo/data/factures_fournisseurs_filtres.json` est conservé comme source de référence,
+  cité en commentaire dans `demo/js/step-enhancer.js`.
+
+Après ce ménage, `index.html` charge exactement les 4 fichiers de `css/` et les 20 fichiers
+de `js/` présents dans le dépôt. Un fichier de `css/` ou `js/` qui n'est pas dans
+`index.html` est donc une anomalie.
+
+Reste à traiter :
+
+- La trame de fond suit la caméra au moyen des variables CSS `--gs`, `--gx` et `--gy` posées
+  par le script. Si l'effet pose problème sur une machine lente, il se désactive en retirant
+  `.nv-work::before` dans `css/syn.css`.
+- Les fiches produits des modules ne sont pas encore alignées sur les fiches solution
+  officielles d'Esker (gabarit : promesse, quatre bénéfices, cinq étapes, fonctionnalités).
 
 ## 7. Lancer le test d'ergonomie
 

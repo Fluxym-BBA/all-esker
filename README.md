@@ -1,80 +1,77 @@
-# Esker en vidéo — Fluxym
+# all-esker
 
-Page vitrine publique présentant en vidéo chaque module de la suite Esker
-(Source-to-Pay et Order-to-Cash), destinée aux prospects et clients Fluxym.
+Site vitrine Esker × Fluxym : les 13 modules des suites Source-to-Pay et Order-to-Cash,
+leurs interactions, et une démonstration interactive.
 
-**Démo :** https://fluxym-bba.github.io/all-esker/
+Publié sur GitHub Pages : https://fluxym-bba.github.io/all-esker/
 
-## Mise en ligne (GitHub Pages)
+## Ce que c'est
 
-1. Déposer `index.html` à la racine du dépôt `Fluxym-BBA/all-esker`.
-2. `Settings` → `Pages` → **Source : Deploy from a branch** → branche `main`, dossier `/ (root)`.
-3. La page est publiée sous 1 à 2 minutes sur `https://fluxym-bba.github.io/all-esker/`.
+Une application à écran unique, statique : pas de build, pas de bundler, pas de dépendance
+externe. Chemins relatifs uniquement, pour fonctionner sous le sous-dossier de GitHub Pages.
 
-## Contenu
+La navigation se fait par routeur à hash :
 
-- **Une roue unique** reprenant la représentation de la page *Videos-Esker-Consensus*,
-  avec les 13 modules Esker répartis sur les deux suites, le socle plateforme
-  (AI Agents, B2B Payments, Connectivity Suite, Unified UX, Datalake, ISO 27001)
-  et la pastille Synergy AI.
-- **10 vidéos** hébergées sur le CDN HubSpot de Fluxym, lues en lecteur HTML5 natif.
-- **4 modules O2C** sans vidéo (Credit Management, Customer Inquiry Management,
-  Order Management, Claims & Deductions) : visuel dédié + descriptif + badge
-  « Vidéo disponible très bientôt ».
-- **Formulaire de contact HubSpot** strictement identique à celui de
-  `fluxym.com/nous-contacter` (portal `26096000`, form `b3d5e891-…`).
+| Route | Écran |
+|---|---|
+| `#/` | Accueil, trois portes d'entrée |
+| `#/enjeux` | Enjeux métier |
+| `#/solution` | La roue des 13 modules |
+| `#/suite/s2p/<onglet>` | Suite Source-to-Pay |
+| `#/suite/o2c/<onglet>` | Suite Order-to-Cash |
+| `#/m/<id>` | Fiche d'un module |
+| `#/fluxym` | Fluxym |
 
-## Personnaliser
+Onglets d'une suite : `syn` (univers des synergies), `duo` (seul ou en suite), `ia`,
+et `budget` pour S2P uniquement.
 
-Tout est dans `index.html`, sans dépendance à builder.
+## Organisation
 
-### Ajouter une vidéo à un module
-
-Dans le tableau `M` (début du `<script>`), repérer le module et compléter `videos` :
-
-```js
-{id:"om", suite:"O2C", label:"Order Management", icon:"📦", c:"#F5A623",
- desc:"…",
- videos:[{t:"Présentation globale du module Order Management", sz:"310 Mo",
-          u:F_O2C+"Pr%C3%A9sentation%20globale%20du%20module%20Order%20Management.mp4"}]},
+```
+index.html          la seule page du site, elle liste les CSS et JS chargés
+css/                app.css, syn.css, wheel.css, xp-kit.css
+js/                 données (data, suites-data, module-data, o2c-data, fiches)
+                    et vues (fx-*.js), plus wheel.js et xp-kit.js
+assets/             captures d'écran et illustrations
+demo/               sous-projet autonome : lecteur de démonstration interactive en 11 étapes
+tests/              test d'ergonomie en navigateur réel
+SPEC.md             les exigences du projet, à lire avant toute modification
 ```
 
-- `F_O2C` / `F_S2P` sont les deux dossiers du CDN HubSpot.
-- Le nom de fichier doit être **URL-encodé** (espaces → `%20`, `é` → `%C3%A9`).
-- Un module bascule automatiquement de « Bientôt » à « vidéo disponible »
-  dès que `videos` n'est plus vide. Les compteurs de la roue et du bandeau
-  se recalculent seuls.
+`index.html` est la référence : un fichier CSS ou JS qui n'y figure pas n'est pas chargé.
+`demo/` ne se mélange pas avec le site principal et a ses propres CSS et JS.
 
-### Remplacer l'image d'attente des 4 modules O2C
+## Modifier le site
 
-Le visuel d'attente est généré en CSS dans le bloc `.soonbox`. Pour utiliser
-une vraie image, remplacer le contenu de `soonbox` par :
+1. Lire `SPEC.md`. Les exigences d'ergonomie y sont non négociables.
+2. Travailler sur une branche `claude/<sujet>`, jamais directement sur `main`.
+3. Lancer le test d'ergonomie avant de proposer la fusion.
+4. Changer le paramètre `?v=` des fichiers modifiés dans `index.html`, sinon les
+   navigateurs servent l'ancienne version depuis leur cache.
 
-```html
-<div class="soonbox"><img src="assets/order-management.jpg" alt="Order Management"></div>
+## Lancer en local
+
+```
+python3 -m http.server 8123
 ```
 
-### Image de couverture des vidéos
+Puis ouvrir http://127.0.0.1:8123/
 
-Les posters sont générés à la volée par `posterFor()` (SVG en data-URI,
-dégradé bleu Fluxym + nom du module). Pour un visuel sur mesure, remplacer
-l'attribut `poster` du `<video>` par une image du dépôt.
+## Lancer le test d'ergonomie
 
-## Lien profond
+Dans un second terminal, le serveur ci-dessus étant démarré :
 
-On peut pointer directement vers un module : `index.html#m=ap`
-(`ap`, `pr`, `so`, `sm`, `ctm`, `em`, `id`, `ca`, `com`, `crm`, `cim`, `om`, `cd`).
+```
+cd tests
+npm install
+node ergonomie.mjs http://127.0.0.1:8123/
+```
 
-## Point d'attention
+Le test ouvre un vrai navigateur et échoue si une zone défile, si le plein écran ne couvre
+pas la fenêtre, si la sélection d'un module ne se comporte pas comme prévu, ou si une
+erreur JavaScript survient. Détail dans `SPEC.md`, section 7.
 
-Les fichiers MP4 pèsent entre **264 Mo et 742 Mo** (≈ 4,4 Go au total).
-La page utilise `preload="none"` : rien n'est téléchargé avant un clic sur
-« Lire ». Une recompression (H.264 CRF 24, 1080p) permettrait de descendre
-sous 50 Mo par vidéo sans perte visible et améliorerait nettement l'expérience,
-notamment en mobile.
+## Publication
 
-## Charte
-
-Couleurs et typographies extraites du thème officiel `fluxym.com` :
-`#163467` (dark blue), `#13b4e2` (blue), `#6b51ed` (purple rain),
-`#f0f6f8` (light blue), `#ffcf63` (sunlight) — Miriam Libre + Barlow.
+GitHub Pages publie la branche `main` à la racine. Une fusion dans `main` met le site en
+ligne en une à deux minutes.
