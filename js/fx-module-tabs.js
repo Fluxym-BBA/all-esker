@@ -163,8 +163,7 @@
         clean();
         r.tab = k; FX.setTab(el, k);
         body.className = "fx-vb fx-tabbody t-" + k;
-        if (k === "apercu") { body.innerHTML = P.apercu(c, tabs); FX.runCounts(body); }
-        else if (k === "how") { body.innerHTML = P.how(c); P.mountHow(body, c, reg); }
+        if (k === "apercu") { body.innerHTML = P.apercu(c, tabs); FX.runCounts(body); P.mountApercu(body, c, reg); }
         else if (k === "fonct") { body.innerHTML = fonct(c); const ctl = xpWheelMount(body, "modw", {steps: c.bricks, card: brickCard(c)}); if (ctl) reg(() => ctl.stop()); }
         else if (k === "video") { body.innerHTML = video(c); mountVideo(body, c, reg, vstart); vstart = null; }
         else if (k === "irritants") { body.innerHTML = irritants(c); const m = xpPainsMountIn(body, {pains: c.pains}, () => show("video", true)); reg(() => m.stop()); }

@@ -4,9 +4,27 @@
    Champs : src (fiche source), hook (accroche), intro, why (4 bénéfices),
    how (étapes du fonctionnement), stats (chiffres cités par la fiche).
    Rien n'est ajouté qui ne figure pas dans la fiche ou le deck.
-   Non couvert par une fiche : ap (factures fournisseurs).
+   Les 13 modules sont désormais couverts.
    ========================================================================= */
 window.FICHES = {
+  ap: {
+    src: "Fiche Accounts Payable Automation",
+    hook: "Sortez la gestion des factures fournisseurs du désordre",
+    intro: "Capture des données par l'IA, traitement sans intervention et circuits de validation électroniques : une façon plus simple et plus efficace de piloter la trésorerie.",
+    why: [
+      {t: "Plus de rapidité et de visibilité", d: "Sur les factures comme sur la clôture, avec les axes de progrès faciles à repérer.", ic: "zoom"},
+      {t: "Moins de risque et de fraude", d: "Piste d'audit complète et circuits électroniques qui repèrent les doublons de paiement.", ic: "shield"},
+      {t: "De meilleures relations fournisseurs", d: "Paiements dans les délais, litiges résolus vite, échanges en temps réel.", ic: "sync"},
+      {t: "Des coûts de traitement réduits", d: "Fin du papier, du transport et de l'archivage physique.", ic: "euro"}
+    ],
+    how: [
+      {t: "Réception et distribution", d: "Les factures sont capturées quel que soit le canal par lequel elles arrivent."},
+      {t: "Extraction des données", d: "Les informations de la facture sont lues et structurées."},
+      {t: "Vérification et gestion", d: "Contrôles, rapprochement et traitement des écarts."},
+      {t: "Validation du paiement", d: "Le circuit électronique porte la facture jusqu'à l'approbation."},
+      {t: "Intégration et archivage", d: "Écriture comptable créée dans l'ERP, puis archivage."}
+    ]
+  },
   so: {
     src: "Fiche Quote Request",
     hook: "Des devis comparés en quelques minutes, par tous vos acheteurs",
@@ -123,9 +141,9 @@ window.FICHES = {
     hook: "Un assistant digital pour votre Service Client",
     intro: "Suivez toutes les demandes clients et répondez-y en temps réel, avec un assistant qui trie et prépare les réponses.",
     why: [
-      {t: "Efficacité de bout en bout", d: "Les demandes sont triées et dirigées sans intervention manuelle.", ic: "spark"},
+      {t: "Efficacité de bout en bout", d: "Demandes triées et dirigées sans intervention.", ic: "spark"},
       {t: "Meilleure visibilité", d: "Chaque demande suivie, de la réception à la réponse.", ic: "zoom"},
-      {t: "Équipe plus autonome", d: "Des réponses suggérées à partir de vos systèmes internes.", ic: "user"},
+      {t: "Équipe plus autonome", d: "Réponses suggérées depuis vos systèmes internes.", ic: "user"},
       {t: "Meilleure expérience client", d: "Des réponses plus rapides et plus fiables.", ic: "chat"}
     ],
     how: [
@@ -139,7 +157,7 @@ window.FICHES = {
     hook: "Chaque commande saisie, suivie et créée sans ressaisie",
     intro: "Traitez et suivez électroniquement toute commande reçue par fax, e-mail, EDI, portail ou mobile, avec 100 % de précision, de visibilité et d'efficacité.",
     why: [
-      {t: "Tous les canaux", d: "Fax, e-mail, EDI, portail, mobile : une seule chaîne de traitement.", ic: "layers"},
+      {t: "Tous les canaux", d: "Fax, e-mail, EDI, portail, mobile : une seule chaîne.", ic: "layers"},
       {t: "100 % de précision", d: "Saisie automatisée par IA et RPA.", ic: "check"},
       {t: "Une visibilité totale", d: "Chaque commande suivie jusqu'à son expédition.", ic: "zoom"},
       {t: "Une équipe disponible", d: "Moins de saisie, plus de relation client.", ic: "user"}
@@ -158,7 +176,7 @@ window.FICHES = {
     why: [
       {t: "Plus d'efficacité", d: "Un DSO réduit et un temps de traitement divisé.", ic: "kpi"},
       {t: "Conformité facturation électronique", d: "Plus de 60 pays couverts.", ic: "shield"},
-      {t: "Clients satisfaits", d: "E-mail, EDI, portail ou courrier : chacun choisit son canal.", ic: "chat"},
+      {t: "Clients satisfaits", d: "E-mail, EDI, portail ou courrier, au choix du client.", ic: "chat"},
       {t: "Erreurs de diffusion repérées", d: "Un portail web et un suivi en continu.", ic: "zoom"}
     ],
     how: [
