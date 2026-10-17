@@ -65,12 +65,23 @@ body.nv-fs-lock{overflow:hidden}
 .nv-badge:hover .nv-bplus,.nv-badge.lit .nv-bplus,.nv-badge.on .nv-bplus{fill:#fff;stroke:#fff}
 .nv-badge:hover .nv-bplus-t,.nv-badge.lit .nv-bplus-t,.nv-badge.on .nv-bplus-t{fill:var(--fc)}
 
-/* modules : anneau orbital, compteur d'interactions */
-.nv-node{cursor:pointer;outline:none;animation:nvNodeIn .7s var(--d) cubic-bezier(.34,1.46,.64,1) both}
+/* modules : anneau orbital, compteur d'interactions.
+   Fondu d'arrivée en « backwards » et non « both » : sinon la transformation finale de
+   l'animation gèle l'élément et le grossissement du module sélectionné ne s'applique pas. */
+.nv-node{cursor:pointer;outline:none;animation:nvNodeIn .7s var(--d) cubic-bezier(.34,1.46,.64,1) backwards;
+  transition:transform .45s cubic-bezier(.34,1.46,.64,1),opacity .3s,filter .3s}
 @keyframes nvNodeIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 .nv-node .nv-glow{fill:var(--c);opacity:0;filter:blur(13px);transition:opacity .35s}
 .nv-node .nv-orbit{fill:none;stroke:var(--c);stroke-width:1.6;stroke-dasharray:7 9;opacity:.38;transform-box:fill-box;transform-origin:center;animation:nvOrbit 18s var(--od,0s) linear infinite;transition:opacity .3s,stroke-width .3s}
 @keyframes nvOrbit{to{transform:rotate(360deg)}}
+@keyframes nvOrbitInv{to{transform:rotate(-360deg)}}
+@keyframes nvHalo{0%,100%{opacity:.16;r:var(--r0)}50%{opacity:.32}}
+/* anneaux supplémentaires, invisibles tant que le module n'est pas sélectionné */
+.nv-node .nv-halo,.nv-node .nv-ring2,.nv-node .nv-ring3{opacity:0;transition:opacity .4s;pointer-events:none}
+.nv-node .nv-halo{fill:var(--c)}
+.nv-node .nv-ring2,.nv-node .nv-ring3{fill:none;stroke:var(--c);transform-box:fill-box;transform-origin:center}
+.nv-node .nv-ring2{stroke-width:2.2;stroke-dasharray:14 10;animation:nvOrbit 9s var(--od,0s) linear infinite}
+.nv-node .nv-ring3{stroke-width:1.4;stroke-dasharray:3 12;stroke-linecap:round;animation:nvOrbitInv 14s var(--od,0s) linear infinite}
 .nv-node .nv-disc{fill:#fff;stroke:var(--c);stroke-width:3;transition:all .35s;filter:drop-shadow(0 10px 18px rgba(22,52,103,.12))}
 .nv-node .nv-tint{fill:var(--c);opacity:.08;transition:opacity .35s}
 .nv-node .nv-num{font:800 9.5px 'Miriam Libre',sans-serif;fill:var(--c);text-anchor:middle;letter-spacing:.06em}
@@ -81,11 +92,25 @@ body.nv-fs-lock{overflow:hidden}
 .nv-node:hover .nv-orbit,.nv-node.lit .nv-orbit{opacity:.9;stroke-width:2.3;animation-duration:6s}
 .nv-node:hover .nv-disc,.nv-node:focus-visible .nv-disc{stroke-width:4.5}
 .nv-node:hover .nv-tint,.nv-node.lit .nv-tint{opacity:.18}
-/* module sélectionné : il domine la scène */
-.nv-node.sel .nv-glow{opacity:.58}
+
+/* bouton d'accès à la fiche, dans le cercle, sous le nom du module sélectionné */
+.nv-openmod{opacity:0;pointer-events:none;transition:opacity .3s .1s}
+.nv-openmod rect{fill:var(--c);filter:drop-shadow(0 3px 7px rgba(22,52,103,.3))}
+.nv-openmod text{font:800 8px Barlow,sans-serif;fill:#fff;text-anchor:middle;pointer-events:none}
+.nv-node.sel .nv-openmod{opacity:1;pointer-events:all;cursor:pointer}
+.nv-node.sel .nv-openmod:hover rect{fill:var(--dark-blue)}
+
+/* module sélectionné : il domine franchement la scène */
+.nv-node.sel{transform:scale(1.16)}
+.nv-node.sel .nv-glow{opacity:.62}
+.nv-node.sel .nv-halo{opacity:.2;animation:nvPulse 2.6s ease-in-out infinite}
+.nv-node.sel .nv-ring2{opacity:.75}
+.nv-node.sel .nv-ring3{opacity:.95}
 .nv-node.sel .nv-orbit{opacity:1;stroke-width:2.8;animation-duration:5s}
 .nv-node.sel .nv-disc{stroke-width:5.5}
-.nv-node.sel .nv-tint{opacity:.22}
+.nv-node.sel .nv-tint{opacity:.24}
+.nv-node.sel .nv-nm{font-size:12.6px}
+@keyframes nvPulse{50%{opacity:.4}}
 
 .nv-ai{cursor:pointer;outline:none}
 .nv-ai rect{fill:rgba(18,163,125,.08);stroke:rgba(18,163,125,.35);stroke-dasharray:5 6;transition:fill .3s}
@@ -94,10 +119,14 @@ body.nv-fs-lock{overflow:hidden}
 .nv-aidot{fill:#12a37d;animation:nvBlink 2.4s var(--d) ease-in-out infinite}
 @keyframes nvBlink{50%{opacity:.25}}
 
-/* focus et contexte : ce qui n'est pas concerné s'efface sans disparaître */
-.nv-work.nv-hl .nv-syn:not(.lit),.nv-work.nv-hl .nv-badge:not(.lit){opacity:.08}
-.nv-work.nv-hl .nv-node:not(.lit){opacity:.26}
-.nv-work.nv-hl .nv-ai{opacity:.3}
+/* Focus et contexte. Les modules en interaction gardent leur apparence normale :
+   ce sont eux qu'on lit. Les modules sans interaction avec la sélection passent en
+   gris sombre, assez pour sortir du champ sans disparaître, et le survol les rend. */
+.nv-work.nv-hl .nv-syn:not(.lit),.nv-work.nv-hl .nv-badge:not(.lit){opacity:.07}
+.nv-work.nv-hl .nv-node:not(.lit):not(.sel){filter:grayscale(.92) brightness(.62) contrast(.9);opacity:.65}
+.nv-work.nv-hl .nv-node:not(.lit):not(.sel):hover,
+.nv-work.nv-hl .nv-node:not(.lit):not(.sel):focus-visible{filter:none;opacity:1}
+.nv-work.nv-hl .nv-ai{opacity:.28}
 .nv-syn.lit .nv-base{opacity:1;stroke-width:4.4}
 .nv-syn.lit .nv-flow{animation-duration:.7s;stroke-width:4.4;stroke-dasharray:3 11}
 .nv-syn,.nv-badge,.nv-node,.nv-ai{transition:opacity .3s}
@@ -210,11 +239,31 @@ body.nv-fs-lock{overflow:hidden}
 .nv-fsyn.lit i{background:rgba(255,255,255,.3)}
 .nv-ftip{margin:2px 0 0;font:600 .71rem Barlow,sans-serif;color:#8494ad;line-height:1.35}
 
-.nv-fpicks{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding-top:4px;border-top:1px dashed rgba(22,52,103,.12)}
-.nv-fpicks small{width:100%;font:800 .66rem Barlow,sans-serif;text-transform:uppercase;letter-spacing:.06em;color:#6b7d99}
-.nv-fpick{display:inline-flex;align-items:center;gap:5px;border:1px solid rgba(22,52,103,.14);background:#f9fbfd;border-radius:50px;padding:4px 11px;font:700 .75rem Barlow,sans-serif;color:var(--dark-blue);cursor:pointer;transition:all .2s}
-.nv-fpick:hover{background:var(--c);color:#fff;border-color:var(--c)}
+/* Pied de fiche : deux intentions séparées et nommées, jamais deux rangées jumelles.
+   Rester dans l'univers sur un module, ou en sortir pour sa fiche produit. */
 .nv-facts{display:flex;flex-wrap:wrap;gap:7px;padding-top:4px}
+.nv-facts--deux{flex-direction:column;gap:8px;align-items:stretch}
+.nv-fact-grp{display:flex;flex-direction:column;gap:4px}
+.nv-fact-grp small{font:800 .64rem Barlow,sans-serif;text-transform:uppercase;letter-spacing:.06em;color:#6b7d99}
+.nv-fact-row{display:flex;flex-wrap:wrap;gap:6px}
+.nv-fpick{display:inline-flex;align-items:center;gap:5px;border:1px solid rgba(22,52,103,.16);background:#f9fbfd;border-radius:50px;padding:5px 12px;font:700 .75rem Barlow,sans-serif;color:var(--dark-blue);cursor:pointer;transition:all .2s}
+.nv-fpick:hover{background:var(--c);color:#fff;border-color:var(--c)}
+
+/* retour à la fiche d'où l'on vient : on ne perd pas le fil */
+.nv-fback{align-self:flex-start;display:inline-flex;align-items:center;border:1px solid rgba(22,52,103,.16);background:#f0f6f8;
+  color:var(--dark-blue);border-radius:50px;padding:4px 12px;font:700 .74rem Barlow,sans-serif;cursor:pointer;transition:all .2s}
+.nv-fback:hover{background:var(--dark-blue);color:#fff;border-color:var(--dark-blue)}
+
+/* sélection multiple : les modules retenus et le choix des liens montrés */
+.nv-fmods{display:flex;flex-wrap:wrap;gap:5px}
+.nv-fmod{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--c);border-left-width:3px;background:color-mix(in srgb,var(--c) 9%,#fff);
+  border-radius:9px;padding:4px 6px 4px 9px;font:700 .76rem Barlow,sans-serif;color:var(--dark-blue)}
+.nv-fmod-x{border:0;background:none;color:#8494ad;font:700 .72rem Barlow,sans-serif;cursor:pointer;padding:0 2px;line-height:1}
+.nv-fmod-x:hover{color:#d41920}
+.nv-fseg{display:flex;padding:3px;border-radius:50px;background:#f0f6f8;border:1px solid rgba(22,52,103,.1)}
+.nv-fseg button{flex:1 1 auto;border:0;background:none;cursor:pointer;padding:5px 10px;border-radius:50px;font:700 .73rem Barlow,sans-serif;color:var(--dark-blue);transition:all .22s}
+.nv-fseg button.on{background:var(--blue);color:#fff;box-shadow:0 3px 10px rgba(19,180,226,.3)}
+.nv-fmulti{border-top:1px dashed rgba(22,52,103,.12);padding-top:6px;margin-top:2px}
 .nv-fbtn{display:inline-flex;align-items:center;gap:7px;border-radius:50px;padding:8px 14px;font:700 .79rem Barlow,sans-serif;cursor:pointer;transition:all .26s;border:1px solid transparent}
 .nv-fbtn.solid{background:var(--dark-blue);color:#fff}
 .nv-fbtn.solid:hover{background:var(--c,var(--blue));transform:translateY(-2px)}
